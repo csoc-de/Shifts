@@ -35,7 +35,6 @@ class ShiftController extends Controller{
 	 * @NoCSRFRequired
 	 */
 	public function index(): DataResponse {
-
 		return new DataResponse($this->service->findAll($this->userId));
 	}
 
@@ -45,6 +44,7 @@ class ShiftController extends Controller{
 	 * @param int $id
 	 */
 	public function show(int $id): DataResponse {
+		error_log('test',0);
 		return $this->handleNotFound(function () use($id){
 			return $this->service->find($id, $this->userId);
 		});
@@ -53,12 +53,12 @@ class ShiftController extends Controller{
 	/**
 	 * @NoAdminRequired
 	 *
-	 * @param string $userId
+	 * @param string $analystId
 	 * @param int $shiftTypeId
 	 * @param string $date
 	 */
-	public function create(string $userId, int $shiftTypeId, string $date): DataResponse {
-		return new DataResponse($this->service->create($userId, $shiftTypeId, $date));
+	public function create(string $analystId, int $shiftTypeId, string $date): DataResponse {
+		return new DataResponse($this->service->create($analystId, $shiftTypeId, $date));
 	}
 
 	/**
@@ -98,7 +98,21 @@ class ShiftController extends Controller{
 	 */
 	public function getAllAnalysts(){
 		$group = $this->groupManager->get('analyst');
-		$users = $group->getUsers();
+		$users = [];
+		$result = $group->getUsers();
+		foreach( $result as $user) {
+			$id = $user->getUID();
+			$name = $user->getDisplayName();
+			$email = $user->getEMailAddress();
+			$photo = $user->getAvatarImage(16);
+
+			array_push($users, [
+				'uid' => $id,
+				'name' => $name,
+				'email' => $email,
+				'photo' => $photo,
+			]);
+		}
 		return new DataResponse($users);
 	}
 }

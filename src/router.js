@@ -25,12 +25,12 @@ const router = new Router({
 			name: 'MainView',
 			children: [
 				{
-					path: '/newShift',
+					path: 'newShift',
 					name: 'NewShiftPopoverView',
 					component: NewShift,
 				},
 				{
-					path: '/newShiftType',
+					path: 'newShiftType',
 					name: 'NewShiftTypePopoverView',
 					component: NewShiftType,
 				},

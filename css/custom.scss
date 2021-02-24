@@ -1,0 +1,30 @@
+.mx-datepicker-popup{
+	z-index: 100001 !important;
+}
+
+.mx-table-date td {
+	text-align: center !important;
+}
+
+.divOpenDatepicker {
+	display: flex;
+	align-items: center;
+}
+
+.buttonOpenDatepicker {
+	padding: 0.3em;
+	color: rgba(49,130,206,1);
+	border-color: rgba(190,227,248,1);
+	background-color: rgba(235,248,255,1);
+	border-radius: 0.25rem 0 0 0.25rem !important;
+	margin: 0;
+}
+
+.svgOpenDatepicker {
+	width: 20px;
+	height: 20px;
+}
+
+.inputOpenDatepicker {
+	border-radius:0 0.25rem 0.25rem 0 !important;
+}

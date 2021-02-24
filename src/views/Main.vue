@@ -1,33 +1,55 @@
 <template>
 	<div id="content" class="app-shifts">
 		<AppContent>
-			<button v-if="isAdmin && !loading"
-				id="new-shift-button"
-				ref="newShiftButton"
-				@click="newShift">
-				Neue Schicht vergeben
-			</button>
-			<button v-if="isAdmin && !loading"
-				id="new-shift-type-button"
-				ref="newShiftTypeButton"
-				@click="newShiftType">
-				Neuen Schichttypen anlegen
-			</button>
-			<Calendar />
+			<v-popover ref="shiftPopover"
+				:open="shiftOpen">
+				<button v-if="isAdmin && !loading"
+					id="new-shift-button"
+					ref="newShiftButton"
+					@click="openNewShift">
+					Neue Schicht vergeben
+				</button>
+				<NewShift v-if="!loading"
+					slot="popover"
+					:shift-types="shiftTypes"
+					@cancel="closeNewShift"
+					@save="newShift" />
+			</v-popover>
+			<v-popover ref="shiftTypePopover"
+				:open="shiftTypeOpen">
+				<button v-if="isAdmin && !loading"
+					id="new-shift-type-button"
+					ref="newShiftTypeButton"
+					@click="openNewShiftType">
+					Neuen Schichttypen anlegen
+				</button>
+				<NewShiftType v-if="!loading"
+					slot="popover"
+					@cancel="closeNewShiftType"
+					@save="newShiftType" />
+			</v-popover>
+			<Calendar v-if="!loading"
+				:analysts="analysts"
+				:shifts="shifts" />
 		</AppContent>
 	</div>
 </template>
-
 <script>
 import AppContent from '@nextcloud/vue/dist/Components/AppContent'
 import '@nextcloud/dialogs/styles/toast.scss'
 import { generateUrl } from '@nextcloud/router'
-import { showError, showSuccess } from '@nextcloud/dialogs'
+import { showError } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import Calendar from '../components/Calendar'
+import NewShiftType from './NewShiftType'
+import NewShift from './NewShift'
+import { getYYYYMMDDFromDate } from '../utils/date'
+
 export default {
 	name: 'Main',
 	components: {
+		NewShift,
+		NewShiftType,
 		AppContent,
 		Calendar,
 	},
@@ -35,45 +57,29 @@ export default {
 		return {
 			shifts: [],
 			shiftTypes: [],
-			currentShiftTypeId: null,
-			currentShiftId: null,
 			updating: false,
 			loading: true,
 			displayShift: true,
 			isAdmin: false,
+			shiftTypeOpen: false,
+			shiftOpen: false,
+			analysts: [],
 		}
 	},
-	computed: {
-		currentShift() {
-			if (this.currentShiftId === null) {
-				return null
-			}
-			return this.shifts.find((shift) => shift.id === this.currentShiftId)
-		},
-		currentShiftType() {
-			if (this.currentShiftTypeId === null) {
-				return null
-			}
-			return this.shiftTypes.find((shiftType) => shiftType.id === this.currentShiftTypeId)
-		},
-		shiftSavePossible() {
-			return this.currentShift && this.currentShift.title !== ''
-		},
-		shiftTypeSavePossible() {
-			return this.currentShiftType && this.currentShiftType.name !== ''
-		},
-	},
-
 	async mounted() {
 		try {
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
+			const analystsResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
 			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
-			const analystResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
-			console.warn(analystResponse.data)
-			this.shifts = shiftResponse.data
 			this.shiftTypes = shiftTypeResponse.data
 			this.isAdmin = isAdminResponse.data
+			this.analysts = analystsResponse.data
+			shiftResponse.data.forEach(shift => {
+				shift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
+				this.shifts.push(shift)
+			})
+			console.log(this.shifts)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
@@ -81,82 +87,45 @@ export default {
 		this.loading = false
 	},
 	methods: {
-		openShift(shift) {
-			if (this.updating) {
-				return
-			}
-			this.currentShiftId = shift.id
-			this.$nextTick(() => {
-				this.$refs.date.focus()
-			})
+		closeNewShiftType() {
+			this.shiftTypeOpen = false
 		},
-		openShiftType(shiftType) {
-			if (this.updating) {
-				return
-			}
-			this.currentShiftTypeId = shiftType.id
-			this.$nextTick(() => {
-				this.$refs.name.focus()
-			})
+		closeNewShift() {
+			this.shiftOpen = false
 		},
-		saveShift() {
-			if (this.currentShiftId === -1) {
-				this.createShift(this.currentShift)
-			} else {
-				this.updateShift(this.currentShift)
-			}
+		openNewShift() {
+			this.shiftOpen = true
 		},
-		saveShiftType() {
-			if (this.currentShiftTypeId === -1) {
-				this.createShiftType(this.currentShiftType)
-			} else {
-				this.updateShiftType(this.currentShiftType)
-			}
+		openNewShiftType() {
+			this.shiftTypeOpen = true
 		},
-		newShift() {
-			if (this.currentShiftId !== -1) {
-				this.currentShiftId = -1
-				this.shifts.push({
-					id: -1,
-					userId: '',
-					shiftTypeId: -1,
-					date: '1.1.1970',
-				})
-				this.$nextTick(() => {
-					this.$refs.userId.focus()
-				})
-			}
+		async newShift(shift) {
+			await this.createShift(shift)
+			this.closeNewShift()
 		},
-		newShiftType() {
-			if (this.currentShiftTypeId !== -1) {
-				this.currentShiftTypeId = -1
-				this.shiftTypes.push({
-					id: -1,
-					name: '',
-					desc: '',
-					startTimeStamp: '08:00',
-					stopTimeSTamp: '12:30',
-				})
-				this.$nextTick(() => {
-					this.$refs.name.focus()
-				})
-			}
-		},
-		cancelNewShift() {
-			this.shifts.splice(this.shifts.findIndex((shift) => shift.id === -1), 1)
-			this.currentShiftId = null
-		},
-		cancelNewShiftType() {
-			this.shiftTypes.splice(this.shiftTypes.findIndex((shiftType) => shiftType.id === -1), 1)
-			this.currentShiftTypeId = null
+		async newShiftType(shiftType) {
+			await this.createShiftType(shiftType)
+			this.closeNewShiftType()
 		},
 		async createShift(shift) {
 			this.updating = true
 			try {
-				const response = await axios.post(generateUrl('/apps/shifts/shifts'), shift)
-				const index = this.shifts.findIndex((match) => match.id === this.currentShiftId)
-				this.$set(this.shifts, index, response.data)
-				this.currentShiftId = response.data.id
+				await Promise.all(shift.analysts.map(async(analyst) => {
+					let date = shift.date
+					if (shift.date.date) {
+						date = shift.date.date
+					}
+					const analystId = analyst.userId
+					const shiftTypeId = shift.shiftsType.id
+					const newShift = {
+						analystId,
+						shiftTypeId,
+						date: getYYYYMMDDFromDate(date),
+					}
+					await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+					newShift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id === newShift.shiftTypeId)
+					this.shifts.push(newShift)
+				}))
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shift'))
@@ -166,61 +135,14 @@ export default {
 		async createShiftType(shiftType) {
 			this.updating = true
 			try {
-				const response = await axios.post(generateUrl('/apps/shifts/shiftsType'), shiftType)
-				const index = this.shiftTypes.findIndex((match) => match.id === this.currentShiftTypeId)
-				this.$set(this.shiftTypes, index, response.data)
-				this.currentShiftTypeId = response.data.id
+				await axios.post(generateUrl('/apps/shifts/shiftsType'), shiftType)
+				const shiftTypesResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
+				this.shiftTypes = shiftTypesResponse.data
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shiftType'))
 			}
 			this.updating = false
-		},
-		async updateShift(shift) {
-			this.updating = true
-			try {
-				await axios.put(generateUrl(`/apps/shifts/shifts/${shift.id}`), shift)
-			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not update the shift'))
-			}
-			this.updating = false
-		},
-		async updateShiftType(shiftType) {
-			this.updating = true
-			try {
-				await axios.put(generateUrl(`/apps/shifts/shiftsType/${shiftType.id}`), shiftType)
-			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not update the shiftType'))
-			}
-			this.updating = false
-		},
-		async deleteShift(shift) {
-			try {
-				await axios.delete(generateUrl(`/apps/shifts/shifts/${shift.id}`))
-				this.shifts.splice(this.shifts.indexOf(shift), 1)
-				if (this.currentShiftId === shift.id) {
-					this.currentShiftId = null
-				}
-				showSuccess(t('shifts', 'Shift deleted'))
-			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not delete the shift'))
-			}
-		},
-		async deleteShiftType(shiftType) {
-			try {
-				await axios.delete(generateUrl(`/apps/shifts/shiftsType/${shiftType.id}`))
-				this.shiftTypes.splice(this.shiftTypes.indexOf(shiftType), 1)
-				if (this.currentShiftTypeId === shiftType.id) {
-					this.currentShiftTypeId = null
-				}
-				showSuccess(t('shifts', 'ShiftType deleted'))
-			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not delete the shiftType'))
-			}
 		},
 	},
 }

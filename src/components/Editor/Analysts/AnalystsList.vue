@@ -1,0 +1,101 @@
+<!--
+  - @copyright Copyright (c) 2019 Georg Ehrke <oc.list@georgehrke.com>
+  -
+  - @author Georg Ehrke <oc.list@georgehrke.com>
+  -
+  - @license GNU AGPL version 3 or any later version
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU Affero General Public License as
+  - published by the Free Software Foundation, either version 3 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  - GNU Affero General Public License for more details.
+  -
+  - You should have received a copy of the GNU Affero General Public License
+  - along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -
+  -->
+<template>
+	<div>
+		<AnalystsListSearch
+			v-if="!isReadOnly"
+			:already-invited-emails="alreadyInvitedEmails"
+			@addAnalyst="addAnalyst" />
+		<AnalystsListItem
+			v-for="analyst in analysts"
+			:key="analyst.email"
+			:attendee="analyst"
+			:is-read-only="isReadOnly"
+			@removeAttendee="removeAnalyst" />
+		<NoAnalystsView
+			v-if="isReadOnly && isListEmpty" />
+		<NoAnalystsView
+			v-if="!isReadOnly && isListEmpty " />
+
+		<!-- TODO FreeBusy -->
+	</div>
+</template>
+
+<script>
+import AnalystsListSearch from './AnalystsListSearch'
+import AnalystsListItem from './AnalystsListItem'
+import NoAnalystsView from './NoAnalystsView'
+import { initializeClientForUserView } from '../../../services/caldavService'
+
+export default {
+	name: 'AnalystsList',
+	components: {
+		NoAnalystsView,
+		AnalystsListItem,
+		AnalystsListSearch,
+	},
+	props: {
+		isReadOnly: {
+			type: Boolean,
+			required: true,
+		},
+		newShiftInstance: {
+			type: Object,
+			required: true,
+		},
+	},
+	computed: {
+		analysts() {
+			if (!this.newShiftInstance.organizer) {
+				return this.newShiftInstance.analysts
+			}
+
+			return this.newShiftInstance.analysts
+				.filter(analyst => analyst.uri !== this.newShiftInstance.organizer.uri)
+		},
+		isListEmpty() {
+			return this.newShiftInstance.organizer === null
+				&& this.newShiftInstance.analysts.length === 0
+		},
+		alreadyInvitedEmails() {
+			return this.newShiftInstance.analysts.map(analyst => {
+				if (analyst.email.startsWith('mailto:')) {
+					return analyst.email.substr(7)
+				}
+
+				return analyst.email
+			})
+		},
+	},
+	async beforeCreate() {
+		await initializeClientForUserView()
+	},
+	methods: {
+		addAnalyst(analyst) {
+			this.$emit('addAnalyst', analyst)
+		},
+		removeAnalyst(analyst) {
+			this.$emit('removeAnalyst', analyst)
+		},
+	},
+}
+</script>

@@ -34,12 +34,22 @@ class ShiftMapper extends QBMapper {
 	 * @param string $userId
 	 * @return array
 	 */
-	public function findAll(string $userId): array {
+	public function findById(string $userId): array {
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('*')
 			->from('shifts')
 			->where($qb->expr()->eq('user_id', $qb->createNamedParameter($userId)));
+		return $this->findEntities($qb);
+	}
+	/**
+	 * @return array
+	 */
+	public function findAll(): array {
+		/* @var $qb IQueryBuilder */
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('*')
+			->from('shifts');
 		return $this->findEntities($qb);
 	}
 }
