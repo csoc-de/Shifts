@@ -27,33 +27,34 @@ export default {
 	},
 	data() {
 		return {
-			currentShifts: []
+			currentShifts: [],
 		}
 	},
 	watch: {
 		shifts: {
 			handler(newVal) {
-				console.log(newVal, this.currentShifts)
+				console.log('handler', state)
 				const difference = newVal
 					.filter(x => !this.currentShifts.includes(x))
 					.concat(this.currentShifts.filter(x => !newVal.includes(x)))
-				console.log(difference)
 				difference.forEach((shift) => {
 					const start = GSTC.api.date(shift.date)
 					const id = GSTC.api.GSTCID(shift.id)
-					state.update(`config.chart.items.${id}`, {
+					const rowId = GSTC.api.GSTCID(shift.userId)
+					const newItem = {
 						id,
 						label: `${shift.shiftsType.name}`,
-						rowId: shift.userId,
+						rowId,
 						time: {
 							start: start.valueOf(),
 							end: start.endOf('day').valueOf(),
 						},
-					})
+					}
+					state.update(`config.chart.items.${id}`, newItem)
 				})
 				this.currentShifts = newVal.slice()
 			},
-			deep: true
+			deep: true,
 		},
 	},
 	mounted() {
@@ -93,6 +94,7 @@ export default {
 			element: this.$refs.gstc,
 			state,
 		})
+		console.log(state)
 	},
 
 	beforeUnmount() {
@@ -116,7 +118,7 @@ export default {
 
 			this.shifts.forEach((shift, index) => {
 				const start = GSTC.api.date(shift.date)
-				const id = GSTC.api.GSTCID(shift.id)
+				const id = shift.id
 				const rowId = shift.userId
 				const shiftsType = shift.shiftsType
 				items.push({

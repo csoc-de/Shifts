@@ -79,7 +79,6 @@ export default {
 				shift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				this.shifts.push(shift)
 			})
-			console.log(this.shifts)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
@@ -123,9 +122,12 @@ export default {
 						date: getYYYYMMDDFromDate(date),
 					}
 					await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
-					newShift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id === newShift.shiftTypeId)
-					this.shifts.push(newShift)
 				}))
+				const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
+				shiftResponse.data.forEach(shift => {
+					shift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
+					this.shifts.push(shift)
+				})
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shift'))
