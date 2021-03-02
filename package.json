@@ -23,6 +23,7 @@
 		"@nextcloud/logger": "^1.1.2",
 		"@nextcloud/router": "^1.2.0",
 		"@nextcloud/vue": "^3.3.2",
+		"@vue/cli": "^4.5.11",
 		"autosize": "^4.0.2",
 		"calendar-js": "github:nextcloud/calendar-js",
 		"cdav-library": "github:nextcloud/cdav-library",
