@@ -28,3 +28,59 @@
 .inputOpenDatepicker {
 	border-radius:0 0.25rem 0.25rem 0 !important;
 }
+
+.popover-menu-layout {
+	background: white;
+	padding-top: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.v-select__selections input {
+	border: 0;
+}
+
+.multiselect {
+	width: 100%;
+}
+
+.invitees-search-list-item {
+	display: flex;
+	font-size: 110%;
+}
+
+.invitees-search-list-item__label--single-email {
+	font-family: inherit;
+	padding: 5px;
+}
+
+.invitees-list-item {
+	padding: 10px;
+	display: flex;
+	font-size: 110%;
+	font-family: inherit;
+}
+
+.invitees-list-item__displayname {
+	padding: 5px;
+}
+
+.action-item {
+	height: 33px !important;
+}
+
+.v-menu__content {
+	width: 10em;
+}
+
+.v-input__slot {
+	width: 30% !important;
+}
+
+.layout {
+	display: block !important;
+}
+
+.property-title__input input {
+	width: 100%;
+}

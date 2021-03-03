@@ -1,4 +1,5 @@
 import 'core-js/stable'
+import '@nextcloud/dialogs/styles/toast.scss'
 
 import Vue from 'vue'
 import App from './App'
@@ -8,13 +9,10 @@ import VueClipboard from 'vue-clipboard2'
 import VTooltip from 'v-tooltip'
 import VueShortKey from 'vue-shortkey'
 import { translate, translatePlural } from '@nextcloud/l10n'
-import VCalendar from 'v-calendar'
+import vuetify from './plugins/vuetify'
 
 Vue.directive('ClickOutside', ClickOutside)
 Vue.component('v-popover', VTooltip.VPopover)
-Vue.use(VCalendar, {
-	componentPrefix: 'vc',
-})
 Vue.use(VTooltip, {
 	popover: {
 		defaultWrapperClass: 'popover__wrapper',
@@ -37,5 +35,6 @@ Vue.prototype.n = translatePlural
 export default new Vue({
 	el: '#content',
 	router,
+	vuetify,
 	render: h => h(App),
 })

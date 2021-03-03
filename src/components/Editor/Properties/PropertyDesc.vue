@@ -23,11 +23,6 @@
 <template>
 	<div v-if="display" class="property-text">
 		<div
-			class="property-text__icon"
-			:class="icon"
-			:title="readableName" />
-
-		<div
 			class="property-text__input">
 			<textarea
 				v-autosize="true"

@@ -7,6 +7,14 @@ const config = {
 			{
 				test: /\.vue$/,
 				loader: 'vue-loader',
+			},
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader']
+			},
+			{
+				test: /\.(jpe?g|png|gif|gif|svg|eot|woff|ttf|svg|woff2)$/,
+				loader: "file-loader"
 			}
 		]
 

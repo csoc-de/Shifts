@@ -24,7 +24,7 @@
 	<div class="property-title">
 		<div class="property-title__input">
 			<input type="text"
-				:placeholder="$t('shifts', 'Name of the Shift-type')"
+				:placeholder="$t('shifts', 'Name of the Shift-Type')"
 				:value="value"
 				@input.prevent.stop="changeValue">
 		</div>

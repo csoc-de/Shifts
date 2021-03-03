@@ -1,90 +1,85 @@
 <template>
-	<div v-if="isLoading">
-		<PopoverLoadingIndicator />
-	</div>
-
-	<div v-else-if="isError">
-		<div class="event-popover__top-right-actions">
-			<Actions>
-				<ActionButton
-					v-close-popover
-					icon="icon-close"
-					@click="cancel">
-					{{ $t('shifts', 'Close') }}
-				</ActionButton>
-			</Actions>
-		</div>
-
-		<EmptyContent icon="icon-shifts-dark">
-			{{ $t('shifts', 'Shift does not exist') }}
-			<template #desc>
-				{{ error }}
-			</template>
-		</EmptyContent>
-	</div>
-
-	<div v-else>
-		<div class="event-popover__top-right-actions">
-			<Actions>
-				<ActionButton
-					icon="icon-close"
-					@click="cancel">
-					{{ $t('shifts', 'Close') }}
-				</ActionButton>
-			</Actions>
-		</div>
-
+	<div>
 		<PropertyTitle
 			:value="name"
 			@update:value="updateName" />
-		<PropertyDesc
-			:value="description"
-			icon="icon-menu"
-			:readable-name=" $t('shifts','Description')"
-			:placeholder="$t('shifts','Write Description here')"
-			@update:value="updateDescription" />
 		<!-- eslint-disable -->
-		<vue-timepicker
-			v-model="startTimestamp"
-			@input="changeStartTimestamp"></vue-timepicker>
-		<vue-timepicker
-			v-model="stopTimestamp"
-			@input="changeStopTimestamp"></vue-timepicker>
+		<v-menu
+			ref="startMenu"
+			v-model="startMenu"
+			:close-on-content-click="false"
+			:nudge-right="40"
+			:return-value.sync="newShiftType.startTimestamp"
+			transition="scale-transition"
+			offset-y
+			max-width="290px"
+			min-width="290px">
+			<template v-slot:activator="{ on, attrs }">
+				<v-text-field
+					v-model="newShiftType.startTimestamp"
+					label=" Start Time"
+					v-bind="attrs"
+					v-on="on">
+				</v-text-field>
+			</template>
+			<v-time-picker
+				v-if="startMenu"
+				v-model="newShiftType.startTimestamp"
+				format="24hr"
+				full-width
+				@click:minute="$refs.startMenu.save(newShiftType.startTimestamp)">
+			</v-time-picker>
+		</v-menu>
+		<v-menu
+			ref="stopMenu"
+			v-model="stopMenu"
+			:close-on-content-click="false"
+			:nudge-right="40"
+			:return-value.sync="newShiftType.stopTimestamp"
+			transition="scale-transition"
+			offset-y
+			max-width="290px"
+			min-width="290px">
+			<template v-slot:activator="{ on, attrs }">
+				<v-text-field
+					v-model="newShiftType.stopTimestamp"
+					label=" Stop Time"
+					v-bind="attrs"
+					v-on="on">
+				</v-text-field>
+			</template>
+			<v-time-picker
+				v-if="stopMenu"
+				v-model="newShiftType.stopTimestamp"
+				format="24hr"
+				full-width
+				@click:minute="$refs.stopMenu.save(newShiftType.stopTimestamp)">
+			</v-time-picker>
+		</v-menu>
 		<!-- eslint-enable -->
-		<button
-			class="event-popover__buttons primary"
-			@click="save">
-			{{ $t('shifts', 'Save') }}
-		</button>
+		<v-btn color="primary" @click="cancel">
+			Cancel
+		</v-btn>
+		<v-btn color="primary" @click="save">
+			Save
+		</v-btn>
 	</div>
 </template>
 
 <script>
-import Actions from '@nextcloud/vue/dist/Components/Actions'
-import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
-import EmptyContent from '@nextcloud/vue/dist/Components/EmptyContent'
-import PropertyDesc from '../components/Editor/Properties/PropertyDesc'
 import PropertyTitle from '../components/Editor/Properties/PropertyTitle'
-import PopoverLoadingIndicator from '../components/Popover/PopoverLoadingIndicator'
-import VueTimepicker from 'vue2-timepicker'
-import 'vue2-timepicker/dist/VueTimepicker.css'
 export default {
 	name: 'NewShiftType',
 	components: {
 		PropertyTitle,
-		PropertyDesc,
-		PopoverLoadingIndicator,
-		VueTimepicker,
-		ActionButton,
-		Actions,
-		EmptyContent,
 	},
 	data() {
 		return {
-			placement: 'auto',
 			isLoading: false,
 			isError: false,
 			error: null,
+			startMenu: false,
+			stopMenu: false,
 			newShiftType: {
 				name: '',
 				description: '',
@@ -99,22 +94,6 @@ export default {
 		},
 		description() {
 			return this.newShiftType.description
-		},
-		startTimestamp: {
-			get() {
-				return this.newShiftType.startTimestamp
-			},
-			set(newValue) {
-				this.newShiftType.startTimestamp = newValue
-			},
-		},
-		stopTimestamp: {
-			get() {
-				return this.newShiftType.stopTimestamp
-			},
-			set(newValue) {
-				this.newShiftType.stopTimestamp = newValue
-			},
 		},
 	},
 	mounted() {
@@ -136,12 +115,6 @@ export default {
 		},
 		updateDescription(description) {
 			this.newShiftType.description = description
-		},
-		changeStartTimestamp(startTimestamp) {
-			this.newShiftType.startTimestamp = startTimestamp
-		},
-		changeStopTimestamp(stopTimestamp) {
-			this.newShiftType.stopTimestamp = stopTimestamp
 		},
 		save() {
 			this.$emit('save', this.newShiftType)

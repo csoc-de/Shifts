@@ -1,49 +1,67 @@
 <template>
-	<div id="content" class="app-shifts">
-		<AppContent>
-			<v-popover ref="shiftPopover"
-				:open="shiftOpen">
-				<button v-if="isAdmin && !loading"
-					id="new-shift-button"
-					ref="newShiftButton"
-					@click="openNewShift">
-					Neue Schicht vergeben
-				</button>
-				<NewShift v-if="!loading"
-					slot="popover"
-					:shift-types="shiftTypes"
-					@cancel="closeNewShift"
-					@save="newShift" />
-			</v-popover>
-			<v-popover ref="shiftTypePopover"
-				:open="shiftTypeOpen">
-				<button v-if="isAdmin && !loading"
-					id="new-shift-type-button"
-					ref="newShiftTypeButton"
-					@click="openNewShiftType">
-					Neuen Schichttypen anlegen
-				</button>
-				<NewShiftType v-if="!loading"
-					slot="popover"
-					@cancel="closeNewShiftType"
-					@save="newShiftType" />
-			</v-popover>
-			<Calendar v-if="!loading"
-				:analysts="analysts"
-				:shifts="shifts" />
-		</AppContent>
-	</div>
+	<v-app>
+		<div id="content" class="app-shifts">
+			<AppContent>
+				<!--eslint-disable-->
+				<v-menu
+					v-model="shiftOpen"
+					:close-on-content-click="false"
+					:nudge-width="200"
+					offset-y>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn
+							color="light-blue"
+							dark
+							v-bind="attrs"
+							v-on="on">
+							Neue Schicht vergeben
+						</v-btn>
+					</template>
+					<v-layout class="popover-menu-layout">
+						<NewShift v-if="!loading"
+							:shift-types="shiftTypes"
+							@cancel="closeNewShift"
+							@save="newShift">
+						</NewShift>
+					</v-layout>
+				</v-menu>
+				<v-menu
+					v-model="shiftTypeOpen"
+					:close-on-content-click="false"
+					:nudge-width="200"
+					offset-y>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn
+							color="light-blue"
+							dark
+							v-bind="attrs"
+							v-on="on">
+							Neuen Schichttyp anlegen
+						</v-btn>
+					</template>
+					<v-layout class="popover-menu-layout">
+						<NewShiftType v-if="!loading"
+							@cancel="closeNewShiftType"
+							@save="newShiftType" />
+					</v-layout>
+				</v-menu>
+				<!-- eslint-enable-->
+				<Calendar v-if="!loading"
+					:analysts="analysts"
+					:shifts="shifts" />
+			</AppContent>
+		</div>
+	</v-app>
 </template>
 <script>
 import AppContent from '@nextcloud/vue/dist/Components/AppContent'
-import '@nextcloud/dialogs/styles/toast.scss'
 import { generateUrl } from '@nextcloud/router'
-import { showError } from '@nextcloud/dialogs'
+import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import Calendar from '../components/Calendar'
 import NewShiftType from './NewShiftType'
-import NewShift from './NewShift'
 import { getYYYYMMDDFromDate } from '../utils/date'
+import NewShift from './NewShift'
 
 export default {
 	name: 'Main',
@@ -64,6 +82,18 @@ export default {
 			shiftTypeOpen: false,
 			shiftOpen: false,
 			analysts: [],
+			menu: false,
+			dateMenu: false,
+			dates: ['2020-01-01', '2020-01-02'],
+			newShiftInstance: {
+				analysts: [],
+				shiftsType: '',
+				dates: [getYYYYMMDDFromDate(new Date())],
+			},
+			value1: {
+				id: -1,
+				name: 'Select ShiftType',
+			},
 		}
 	},
 	async mounted() {
@@ -99,29 +129,39 @@ export default {
 			this.shiftTypeOpen = true
 		},
 		async newShift(shift) {
-			await this.createShift(shift)
-			this.closeNewShift()
+			if (shift.analysts && shift.dates) {
+				await this.createShift(shift)
+				this.closeNewShift()
+			} else {
+				console.log('No Name for ShiftType')
+				showWarning(t('shifts', 'No Analysts or Dates for Shift given'))
+			}
 		},
 		async newShiftType(shiftType) {
-			await this.createShiftType(shiftType)
+			if (shiftType.name) {
+				await this.createShiftType(shiftType)
+			} else {
+				console.log('No Name for ShiftType')
+				showWarning(t('shifts', 'No Name for Shift-Type given'))
+			}
 			this.closeNewShiftType()
 		},
 		async createShift(shift) {
 			this.updating = true
 			try {
 				await Promise.all(shift.analysts.map(async(analyst) => {
-					let date = shift.date
-					if (shift.date.date) {
-						date = shift.date.date
-					}
 					const analystId = analyst.userId
 					const shiftTypeId = shift.shiftsType.id
-					const newShift = {
-						analystId,
-						shiftTypeId,
-						date: getYYYYMMDDFromDate(date),
-					}
-					await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+					const newShifts = shift.dates.map((date) => {
+						return {
+							analystId,
+							shiftTypeId,
+							date,
+						}
+					})
+					await Promise.all(newShifts.map(async(newShift) => {
+						await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+					}))
 				}))
 				const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 				shiftResponse.data.forEach(shift => {
