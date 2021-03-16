@@ -79,7 +79,7 @@ export default {
 			error: null,
 			value1: {
 				id: -1,
-				name: 'Select ShiftType',
+				name: t('shifts', 'Schichtauswahl'),
 			},
 			dateMenu: false,
 			newShiftInstance: {

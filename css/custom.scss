@@ -38,6 +38,7 @@
 
 .v-select__selections input {
 	border: 0;
+	background-color: transparent;
 }
 
 .multiselect {
@@ -73,14 +74,42 @@
 	width: 10em;
 }
 
-.v-input__slot {
-	width: 30% !important;
-}
-
 .layout {
 	display: block !important;
 }
 
 .property-title__input input {
 	width: 100%;
+}
+
+.v-text-field-box .v-input__slot, .v-text-field--outline .v-input__slot{
+	min-height: 30px!important;
+	display: flex!important;
+	align-items: center!important;
+}
+
+.v-select {
+	padding-top: 0!important;
+}
+
+.calendar-format-select {
+	margin-top: 25px !important;
+}
+
+.correction_margin {
+	padding-top: 50px !important;
+	top:auto;
+}
+
+.toolbar_title {
+	width: 15%;
+}
+
+.gstc-wrapper {
+	width: 100%;
+}
+
+.test {
+	display: block;
+	box-sizing: inherit;
 }

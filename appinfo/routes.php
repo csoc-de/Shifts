@@ -3,7 +3,8 @@
 return [
 	'resources' => [
 		'shift' => ['url' => '/shifts'],
-		'shiftsType' => ['url' => '/shiftsType']
+		'shiftsType' => ['url' => '/shiftsType'],
+		'shiftsChange' => ['url' => '/shiftsChange']
 	],
 	'routes' => [
 		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
