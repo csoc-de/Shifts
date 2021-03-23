@@ -37,6 +37,7 @@ class ShiftsTypeController extends Controller{
 	 * @NoAdminRequired
 	 *
 	 * @param int $id
+	 * @return DataResponse
 	 */
 	public function show(int $id): DataResponse {
 		return $this->handleNotFound(function () use($id){
@@ -51,6 +52,7 @@ class ShiftsTypeController extends Controller{
 	 * @param string $description
 	 * @param string $startTimestamp
 	 * @param string $stopTimestamp
+	 * @return DataResponse
 	 */
 	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp): DataResponse {
 		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp));
@@ -64,8 +66,10 @@ class ShiftsTypeController extends Controller{
 	 * @param string $desc
 	 * @param string $startTimeStamp
 	 * @param string $stopTimeStamp
+	 * @return DataResponse
 	 */
-	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp){
+	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp): DataResponse
+	{
 		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimeStamp, $stopTimeStamp){
 			return $this->service->update($id, $name, $desc, $startTimeStamp, $stopTimeStamp);
 		});
@@ -75,8 +79,10 @@ class ShiftsTypeController extends Controller{
 	 * @NoAdminRequired
 	 *
 	 * @param int $id
+	 * @return DataResponse
 	 */
-	public function destroy(int $id){
+	public function destroy(int $id): DataResponse
+	{
 		return $this->handleNotFound(function() use($id) {
 			return $this->service->delete($id);
 		});

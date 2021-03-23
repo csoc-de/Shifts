@@ -1,114 +1,97 @@
 <template>
-	<v-app>
-		<div id="content" class="app-shifts">
-			<AppContent>
-				<!--eslint-disable-->
-				<v-menu
-					v-model="shiftOpen"
-					:close-on-content-click="false"
-					:nudge-width="200"
-					offset-y>
-					<template v-slot:activator="{ on, attrs }">
-						<v-btn
-							color="light-blue"
-							dark
-							v-bind="attrs"
-							v-on="on">
-							Neue Schicht vergeben
-						</v-btn>
-					</template>
-					<v-layout class="popover-menu-layout">
-						<NewShift v-if="!loading"
-							:shift-types="shiftTypes"
-							@cancel="closeNewShift"
-							@save="newShift">
-						</NewShift>
-					</v-layout>
-				</v-menu>
-				<v-menu
-					v-model="shiftTypeOpen"
-					:close-on-content-click="false"
-					:nudge-width="200"
-					offset-y>
-					<template v-slot:activator="{ on, attrs }">
-						<v-btn
-							color="light-blue"
-							dark
-							v-bind="attrs"
-							v-on="on">
-							Neuen Schichttyp anlegen
-						</v-btn>
-					</template>
-					<v-layout class="popover-menu-layout">
-						<NewShiftType v-if="!loading"
-							@cancel="closeNewShiftType"
-							@save="newShiftType" />
-					</v-layout>
-				</v-menu>
-				<!-- eslint-enable-->
-				<Calendar v-if="!loading"
-					:analysts="analysts"
-					:shifts="shifts" />
-			</AppContent>
+	<v-main class="correction_margin">
+		<div v-if="isAdmin">
+			<!--eslint-disable-->
+			<v-menu	 v-if="!loading"
+				v-model="shiftOpen"
+				:close-on-content-click="false"
+				:nudge-width="200"
+				offset-y>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn
+						color="light-blue"
+						dark
+						v-bind="attrs"
+						v-on="on">
+						{{ t('shifts','Neue Schicht vergeben') }}
+					</v-btn>
+				</template>
+				<v-layout class="popover-menu-layout">
+					<NewShift :shifts-types="shiftsTypes"
+							  @cancel="closeNewShift"
+							  @save="newShift">
+					</NewShift>
+				</v-layout>
+			</v-menu>
+			<v-menu	 v-if="!loading"
+				v-model="shiftTypeOpen"
+				:close-on-content-click="false"
+				:nudge-width="200"
+				offset-y>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn
+						color="light-blue"
+						dark
+						v-bind="attrs"
+						v-on="on">
+						{{ t('shifts','Neuen Schichttyp anlegen') }}
+					</v-btn>
+				</template>
+				<v-layout class="popover-menu-layout">
+					<NewShiftType @cancel="closeNewShiftType"
+								  @save="newShiftType" />
+				</v-layout>
+			</v-menu>
 		</div>
-	</v-app>
+		<Calendar v-if="!loading"
+			:analysts="analysts"
+			:shifts="shifts" />
+		<!-- eslint-enable-->
+	</v-main>
 </template>
 <script>
-import AppContent from '@nextcloud/vue/dist/Components/AppContent'
+import Calendar from '../components/Calendar'
+import NewShiftType from './NewShiftType'
+import NewShift from './NewShift'
 import { generateUrl } from '@nextcloud/router'
 import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
-import Calendar from '../components/Calendar'
-import NewShiftType from './NewShiftType'
-import { getYYYYMMDDFromDate } from '../utils/date'
-import NewShift from './NewShift'
 
 export default {
-	name: 'Main',
+	name: 'Shifts',
 	components: {
-		NewShift,
-		NewShiftType,
-		AppContent,
 		Calendar,
+		NewShiftType,
+		NewShift,
 	},
 	data() {
 		return {
-			shifts: [],
-			shiftTypes: [],
-			updating: false,
-			loading: true,
-			displayShift: true,
+			currentShiftsChange: Object,
 			isAdmin: false,
+			loading: true,
 			shiftTypeOpen: false,
 			shiftOpen: false,
+			shiftsChanges: [],
 			analysts: [],
-			menu: false,
-			dateMenu: false,
-			dates: ['2020-01-01', '2020-01-02'],
-			newShiftInstance: {
-				analysts: [],
-				shiftsType: '',
-				dates: [getYYYYMMDDFromDate(new Date())],
-			},
-			value1: {
-				id: -1,
-				name: 'Select ShiftType',
-			},
+			shiftsTypes: [],
+			shifts: [],
 		}
 	},
 	async mounted() {
 		try {
+			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
+			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
 			const analystsResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
-			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
-			this.shiftTypes = shiftTypeResponse.data
-			this.isAdmin = isAdminResponse.data
 			this.analysts = analystsResponse.data
+			this.shiftsTypes = shiftTypeResponse.data
 			shiftResponse.data.forEach(shift => {
-				shift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
+				shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				this.shifts.push(shift)
 			})
+			this.shiftsChanges = shiftsChangeResponse.data
+			this.isAdmin = isAdminResponse.data
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
@@ -121,12 +104,6 @@ export default {
 		},
 		closeNewShift() {
 			this.shiftOpen = false
-		},
-		openNewShift() {
-			this.shiftOpen = true
-		},
-		openNewShiftType() {
-			this.shiftTypeOpen = true
 		},
 		async newShift(shift) {
 			if (shift.analysts && shift.dates) {
@@ -147,7 +124,6 @@ export default {
 			this.closeNewShiftType()
 		},
 		async createShift(shift) {
-			this.updating = true
 			try {
 				await Promise.all(shift.analysts.map(async(analyst) => {
 					const analystId = analyst.userId
@@ -165,26 +141,23 @@ export default {
 				}))
 				const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 				shiftResponse.data.forEach(shift => {
-					shift.shiftsType = this.shiftTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
+					shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 					this.shifts.push(shift)
 				})
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shift'))
 			}
-			this.updating = false
 		},
 		async createShiftType(shiftType) {
-			this.updating = true
 			try {
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), shiftType)
 				const shiftTypesResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
-				this.shiftTypes = shiftTypesResponse.data
+				this.shiftsTypes = shiftTypesResponse.data
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shiftType'))
 			}
-			this.updating = false
 		},
 	},
 }

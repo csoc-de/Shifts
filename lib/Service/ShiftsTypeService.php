@@ -64,9 +64,9 @@ class ShiftsTypeService {
 
 	public function delete(int $id){
 		try{
-			$shift = $this->mapper->find($id);
-			$this->mapper->delete($shift);
-			return $shift;
+			$shiftsType = $this->mapper->find($id);
+			$this->mapper->delete($shiftsType);
+			return $shiftsType;
 		} catch(Exception $e){
 			$this->handleException($e);
 		}

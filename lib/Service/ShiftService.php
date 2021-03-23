@@ -53,7 +53,9 @@ class ShiftService {
 
 	public function update(int $id, string $userId, string $shiftTypeId, string $date){
 		try{
-			$shift = $this->mapper->find($id, $userId);
+			error_log($id);
+			$shift = $this->mapper->find($id);
+			error_log($shift);
 			$shift->setUserId($userId);
 			$shift->setShiftTypeId($shiftTypeId);
 			$shift->setDate($date);
