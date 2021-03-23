@@ -43,7 +43,7 @@ class ShiftsChangeService {
 		}
 	}
 
-	public function create(string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
+	public function create(string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
 		$shiftsChange = new ShiftsChange();
 		$shiftsChange->setOldAnalystId($oldAnalystId);
 		$shiftsChange->setNewAnalystId($newAnalystId);
@@ -55,10 +55,11 @@ class ShiftsChangeService {
 		$shiftsChange->setNewShiftsId($newShiftsId);
 		$shiftsChange->setDesc($desc);
 		$shiftsChange->setType($type);
+
 		return $this->mapper->insert($shiftsChange);
 	}
 
-	public function update(int $id, string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
+	public function update(int $id, string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
 		try{
 			$shiftsChange = $this->mapper->find($id);
 			$shiftsChange->setOldAnalystId($oldAnalystId);

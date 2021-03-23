@@ -50,9 +50,9 @@ class ShiftsChangeController extends Controller{
 	 *
 	 * @param string oldAnalystId
 	 * @param string newAnalystId
-	 * @param bool $adminApproval
+	 * @param string $adminApproval
 	 * @param string $adminApprovalDate
-	 * @param bool $analystApproval
+	 * @param string $analystApproval
 	 * @param string $analystApprovalDate
 	 * @param int $oldShiftsId
 	 * @param int $newShiftsId
@@ -60,11 +60,11 @@ class ShiftsChangeController extends Controller{
 	 * @param int type
 	 * @return DataResponse
 	 */
-	public function create(string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse {
-		error_log( 'test' + $adminApproval);
-		error_log( 'test' + $adminApprovalDate);
-		error_log( 'test' + $analystApproval);
-		error_log( 'test' + $analystApprovalDate);
+	public function create(string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse {
+		error_log('test' . $adminApproval);
+		error_log('test' . $adminApprovalDate);
+		error_log('test' . $analystApproval);
+		error_log('test' . $analystApprovalDate);
 		return new DataResponse($this->service->create($oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type));
 	}
 
@@ -74,9 +74,9 @@ class ShiftsChangeController extends Controller{
 	 * @param int $id
 	 * @param string oldAnalystId
 	 * @param string newAnalystId
-	 * @param bool $adminApproval
+	 * @param string $adminApproval
 	 * @param string $adminApprovalDate
-	 * @param bool $analystApproval
+	 * @param string $analystApproval
 	 * @param string $analystApprovalDate
 	 * @param int $oldShiftsId
 	 * @param int $newShiftsId
@@ -84,7 +84,7 @@ class ShiftsChangeController extends Controller{
 	 * @param string type
 	 * @return DataResponse
 	 */
-	public function update(int $id,string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
+	public function update(int $id,string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
 	{
 		return $this->handleNotFound(function() use ($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type){
 			return $this->service->update($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type);

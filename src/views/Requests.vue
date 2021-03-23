@@ -56,7 +56,7 @@
 				<div class="float_right list_items">
 					<p v-if="isAdmin && shiftsChange.analystApproval === '1'">
 						{{ t('shifts', 'Analyst Genehmigung: ')
-					+ shiftsChange.analystApproval + t('shifts', ' am ')
+					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
 					+ getDateString(shiftsChange.analystApprovalDate) }}
 					</p>
 					<v-btn
@@ -123,12 +123,12 @@
 				<div class="done_shifts_items list_items">
 					<p>
 						{{ t('shifts', 'Analyst Genehmigung: ')
-					+ shiftsChange.analystApproval + t('shifts', ' am ')
+					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
 					+ getDateString(shiftsChange.analystApprovalDate) }}
 					</p>
 					<p>
 						{{ t('shifts', 'Admin Genehmigung: ')
-					+ shiftsChange.adminApproval + t('shifts', ' am ')
+					+ (shiftsChange.adminApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
 					+ getDateString(shiftsChange.adminApprovalDate) }}
 					</p>
 				</div>
@@ -227,27 +227,27 @@ export default {
 		},
 		async disapproved(shiftsChange) {
 			if (this.isAdmin) {
-				shiftsChange.adminApproval = false
+				shiftsChange.adminApproval = '0'
 				shiftsChange.adminApprovalDate = new Date()
 			} else {
-				shiftsChange.analystApproval = false
+				shiftsChange.analystApproval = '0'
 				shiftsChange.analystApprovalDate = new Date()
 			}
 			await this.saveShiftsChange(shiftsChange)
 		},
 		async approved(shiftsChange) {
 			if (this.isAdmin) {
-				shiftsChange.adminApproval = true
+				shiftsChange.adminApproval = '1'
 				shiftsChange.adminApprovalDate = new Date()
 			} else {
-				shiftsChange.analystApproval = true
+				shiftsChange.analystApproval = '1'
 				shiftsChange.analystApprovalDate = new Date()
 			}
 			await this.saveShiftsChange(shiftsChange)
 		},
 		async saveShiftsChange(shiftsChange) {
 			try {
-				if (shiftsChange.adminApproval && shiftsChange.analystApproval) {
+				if (shiftsChange.adminApproval === '1' && shiftsChange.analystApproval === '1') {
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
