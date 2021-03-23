@@ -422,7 +422,7 @@ export default {
 		let currentUser
 		try {
 			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
-			const currentUserIdResponse = await axios.get(generateUrl('/apps/shifts/shifts/getCurrentUserId'))
+			const currentUserIdResponse = await axios.get(generateUrl('/apps/shifts/getCurrentUserId'))
 			currentUser = currentUserIdResponse.data
 			this.shiftsChanges = shiftsChangeResponse.data
 		} catch (e) {
