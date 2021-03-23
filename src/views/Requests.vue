@@ -173,7 +173,7 @@ export default {
 		},
 		isAnalyst() {
 			let found = false
-			for (let i = 0; i< this.analysts.length; i++) {
+			for (let i = 0; i < this.analysts.length; i++) {
 				if (this.analysts[i].uid === this.currentUser) {
 					found = true
 					break
