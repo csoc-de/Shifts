@@ -169,7 +169,6 @@ class ShiftController extends Controller{
 	 * @return DataResponse
 	 */
 	public function getCurrentUserId() : DataResponse{
-		error_log($this->userId);
 		return new DataResponse($this->userId);
 	}
 }

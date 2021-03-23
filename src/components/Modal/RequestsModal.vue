@@ -487,8 +487,9 @@ export default {
 						oldShiftsId,
 						newShiftsId,
 					}
-					newShiftsChanges.push(newShiftsChange)
+					console.log(newShiftsChange)
 					await axios.post(generateUrl('/apps/shifts/shiftsChange'), newShiftsChange)
+					newShiftsChanges.push(newShiftsChange)
 				}))
 				this.$emit('saved', newShiftsChanges)
 			} catch (e) {
