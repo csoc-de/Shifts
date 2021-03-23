@@ -38,15 +38,11 @@ class Version110000Date20210308091041 extends SimpleMigrationStep {
 				'autoincrement' => true,
 				'notnull' => true,
 			]);
-			$table->addColumn('old_user_id', 'string', [
+			$table->addColumn('old_analyst_id', 'string', [
 				'notnull' => true,
 				'length' => 200,
 			]);
-			$table->addColumn('new_user_id', 'string', [
-				'notnull' => true,
-				'length' => 200,
-			]);
-			$table->addColumn('user_id', 'string', [
+			$table->addColumn('new_analyst_id', 'string', [
 				'notnull' => true,
 				'length' => 200,
 			]);
@@ -64,6 +60,10 @@ class Version110000Date20210308091041 extends SimpleMigrationStep {
 				'notnull' => true,
 				'length' => 200,
 			]);
+			$table->addColumn('old_shifts_id', 'integer', [
+				'notnull' => true,
+			]);
+			$table->addColumn('new_shifts_id', 'integer');
 			$table->addColumn('desc', 'string', [
 				'notnull' => true,
 				'length' => 200,
@@ -75,6 +75,7 @@ class Version110000Date20210308091041 extends SimpleMigrationStep {
 
 			$table->setPrimaryKey(['id']);
 		}
+		return $schema;
 	}
 
 	/**

@@ -27,4 +27,31 @@ class ShiftsChangeMapper extends QBMapper {
 			->where($qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT)));
 		return $this->findEntity($qb);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function findAll(): array {
+		/* @var $qb IQueryBuilder */
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('*')
+			->from('shifts_change');
+		return $this->findEntities($qb);
+	}
+
+	/**
+	 * @param string $userId
+	 * @return array
+	 */
+	public function findByUserId(string $userId): array {
+		/* @var $qb IQueryBuilder */
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('*')
+			->from('shifts_change')
+			->where($qb->expr()->eq('old_analyst_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR )))
+			->orWhere($qb->expr()->eq('new_analyst_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR )));
+
+		return $this->findEntities($qb);
+	}
+
 }

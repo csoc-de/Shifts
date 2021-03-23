@@ -18,8 +18,12 @@ class ShiftsChangeService {
 		$this->mapper = $mapper;
 	}
 
-	public function findAll(){
+	public function findAll(): array{
 		return $this->mapper->findAll();
+	}
+
+	public function findAllByUserId(string $userId): array{
+		return $this->mapper->findByUserId($userId);
 	}
 
 	private function handleException($e){
@@ -39,24 +43,32 @@ class ShiftsChangeService {
 		}
 	}
 
-	public function create(bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $desc, string $type){
+	public function create(string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
 		$shiftsChange = new ShiftsChange();
+		$shiftsChange->setOldAnalystId($oldAnalystId);
+		$shiftsChange->setNewAnalystId($newAnalystId);
 		$shiftsChange->setAdminApproval($adminApproval);
 		$shiftsChange->setAdminApprovalDate($adminApprovalDate);
 		$shiftsChange->setAnalystApproval($analystApproval);
 		$shiftsChange->setAnalystApprovalDate($analystApprovalDate);
+		$shiftsChange->setOldShiftsId($oldShiftsId);
+		$shiftsChange->setNewShiftsId($newShiftsId);
 		$shiftsChange->setDesc($desc);
 		$shiftsChange->setType($type);
 		return $this->mapper->insert($shiftsChange);
 	}
 
-	public function update(int $id, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $desc, string $type){
+	public function update(int $id, string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $oldShiftsId, string $newShiftsId, string $desc, int $type){
 		try{
 			$shiftsChange = $this->mapper->find($id);
+			$shiftsChange->setOldAnalystId($oldAnalystId);
+			$shiftsChange->setNewAnalystId($newAnalystId);
 			$shiftsChange->setAdminApproval($adminApproval);
 			$shiftsChange->setAdminApprovalDate($adminApprovalDate);
 			$shiftsChange->setAnalystApproval($analystApproval);
 			$shiftsChange->setAnalystApprovalDate($analystApprovalDate);
+			$shiftsChange->setOldShiftsId($oldShiftsId);
+			$shiftsChange->setNewShiftsId($newShiftsId);
 			$shiftsChange->setDesc($desc);
 			$shiftsChange->setType($type);
 			return $this->mapper->update($shiftsChange);

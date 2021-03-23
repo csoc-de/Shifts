@@ -15,6 +15,8 @@ class ShiftsChange extends Entity implements JsonSerializable {
 	protected $adminApprovalDate;
 	protected $analystApproval;
 	protected $analystApprovalDate;
+	protected $oldShiftsId;
+	protected $newShiftsId;
 	protected $desc;
 	protected $type;
 
@@ -31,6 +33,8 @@ class ShiftsChange extends Entity implements JsonSerializable {
 			'adminApprovalDate' => $this->adminApprovalDate,
 			'analystApproval' => $this->analystApproval,
 			'analystApprovalDate' => $this->analystApprovalDate,
+			'oldShiftsId' => $this->oldShiftsId,
+			'newShiftsId' => $this->newShiftsId,
 			'desc' => $this->desc,
 			'type' => $this->type,
 		];

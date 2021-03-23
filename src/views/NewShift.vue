@@ -9,7 +9,7 @@
 				@removeAnalyst="removeAnalyst" />
 		</div>
 		<Multiselect v-model="value1"
-			:options="shiftTypes"
+			:options="shiftsTypes"
 			track-by="id"
 			label="name"
 			@change="updateShiftType" />
@@ -67,7 +67,7 @@ export default {
 		Multiselect,
 	},
 	props: {
-		shiftTypes: {
+		shiftsTypes: {
 			type: Array,
 			default: () => [],
 		},
@@ -89,24 +89,11 @@ export default {
 			},
 		}
 	},
-	computed: {
-
-	},
 	mounted() {
 		this.isLoading = false
+		console.log(this.shiftsTypes)
 	},
 	methods: {
-		onDayClick(date) {
-			const idx = this.newShiftInstance.dates.findIndex((d) => d.id === date.id)
-			if (idx >= 0) {
-				this.newShiftInstance.dates.splice(idx, 1)
-			} else {
-				this.newShiftInstance.dates.push({
-					id: date.id,
-					date: date.date,
-				})
-			}
-		},
 		closeEditor() {
 			this.$emit('cancel')
 		},

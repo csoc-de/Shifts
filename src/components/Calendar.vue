@@ -33,18 +33,22 @@
 			</v-col>
 			<v-spacer></v-spacer>
 			<v-col
-				sm="2">
+				sm="2"
+				class="padding_correction">
 				<v-select
 					class="calendar-format-select"
 					v-model="selectedCalendarFormat"
 					:items="calendarFormats"
 					outlined
+					attach
 					@change="updateCalendar">
 				</v-select>
 			</v-col>
 		</v-row>
 		<!-- eslint-enable-->
-		<div ref="gstc" />
+		<div class="gstc-wrapper">
+			<div ref="gstc" />
+		</div>
 	</div>
 </template>
 
@@ -150,8 +154,6 @@ export default {
 	mounted() {
 		this.currentShifts = this.shifts.slice()
 		const today = GSTC.api.date()
-		console.log(today.startOf('month').valueOf())
-		console.log(today.endOf('month').valueOf())
 		const config = {
 			licenseKey: '====BEGIN LICENSE KEY====\\nV8zWVvgA1wKSVy/+L0kuD3vf/2wHxj6aOSJiiHox7NEDrQn/ZkhX+umaZwWa+BZyeAsbBMS2D9QffCcouGoEjd6zZ6TKg1czvQGs9x+eQJvmZVttYDyNawEgVTVwRGV9K/Qcmc5fG6R9ZOpjHZVGLS1awi01kt6zu21IOyxCZKLXz4fnCfiLpplkjclMLJxBbFud0sa1fUpKwEtZpw1kW+UN3saFnesar4oepA2RMM/3FofbKRALa2qsMbOdAlEE6UEPYi0htImFUg01qISsGZfXmQ8i/4Na/S5aoUAfWKoI1NcOZ3xF1tnIMYIkJSXss6v24oeeu+MlIMydxMGnaw==||U2FsdGVkX1+qbfbvzH+haFNfV1T1S/m3Hv8UbDUTXL+KQxlOlSZ9bIGaMYnMw6pfP17wHzHvKSzflwCZS2S3OupgS8Vf+7HAEujkKjdh5Rw=\\nIPM1F53nZFXPaGSRHqUPk11mQ/KzcyDlcPYs9QgQ3JdG84twvjKNrirKZ+4N55aNZUrG0Wy4ffJr81XmPAgOMkSr4TX7lvhqQz0TkZ/C70BVevOxB+grlbTT1XaQMxvPK7ouQ4M/nToodmYLZCZ5z3tpZs0p2LjRx8CDvYBLvd2XnjU6ky1R8CXUm9F45j1HDody9dJ/dX/xpOqQ0VzeRO9zKGuZjDtTYYAyBLHnqTvZnJ3M78GkHaV/uNQeWqwmW3Kg2HQ0pFv95tLF3JL/5nvVZxevGWHQMYf+BJhez+mQSmqaTZPhHKuobb4SFE2tTXi+2gjjjx5jaTF6RNVYmQ==\\n====END LICENSE KEY====',
 			plugins: [TimeLinePointer()],

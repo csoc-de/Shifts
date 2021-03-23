@@ -37,6 +37,7 @@ class ShiftsChangeController extends Controller{
 	 * @NoAdminRequired
 	 *
 	 * @param int $id
+	 * @return DataResponse
 	 */
 	public function show(int $id): DataResponse {
 		return $this->handleNotFound(function () use($id){
@@ -53,10 +54,14 @@ class ShiftsChangeController extends Controller{
 	 * @param string $adminApprovalDate
 	 * @param bool $analystApproval
 	 * @param string $analystApprovalDate
+	 * @param int $oldShiftsId
+	 * @param int $newShiftsId
 	 * @param string desc
+	 * @param int type
+	 * @return DataResponse
 	 */
-	public function create(string $oldAnalystid, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $desc): DataResponse {
-		return new DataResponse($this->service->create($oldAnalystid, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $desc));
+	public function create(string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse {
+		return new DataResponse($this->service->create($oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type));
 	}
 
 	/**
@@ -69,11 +74,16 @@ class ShiftsChangeController extends Controller{
 	 * @param string $adminApprovalDate
 	 * @param bool $analystApproval
 	 * @param string $analystApprovalDate
+	 * @param int $oldShiftsId
+	 * @param int $newShiftsId
 	 * @param string desc
+	 * @param string type
+	 * @return DataResponse
 	 */
-	public function update(int $id,string $oldAnalystid, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, string $desc){
-		return $this->handleNotFound(function() use ($id, $oldAnalystid, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $desc){
-			return $this->service->update($id, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $desc);
+	public function update(int $id,string $oldAnalystId, string $newAnalystId, bool $adminApproval, string $adminApprovalDate, bool $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
+	{
+		return $this->handleNotFound(function() use ($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type){
+			return $this->service->update($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type);
 		});
 	}
 
@@ -81,10 +91,23 @@ class ShiftsChangeController extends Controller{
 	 * @NoAdminRequired
 	 *
 	 * @param int $id
+	 * @return DataResponse
 	 */
-	public function destroy(int $id){
+	public function destroy(int $id): DataResponse
+	{
 		return $this->handleNotFound(function() use($id) {
 			return $this->service->delete($id);
+		});
+	}
+
+	/**
+	 * @NoAdminRequired
+	 */
+	public function getAllByUserId(): DataResponse
+	{
+		$userId = $this->userId;
+		return $this->handleNotFound(function () use($userId){
+			return $this->service->findAllByUserId($userId);
 		});
 	}
 }
