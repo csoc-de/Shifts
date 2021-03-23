@@ -478,9 +478,9 @@ export default {
 					const newShiftsChange = {
 						oldAnalystId,
 						newAnalystId,
-						adminApproval: '0',
+						adminApproval: false,
 						adminApprovalDate: '',
-						analystApproval: '0',
+						analystApproval: false,
 						analystApprovalDate: '',
 						desc,
 						type,
