@@ -46,16 +46,12 @@ class Version110000Date20210308091041 extends SimpleMigrationStep {
 				'notnull' => true,
 				'length' => 200,
 			]);
-			$table->addColumn('admin_approval', 'boolean', [
-				'notnull' => true,
-			]);
+			$table->addColumn('admin_approval', 'boolean');
 			$table->addColumn('admin_approval_date', 'string', [
 				'notnull' => true,
 				'length' => 200,
 			]);
-			$table->addColumn('analyst_approval', 'boolean', [
-				'notnull' => true,
-			]);
+			$table->addColumn('analyst_approval', 'boolean');
 			$table->addColumn('analyst_approval_date', 'string', [
 				'notnull' => true,
 				'length' => 200,
