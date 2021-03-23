@@ -23,6 +23,7 @@ class Version110000Date20210308091041 extends SimpleMigrationStep {
 	}
 
 	/**
+	 * Adds Tables for Version 1.1.0
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options

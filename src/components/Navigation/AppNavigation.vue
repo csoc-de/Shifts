@@ -1,3 +1,6 @@
+<!--
+  - App Navigation Sidebar Component
+  -->
 <template>
 	<AppNavigationVue>
 		<template #list>
@@ -20,11 +23,6 @@ export default {
 	components: {
 		AppNavigationVue,
 		AppNavigationItem,
-	},
-	data() {
-		return {
-			opened: false,
-		}
 	},
 }
 </script>

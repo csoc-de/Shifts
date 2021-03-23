@@ -14,6 +14,7 @@ class ShiftsTypeMapper extends QBMapper {
 	}
 
 	/**
+	 * Finds ShiftsType by id
 	 * @param int $id
 	 * @return Entity|ShiftsType
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
@@ -29,6 +30,7 @@ class ShiftsTypeMapper extends QBMapper {
 	}
 
 	/**
+	 * Fetches all ShiftsTypes
 	 * @return array
 	 */
 	public function findAll(): array {

@@ -1,3 +1,6 @@
+<!--
+  - Dialog to add new Shift
+  -->
 <template>
 	<div>
 		<div class="app-sidebar-tab__content">

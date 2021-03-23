@@ -14,6 +14,7 @@ class ShiftsChangeMapper extends QBMapper {
 	}
 
 	/**
+	 * Finds ShiftsChange by id
 	 * @param int $id
 	 * @return Entity|ShiftsChange
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
@@ -29,6 +30,7 @@ class ShiftsChangeMapper extends QBMapper {
 	}
 
 	/**
+	 * Fetches all ShiftsChanges
 	 * @return array
 	 */
 	public function findAll(): array {
@@ -40,6 +42,7 @@ class ShiftsChangeMapper extends QBMapper {
 	}
 
 	/**
+	 * Finds ShiftsChanges by given userId
 	 * @param string $userId
 	 * @return array
 	 */

@@ -1,3 +1,6 @@
+<!--
+  - View to display and add Requests
+  -->
 <template>
 	<div class="requests_content">
 		<v-btn
@@ -161,16 +164,19 @@ export default {
 		}
 	},
 	computed: {
+		// returns ShiftsChanges which are still in Progress and needs approval
 		inProgressShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
 				return !(shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== '')
 			})
 		},
+		// returns ShiftsChanges which dont need further action
 		doneShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
 				return shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== ''
 			})
 		},
+		// returns if current user is an analyst
 		isAnalyst() {
 			let found = false
 			for (let i = 0; i < this.analysts.length; i++) {
@@ -184,6 +190,7 @@ export default {
 	},
 	async mounted() {
 		try {
+			// fetches all necessary data
 			let shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange/getAllByUserId'))
 			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
@@ -247,6 +254,8 @@ export default {
 		},
 		async saveShiftsChange(shiftsChange) {
 			try {
+				// checks for approval to change shifts
+				// only done when both approvals are given
 				if (shiftsChange.adminApproval === '1' && shiftsChange.analystApproval === '1') {
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
@@ -260,12 +269,14 @@ export default {
 						newShift.userId = shiftsChange.oldAnalystId
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
+					// fetches and updates shifts
 					const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 					shiftResponse.data.forEach(shift => {
 						shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 						this.shifts.push(shift)
 					})
 				}
+				// updates shiftsChange
 				await axios.put(generateUrl(`/apps/shifts/shiftsChange/${shiftsChange.id}`), shiftsChange)
 				const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
 				this.shiftsChanges = shiftsChangeResponse.data
@@ -274,6 +285,7 @@ export default {
 				showError(t('shifts', 'Could not save shifts Changes'))
 			}
 		},
+		// returns string detailing the Shift by given Shiftid
 		getShiftsDetailsByShiftsIdAsString(shiftId) {
 			const shift = this.shifts.find((shift) => {
 				return shift.id === parseInt(shiftId)
@@ -293,6 +305,7 @@ export default {
 				return ''
 			}
 		},
+		// returns string of predetermined format with given date
 		getDateString(date) {
 			const dateObj = new Date(date)
 			const options = {

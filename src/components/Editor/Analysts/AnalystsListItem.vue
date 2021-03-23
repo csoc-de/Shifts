@@ -19,7 +19,9 @@
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -
   -->
-
+<!--
+  - Component to display selected Analysts in the AnalystsList
+  -->
 <template>
 	<div class="invitees-list-item">
 		<Avatar v-if="attendee.isUser" :user="attendee.avatar" :display-name="attendee.dropdownName" />
@@ -58,6 +60,7 @@ export default {
 		},
 	},
 	computed: {
+		// returns readable Displayname
 		commonName() {
 			if (this.attendee.commonName) {
 				return this.attendee.commonName
@@ -69,9 +72,6 @@ export default {
 		},
 	},
 	methods: {
-		/**
-		 * Removes an attendee from the event
-		 */
 		removeAttendee() {
 			this.$emit('removeAttendee', this.attendee)
 			this.isOpen = false

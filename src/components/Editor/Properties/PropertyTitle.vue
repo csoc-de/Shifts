@@ -19,7 +19,9 @@
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -
   -->
-
+<!--
+  - Simple Component to Input a title of a Shift-Type
+  -->
 <template>
 	<div class="property-title">
 		<div class="property-title__input">

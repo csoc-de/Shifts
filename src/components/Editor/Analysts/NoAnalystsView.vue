@@ -19,7 +19,9 @@
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -
   -->
-
+<!--
+  - Template for no Analysts
+  -->
 <template>
 	<div class="editor-reminders-list-empty-message">
 		<div class="icon icon-group editor-reminders-list-empty-message__icon" />

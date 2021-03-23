@@ -94,6 +94,8 @@ class ShiftController extends Controller{
 
 	/**
 	 * @NoAdminRequired
+	 *
+	 * Fetches if current user is ShiftsAdmin
 	 */
 	public function getGroupStatus(): DataResponse
 	{
@@ -102,6 +104,8 @@ class ShiftController extends Controller{
 
 	/**
 	 * @NoAdminRequired
+	 *
+	 * Fetches list of all Analysts
 	 */
 	public function getAllAnalysts(): DataResponse
 	{
@@ -126,6 +130,8 @@ class ShiftController extends Controller{
 
 	/**
 	 * @NoAdminRequired
+	 *
+	 * Fetches list of all Analysts exlcuding current User
 	 */
 	public function getAnalystsExcludingCurrent(): DataResponse
 	{
@@ -153,6 +159,8 @@ class ShiftController extends Controller{
 	/**
 	 * @NoAdminRequired
 	 *
+	 * Fetches all Shifts by given UserId
+	 *
 	 * @param string $userId
 	 * @return DataResponse
 	 */
@@ -165,6 +173,8 @@ class ShiftController extends Controller{
 
 	/**
 	 * @NoAdminRequired
+	 *
+	 * Fetches the userId of Current User
 	 *
 	 * @return DataResponse
 	 */

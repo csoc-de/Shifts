@@ -19,6 +19,10 @@
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -
   -->
+
+<!--
+  - Component responsible for searching in the AnalystsList-Component
+  -->
 <template>
 	<Multiselect
 		class="invitees-search"
@@ -87,14 +91,17 @@ export default {
 		}
 	},
 	computed: {
+		// Placeholder String
 		placeholder() {
 			return this.$t('shifts', 'Search for Emails or Users')
 		},
+		// Placeholder String for no Matches
 		noResult() {
 			return this.$t('shifts', 'No match found')
 		},
 	},
 	watch: {
+		// returns List of Emails from invited analysts
 		// eslint-disable-next-line
 		alreadyInvitedEmails: function(newVal, oldVal) {
 			const result = this.allAnalysts.filter((analyst) => {
@@ -106,13 +113,14 @@ export default {
 	},
 	async beforeMount() {
 		let response
-
 		try {
+			// Fetches List of Analysts from API
 			response = await HttpClient.get(linkTo('shifts', 'index.php') + '/getAllAnalysts')
 		} catch (e) {
 			console.debug(e)
 			return []
 		}
+		// Matches incoming Data-Fields to Corresponding Fields
 		response.data.forEach((analyst) => {
 			let name
 			if (analyst.name) {
@@ -136,6 +144,7 @@ export default {
 		})
 	},
 	methods: {
+		// Method to execute the Search for each change in input
 		findAnalysts: debounce(async function(query) {
 			this.isLoading = true
 			const matches = []

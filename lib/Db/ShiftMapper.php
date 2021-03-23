@@ -15,6 +15,7 @@ class ShiftMapper extends QBMapper {
 	}
 
 	/**
+	 * Finds Shift by Shiftid
 	 * @param int $id
 	 * @return Entity|Shift
 	 * @throws MultipleObjectsReturnedException
@@ -30,6 +31,7 @@ class ShiftMapper extends QBMapper {
 	}
 
 	/**
+	 * Finds all Shifts by given userId
 	 * @param string $userId
 	 * @return array
 	 */
@@ -42,6 +44,7 @@ class ShiftMapper extends QBMapper {
 		return $this->findEntities($qb);
 	}
 	/**
+	 * Fetches all Shifts
 	 * @return array
 	 */
 	public function findAll(): array {

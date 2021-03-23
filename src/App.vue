@@ -1,3 +1,6 @@
+<!--
+  - Main Component of Vue-App
+  -->
 <template>
 	<VueContent id="content" app-name="shifts">
 		<AppNavigation />

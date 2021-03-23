@@ -12,6 +12,7 @@ use OCP\Migration\IOutput;
 class Version100001Date20181013124731 extends SimpleMigrationStep {
 
 	/**
+	 * Creates Tables for Version 1.0.0 (deprecated)
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options

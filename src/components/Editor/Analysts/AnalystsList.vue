@@ -19,6 +19,9 @@
   - along with this program. If not, see <http://www.gnu.org/licenses/>.
   -
   -->
+<!--
+  - Component to search for Analysts
+  -->
 <template>
 	<div>
 		<AnalystsListSearch
@@ -64,6 +67,7 @@ export default {
 		},
 	},
 	computed: {
+		// returns all Analysts
 		analysts() {
 			if (!this.newShiftInstance.organizer) {
 				return this.newShiftInstance.analysts
@@ -72,10 +76,12 @@ export default {
 			return this.newShiftInstance.analysts
 				.filter(analyst => analyst.uri !== this.newShiftInstance.organizer.uri)
 		},
+		// returns whether the Analysts-List is empty or not
 		isListEmpty() {
 			return this.newShiftInstance.organizer === null
 				&& this.newShiftInstance.analysts.length === 0
 		},
+		// returns invited Emails as list
 		alreadyInvitedEmails() {
 			return this.newShiftInstance.analysts.map(analyst => {
 				if (analyst.email.startsWith('mailto:')) {

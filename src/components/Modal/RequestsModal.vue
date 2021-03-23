@@ -1,3 +1,7 @@
+<!--
+  - Modal-Dialog for creating a new ShiftsChange Request
+  -->
+
 <template>
 	<Modal
 		size="large"
@@ -12,6 +16,9 @@
 				</v-tab>
 			</v-tabs>
 			<!--eslint-disable-->
+			<!--
+			  - TODO Encapsulate AutoComplete Component
+			  -->
 			<v-tabs-items v-model="tab">
 				<v-tab-item>
 					<v-row>
@@ -382,16 +389,19 @@ export default {
 		}
 	},
 	computed: {
+		// returns list of shifts from selected old analyst
 		oldAnalystShifts() {
 			return this.shifts.filter((shift) => {
 				return shift.userId === this.selectedOldAnalyst.uid
 			})
 		},
+		// return list of shifts from selected new analyst
 		newAnalystShifts() {
 			return this.shifts.filter((shift) => {
 				return shift.userId === this.selectedNewAnalyst.uid
 			})
 		},
+		// returns list of analysts excluding already selected ones
 		excludeOldAnalystSelected() {
 			 if (this.selectedOldAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
@@ -401,6 +411,7 @@ export default {
 				return this.mutableAnalysts
 			}
 		},
+		// returns list of analysts excluding already selected ones
 		excludeNewAnalystSelected() {
 			if (this.selectedNewAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
@@ -410,6 +421,7 @@ export default {
 				return this.mutableAnalysts
 			}
 		},
+		// returns whether or not the Save button is disabled or not
 		saveDisabled() {
 			const shiftsOk = (this.tab === t('shifts', 'Tauschen') && this.newAnalystSelectedShifts.length === this.oldAnalystSelectedShifts.length)
 				|| (this.tab === t('shifts', 'Angebot') && this.newAnalystSelectedShifts.length > 0)
@@ -421,6 +433,7 @@ export default {
 	async mounted() {
 		let currentUser
 		try {
+			// fetches all necessary data
 			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
 			const currentUserIdResponse = await axios.get(generateUrl('/apps/shifts/getCurrentUserId'))
 			currentUser = currentUserIdResponse.data
@@ -429,6 +442,7 @@ export default {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
 		}
+		// sets selected old analyst to current User if non admin
 		if (!this.isAdmin) {
 			this.selectedOldAnalyst = this.analysts.find((analyst) => analyst.uid === currentUser)
 		}
@@ -443,28 +457,27 @@ export default {
 		},
 		removeOldAnalystShift(item) {
 			const index = this.oldAnalystSelectedShifts.indexOf(item.id)
-			console.log(index)
-			console.log(this.oldAnalystSelectedShifts)
 			if (index >= 0) this.oldAnalystSelectedShifts.splice(index, 1)
 		},
 		removeNewAnalystShift(item) {
 			const index = this.newAnalystSelectedShifts.indexOf(item.id)
-			console.log(index)
-			console.log(this.newAnalystSelectedShifts)
 			if (index >= 0) this.newAnalystSelectedShifts.splice(index, 1)
 		},
+		// function for filtering the input of the analyst autocompletion fields
 		analystFilter(item, queryText, itemText) {
 			return (
 				item.name.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
 				|| item.email.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
 			)
 		},
+		// function for filtering the input of the shifts autocompletion fields
 		shiftsFilter(item, queryText, itemText) {
 			return (
 				item.shiftsType.name.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
 				|| item.date.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1
 			)
 		},
+		// saves the new request
 		async save() {
 			try {
 				const oldAnalystId = this.selectedOldAnalyst.uid
@@ -472,6 +485,7 @@ export default {
 				const desc = this.desc
 				const type = this.tab
 				const newShiftsChanges = []
+				// necessary for allowing multiple Shifts to be changed
 				await Promise.all(this.oldAnalystSelectedShifts.map(async(shiftId, index) => {
 					const oldShiftsId = shiftId
 					const newShiftsId = type === 0 ? this.newAnalystSelectedShifts[index] : -1

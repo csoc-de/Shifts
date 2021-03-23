@@ -1,3 +1,6 @@
+<!--
+  - View to display Shifts and add Shifts or Shiftstypes if admin is current user
+  -->
 <template>
 	<v-main class="correction_margin">
 		<div v-if="isAdmin">
@@ -79,6 +82,7 @@ export default {
 	},
 	async mounted() {
 		try {
+			// fetches all neccessary data
 			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
 			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
@@ -123,6 +127,7 @@ export default {
 			}
 			this.closeNewShiftType()
 		},
+		// saves created Shift
 		async createShift(shift) {
 			try {
 				await Promise.all(shift.analysts.map(async(analyst) => {
@@ -149,6 +154,7 @@ export default {
 				showError(t('shifts', 'Could not create the shift'))
 			}
 		},
+		// saves created Shiftstype
 		async createShiftType(shiftType) {
 			try {
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), shiftType)

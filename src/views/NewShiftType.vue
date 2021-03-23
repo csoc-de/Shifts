@@ -1,3 +1,6 @@
+<!--
+  - Dialog to add new ShiftType
+  -->
 <template>
 	<div>
 		<PropertyTitle
@@ -112,9 +115,6 @@ export default {
 		},
 		updateName(name) {
 			this.newShiftType.name = name
-		},
-		updateDescription(description) {
-			this.newShiftType.description = description
 		},
 		save() {
 			this.$emit('save', this.newShiftType)

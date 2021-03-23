@@ -9,6 +9,7 @@ use OCP\AppFramework\Http\DataResponse;
 
 use OCA\Shifts\Service\NotFoundException;
 
+// Allows for handling of NotFoundExceptions
 trait Errors {
 	protected function handleNotFound(Closure $callback): DataResponse {
 		try {

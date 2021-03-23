@@ -16,6 +16,7 @@ const base = generateUrl('apps/shifts', {}, {
 	noRewrite: doesURLContainIndexPHP,
 })
 
+// Vue Router
 const router = new Router({
 	mode: 'history',
 	base,

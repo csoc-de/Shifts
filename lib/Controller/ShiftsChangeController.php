@@ -106,6 +106,8 @@ class ShiftsChangeController extends Controller{
 
 	/**
 	 * @NoAdminRequired
+	 *
+	 * Fetches all ShiftsChanges by current UserId
 	 */
 	public function getAllByUserId(): DataResponse
 	{

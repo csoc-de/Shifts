@@ -1,3 +1,8 @@
+<!--
+  - Component to display and navigate the Shifts-Calendar
+  - Implements the GSTC-Calendar by neuronetio
+  - https://github.com/neuronetio/gantt-schedule-timeline-calendar
+  -->
 <template>
 	<div>
 		<!--eslint-disable-->
@@ -60,7 +65,7 @@ import { getYYYYMMDDFromDate } from '../utils/date'
 import { translate } from '@nextcloud/l10n'
 
 let gstc, state
-
+// Function to determine and return the color of calendar items
 function getBackground(shiftType) {
 	const hash = hashCode(shiftType)
 
@@ -70,6 +75,7 @@ function getBackground(shiftType) {
 
 	return '#' + '00000'.substring(0, 6 - c.length) + c
 }
+// Function to return the hash of given string
 function hashCode(string) {
 	let hash = 0
 	let i
@@ -123,6 +129,7 @@ export default {
 		}
 	},
 	watch: {
+		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
 			handler(newVal) {
 				const difference = newVal
@@ -154,6 +161,7 @@ export default {
 	mounted() {
 		this.currentShifts = this.shifts.slice()
 		const today = GSTC.api.date()
+		// config for the GSTC Calendar
 		const config = {
 			licenseKey: '====BEGIN LICENSE KEY====\\nV8zWVvgA1wKSVy/+L0kuD3vf/2wHxj6aOSJiiHox7NEDrQn/ZkhX+umaZwWa+BZyeAsbBMS2D9QffCcouGoEjd6zZ6TKg1czvQGs9x+eQJvmZVttYDyNawEgVTVwRGV9K/Qcmc5fG6R9ZOpjHZVGLS1awi01kt6zu21IOyxCZKLXz4fnCfiLpplkjclMLJxBbFud0sa1fUpKwEtZpw1kW+UN3saFnesar4oepA2RMM/3FofbKRALa2qsMbOdAlEE6UEPYi0htImFUg01qISsGZfXmQ8i/4Na/S5aoUAfWKoI1NcOZ3xF1tnIMYIkJSXss6v24oeeu+MlIMydxMGnaw==||U2FsdGVkX1+qbfbvzH+haFNfV1T1S/m3Hv8UbDUTXL+KQxlOlSZ9bIGaMYnMw6pfP17wHzHvKSzflwCZS2S3OupgS8Vf+7HAEujkKjdh5Rw=\\nIPM1F53nZFXPaGSRHqUPk11mQ/KzcyDlcPYs9QgQ3JdG84twvjKNrirKZ+4N55aNZUrG0Wy4ffJr81XmPAgOMkSr4TX7lvhqQz0TkZ/C70BVevOxB+grlbTT1XaQMxvPK7ouQ4M/nToodmYLZCZ5z3tpZs0p2LjRx8CDvYBLvd2XnjU6ky1R8CXUm9F45j1HDody9dJ/dX/xpOqQ0VzeRO9zKGuZjDtTYYAyBLHnqTvZnJ3M78GkHaV/uNQeWqwmW3Kg2HQ0pFv95tLF3JL/5nvVZxevGWHQMYf+BJhez+mQSmqaTZPhHKuobb4SFE2tTXi+2gjjjx5jaTF6RNVYmQ==\\n====END LICENSE KEY====',
 			plugins: [TimeLinePointer()],
@@ -227,6 +235,7 @@ export default {
 		if (gstc) gstc.destroy()
 	},
 	methods: {
+		// generates and returns rows for each analyst
 		generateRows() {
 			const rows = []
 			this.analysts.forEach((analyst) => {
@@ -238,6 +247,7 @@ export default {
 			})
 			return rows
 		},
+		// generates and returns item for each shift
 		generateItems() {
 			const items = []
 			this.shifts.forEach((shift, index) => {
@@ -261,105 +271,120 @@ export default {
 			})
 			return items
 		},
+		// changes the Calendar Timespan to Month or Week
 		updateCalendar() {
+			// due to Sunday being the start of the week in Date, the week must be corrected accordingly to display correctly
 			if (this.date.day() === 0) {
 				this.date = this.date.add(-1, 'week')
 			}
 			let startOf, endOf
 			switch (this.selectedCalendarFormat) {
+			// month
 			case 1:
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 				break
+			// week
 			case 2:
 				startOf = this.date.startOf('week').add(1, 'day').valueOf()
 				endOf = this.date.endOf('week').add(1, 'day').valueOf()
 				break
+			// defaults to month
 			default:
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 			}
+			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
 				time.from = startOf
 				time.to = endOf
 				return time
 			})
 		},
+		// changes the time of calendar to current timespan including today
 		setToday() {
 			const today = GSTC.api.date(getYYYYMMDDFromDate(new Date()))
 			let startOf, endOf
 			switch (this.selectedCalendarFormat) {
+			// month
 			case 1:
 				startOf = today.startOf('month').valueOf()
 				endOf = today.endOf('month').valueOf()
 				break
+			// week
 			case 2:
 				startOf = today.startOf('week').add(1, 'day').valueOf()
 				endOf = today.endOf('week').add(1, 'day').valueOf()
 				break
+			//defaults to month
 			default:
 				startOf = today.startOf('month').valueOf()
 				endOf = today.endOf('month').valueOf()
 			}
+			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
 				time.from = startOf
 				time.to = endOf
 				return time
 			})
 		},
+		// move to previous timeinterval with given calendarformat
 		prev() {
 			let startOf, endOf
 			switch (this.selectedCalendarFormat) {
+			// month
 			case 1:
 				this.date = this.date.add(-1, 'month')
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 				break
+			//week
 			case 2:
 				this.date = this.date.add(-1, 'week')
 				startOf = this.date.startOf('week').add(1, 'day').valueOf()
 				endOf = this.date.endOf('week').add(1, 'day').valueOf()
 				break
+			// defaults to month
 			default:
 				this.date = this.date.add(-1, 'month')
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 			}
+			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
 				time.from = startOf
 				time.to = endOf
 				return time
 			})
 		},
+		// move to next timeinterval with given calendarformat
 		next() {
 			let startOf, endOf
 			switch (this.selectedCalendarFormat) {
+			// month
 			case 1:
 				this.date = this.date.add(1, 'month')
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 				break
+			// week
 			case 2:
 				this.date = this.date.add(1, 'week')
 				startOf = this.date.startOf('week').add(1, 'day').valueOf()
 				endOf = this.date.endOf('week').add(1, 'day').valueOf()
 				break
+			// defaults to month
 			default:
 				this.date = this.date.add(1, 'month')
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 			}
+			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
 				time.from = startOf
 				time.to = endOf
 				return time
 			})
-		},
-		getMonthTranslated() {
-			return translate('shifts', 'Monat')
-		},
-		getWeekTranslated() {
-			return translate('shifts', 'Woche')
 		},
 	},
 }
