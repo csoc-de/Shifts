@@ -1,6 +1,7 @@
 <template>
 	<div class="requests_content">
 		<v-btn
+			v-if="isAnalyst || isAdmin"
 			color="light-blue"
 			@click="openDialog()">
 			{{ t('shifts','Neue Anfrage') }}
@@ -169,6 +170,16 @@ export default {
 			return this.shiftsChanges.filter((shiftsChange) => {
 				return shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== ''
 			})
+		},
+		isAnalyst() {
+			let found = false
+			for (let i = 0; i< this.analysts.length; i++) {
+				if (this.analysts[i].uid === this.currentUser) {
+					found = true
+					break
+				}
+			}
+			return found
 		},
 	},
 	async mounted() {
