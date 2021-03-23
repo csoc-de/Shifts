@@ -1,7 +1,7 @@
 {
 	"name": "shifts",
 	"description": "Shifts Organisation",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"author": "Fabian Kirchesch <fabian.kirchesch@csoc.de>",
 	"license": "agpl",
 	"private": true,
