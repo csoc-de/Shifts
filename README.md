@@ -1,28 +1,28 @@
-Installation Nextcloud-Shifts
+# Installation Nextcloud-Shifts
 
-Voraussetzung
+## Voraussetzung
 
-Benötigte Nextcloud Konfigurationen
+* Benötigte Nextcloud Konfigurationen
 
-Analysten-Gruppe mit dem Namen "analyst" (Falls andere Namen besser passen ist eine kleine Änderung im Code notwendig)
+    * Analysten-Gruppe mit dem Namen "analyst" (Falls andere Namen besser passen ist eine kleine Änderung im Code notwendig)
 
-Schichten-Administratoren-Gruppe mit dem Namen "ShiftsAdmin" (gleiches gilt hier)
+    * Schichten-Administratoren-Gruppe mit dem Namen "ShiftsAdmin" (gleiches gilt hier)
 
-Schichtplan-Admin der Organisator für die Schichteneinträge im Kalender(name: 'shiftsorganizer', Email: 'shifts@csoc.de', kann natürlich geändert werden, muss nur im Code aktualiesiert werden)
+    * Schichtplan-Admin der Organisator für die Schichteneinträge im Kalender(name: 'shiftsorganizer', Email: 'shifts@csoc.de', kann natürlich geändert werden, muss nur im Code aktualiesiert werden)
 
-Leitstellen Schichtplan Kalender mit Bearbeitungsrechten für "ShiftsAdmin"
+    * Leitstellen Schichtplan Kalender mit Bearbeitungsrechten für "ShiftsAdmin"
 
-Name übernommen von momentanem Plan, nachträgliche Änderung des Namen benötigt zunächst noch Codeänderung (in Zukunft wird dies nicht mehr benötigt)
+        * Name übernommen von momentanem Plan, nachträgliche Änderung des Namen benötigt zunächst noch Codeänderung (in Zukunft wird dies nicht mehr benötigt)
 
-Schichtplan Admin muss der Ersteller des Kalenders sein (Ich habe leider noch keinen Weg gefunden dies zu umgehen)
+        * Schichtplan Admin muss der Ersteller des Kalenders sein (Ich habe leider noch keinen Weg gefunden dies zu umgehen)
 
-Benötigte Server Konfiguration
+* Benötigte Server Konfiguration
 
-git installiert
+    * git installiert
 
-npm und Node installiert
+    * npm und Node installiert
 
-Installation
+# Installation
 
 Öffne Nextcloud Ordner mit Kommdanozeile
 
