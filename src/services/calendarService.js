@@ -22,14 +22,17 @@ const saveCalendarObjectFromNewShift = async(newShift) => {
 			calcShiftDate(date, shiftsType.stopTimeStamp),
 			timezone)
 
-		eventComponent.title = shiftsType.name
+		let title = shiftsType.name + ': '
 
 		eventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
 
 		analysts.forEach((analyst) => {
 			const attendee = createAttendeeFromAnalyst(analyst, timezone)
+			title = title + ' ' + analyst.commonName
 			eventComponent.addProperty(attendee)
 		})
+
+		eventComponent.title = title
 
 		if (eventComponent.isDirty()) {
 			await shiftsCalendar.createVObject(eventComponent.root.toICS())
@@ -180,6 +183,8 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
 		throw new Error('Could not edit Event')
 	}
 	event.removeAttendee(attendeeToBeRemoved)
+
+	event.title = event.title.replace(removeAnalyst.name, addAnalyst.name)
 
 	const newAttendee = createAttendeeFromAnalyst(addAnalyst, timezone)
 
