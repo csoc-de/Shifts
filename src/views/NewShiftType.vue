@@ -79,8 +79,6 @@ export default {
 	data() {
 		return {
 			isLoading: false,
-			isError: false,
-			error: null,
 			startMenu: false,
 			stopMenu: false,
 			newShiftType: {

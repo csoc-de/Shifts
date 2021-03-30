@@ -18,12 +18,18 @@ class ShiftService {
 		$this->mapper = $mapper;
 	}
 
-	public function findAll(){
+	public function findAll(): array
+	{
 		return $this->mapper->findAll();
 	}
 
-	public function findById(string $userId){
-		return $this->mapper->findById($userId);
+	public function findById(string $userId): array
+	{
+		try{
+			return $this->mapper->findById($userId);
+		} catch(Exception $e){
+			$this->handleException($e);
+		}
 	}
 
 	private function handleException($e){
@@ -35,9 +41,9 @@ class ShiftService {
 		}
 	}
 
-	public function find(int $id, string $userId){
+	public function find(int $id){
 		try{
-			return $this->mapper->find($id, $userId);
+			return $this->mapper->find($id);
 		} catch(Exception $e){
 			$this->handleException($e);
 		}

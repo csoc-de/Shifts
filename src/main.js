@@ -31,11 +31,11 @@ Vue.use(VueShortKey, { prevent: ['input', 'textarea'] })
 
 Vue.mixin({ methods: { t, n } })
 
-//Translation Compatibility
+// Translation Compatibility
 Vue.prototype.$t = translate
 Vue.prototype.$n = translatePlural
 
-//Translation
+// Translation
 Vue.prototype.t = translate
 Vue.prototype.n = translatePlural
 

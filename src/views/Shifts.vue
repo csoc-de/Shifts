@@ -2,7 +2,7 @@
   - View to display Shifts and add Shifts or Shiftstypes if admin is current user
   -->
 <template>
-	<v-main class="correction_margin">
+	<div class="shifts_content">
 		<div v-if="isAdmin">
 			<!--eslint-disable-->
 			<v-menu	 v-if="!loading"
@@ -50,7 +50,7 @@
 			:analysts="analysts"
 			:shifts="shifts" />
 		<!-- eslint-enable-->
-	</v-main>
+	</div>
 </template>
 <script>
 import Calendar from '../components/Calendar'
@@ -59,6 +59,9 @@ import NewShift from './NewShift'
 import { generateUrl } from '@nextcloud/router'
 import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
+import {
+	saveCalendarObjectFromNewShift,
+} from '../services/calendarService'
 
 export default {
 	name: 'Shifts',
@@ -78,6 +81,7 @@ export default {
 			analysts: [],
 			shiftsTypes: [],
 			shifts: [],
+			shiftsService: null,
 		}
 	},
 	async mounted() {
@@ -130,6 +134,7 @@ export default {
 		// saves created Shift
 		async createShift(shift) {
 			try {
+				await saveCalendarObjectFromNewShift(shift)
 				await Promise.all(shift.analysts.map(async(analyst) => {
 					const analystId = analyst.userId
 					const shiftTypeId = shift.shiftsType.id

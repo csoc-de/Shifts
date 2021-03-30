@@ -46,7 +46,7 @@ class ShiftController extends Controller{
 	 */
 	public function show(int $id): DataResponse {
 		return $this->handleNotFound(function () use($id){
-			return $this->service->find($id, $this->userId);
+			return $this->service->find($id);
 		});
 	}
 
