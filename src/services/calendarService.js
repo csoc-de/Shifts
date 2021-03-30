@@ -6,8 +6,8 @@ import { findAllCalendars } from './caldavService'
 import { calcShiftDate } from '../utils/date'
 import AttendeeProperty from 'calendar-js/src/properties/attendeeProperty'
 
-const organizerName = 'shiftsorganizer'
-const organizerEmail = 'shifts@csoc.de'
+const organizerName = 'admin'
+const organizerEmail = 'technik@csoc.de'
 
 const saveCalendarObjectFromNewShift = async(newShift) => {
 	const dates = newShift.dates
