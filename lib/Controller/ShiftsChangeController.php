@@ -84,7 +84,7 @@ class ShiftsChangeController extends Controller{
 	 * @param string type
 	 * @return DataResponse
 	 */
-	public function update(int $id,string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
+	public function update(int $id, string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
 	{
 		return $this->handleNotFound(function() use ($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type){
 			return $this->service->update($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type);

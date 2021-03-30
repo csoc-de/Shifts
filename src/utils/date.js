@@ -130,3 +130,16 @@ export function modifyDate(date, { day = 0, week = 0, month = 0 }) {
 
 	return date
 }
+
+/**
+ * combines day of Shift with Timestamp
+ *
+ * @param {String} date Date object of Day
+ * @param {Timestamp} timestamp Timestamp to add
+ *
+ * @returns {Date}
+ */
+
+export function calcShiftDate(date, timestamp) {
+	return new Date(date + 'T' + timestamp)
+}

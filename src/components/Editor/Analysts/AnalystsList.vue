@@ -47,8 +47,6 @@
 import AnalystsListSearch from './AnalystsListSearch'
 import AnalystsListItem from './AnalystsListItem'
 import NoAnalystsView from './NoAnalystsView'
-import { initializeClientForUserView } from '../../../services/caldavService'
-
 export default {
 	name: 'AnalystsList',
 	components: {
@@ -91,9 +89,6 @@ export default {
 				return analyst.email
 			})
 		},
-	},
-	async beforeCreate() {
-		await initializeClientForUserView()
 	},
 	methods: {
 		addAnalyst(analyst) {

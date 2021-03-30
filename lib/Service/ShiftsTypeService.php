@@ -18,7 +18,8 @@ class ShiftsTypeService {
 		$this->mapper = $mapper;
 	}
 
-	public function findAll(){
+	public function findAll(): array
+	{
 		return $this->mapper->findAll();
 	}
 

@@ -316,7 +316,7 @@ export default {
 				startOf = today.startOf('week').add(1, 'day').valueOf()
 				endOf = today.endOf('week').add(1, 'day').valueOf()
 				break
-			//defaults to month
+			// defaults to month
 			default:
 				startOf = today.startOf('month').valueOf()
 				endOf = today.endOf('month').valueOf()
@@ -338,7 +338,7 @@ export default {
 				startOf = this.date.startOf('month').valueOf()
 				endOf = this.date.endOf('month').valueOf()
 				break
-			//week
+			// week
 			case 2:
 				this.date = this.date.add(-1, 'week')
 				startOf = this.date.startOf('week').add(1, 'day').valueOf()

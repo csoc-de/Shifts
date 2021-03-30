@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { getRootUrl, generateUrl } from '@nextcloud/router'
 
-import Main from './views/Shifts'
+import Shifts from './views/Shifts'
 
 import NewShift from './views/NewShift'
 import NewShiftType from './views/NewShiftType'
@@ -24,7 +24,7 @@ const router = new Router({
 	routes: [
 		{
 			path: '/',
-			component: Main,
+			component: Shifts,
 			name: 'MainView',
 			children: [
 				{

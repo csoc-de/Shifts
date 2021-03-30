@@ -63,7 +63,7 @@
 					+ getDateString(shiftsChange.analystApprovalDate) }}
 					</p>
 					<v-btn
-						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1')"
+						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
 						color="red"
 						@click="disapproved(shiftsChange)">
 						{{ t('shifts','Ablehnen') }}
@@ -72,7 +72,7 @@
 						</v-icon>
 					</v-btn>
 					<v-btn
-						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1')"
+						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
 						color="green"
 						@click="approved(shiftsChange)">
 						{{ t('shifts','Genehmigen') }}
@@ -146,6 +146,7 @@ import RequestsModal from '../components/Modal/RequestsModal'
 import { showError } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import { updateExistingCalendarObjectFromShiftsChange } from '../services/calendarService'
 export default {
 	name: 'Requests',
 	components: {
@@ -233,7 +234,12 @@ export default {
 			}).name
 		},
 		async disapproved(shiftsChange) {
-			if (this.isAdmin) {
+			if (this.isAdmin && shiftsChange.newAnalystId === this.currentUser) {
+				shiftsChange.adminApproval = '0'
+				shiftsChange.adminApprovalDate = new Date()
+				shiftsChange.analystApproval = '0'
+				shiftsChange.analystApprovalDate = new Date()
+			} else if (this.isAdmin) {
 				shiftsChange.adminApproval = '0'
 				shiftsChange.adminApprovalDate = new Date()
 			} else {
@@ -243,7 +249,12 @@ export default {
 			await this.saveShiftsChange(shiftsChange)
 		},
 		async approved(shiftsChange) {
-			if (this.isAdmin) {
+			if (this.isAdmin && shiftsChange.newAnalystId === this.currentUser) {
+				shiftsChange.adminApproval = '1'
+				shiftsChange.adminApprovalDate = new Date()
+				shiftsChange.analystApproval = '1'
+				shiftsChange.analystApprovalDate = new Date()
+			} else if (this.isAdmin) {
 				shiftsChange.adminApproval = '1'
 				shiftsChange.adminApprovalDate = new Date()
 			} else {
@@ -257,6 +268,12 @@ export default {
 				// checks for approval to change shifts
 				// only done when both approvals are given
 				if (shiftsChange.adminApproval === '1' && shiftsChange.analystApproval === '1') {
+					const oldAnalyst = this.analysts.find((analyst) => {
+						return analyst.uid === shiftsChange.oldAnalystId
+					})
+					const newAnalyst = this.analysts.find((analyst) => {
+						return analyst.uid === shiftsChange.newAnalystId
+					})
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
@@ -271,6 +288,7 @@ export default {
 					}
 					// fetches and updates shifts
 					const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
+					await updateExistingCalendarObjectFromShiftsChange(oldShift, newShift, oldAnalyst, newAnalyst)
 					shiftResponse.data.forEach(shift => {
 						shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 						this.shifts.push(shift)

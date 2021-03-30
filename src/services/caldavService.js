@@ -29,7 +29,6 @@ const getClient = () => {
 	if (client) {
 		return client
 	}
-
 	client = new DavClient({
 		rootUrl: generateRemoteUrl('dav'),
 	}, () => {

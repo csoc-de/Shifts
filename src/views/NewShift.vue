@@ -78,8 +78,6 @@ export default {
 	data() {
 		return {
 			isLoading: true,
-			isError: false,
-			error: null,
 			value1: {
 				id: -1,
 				name: t('shifts', 'Schichtauswahl'),
@@ -94,7 +92,6 @@ export default {
 	},
 	mounted() {
 		this.isLoading = false
-		console.log(this.shiftsTypes)
 	},
 	methods: {
 		closeEditor() {
