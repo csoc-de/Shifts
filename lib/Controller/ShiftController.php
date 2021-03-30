@@ -140,7 +140,7 @@ class ShiftController extends Controller{
 		$result = $group->getUsers();
 		foreach( $result as $user) {
 			$id = $user->getUID();
-			if($id != $this->$user) {
+			if($id !== $this->$user) {
 				$name = $user->getDisplayName();
 				$email = $user->getEMailAddress();
 				$photo = $user->getAvatarImage(16);
