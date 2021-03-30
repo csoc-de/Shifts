@@ -27,8 +27,11 @@
 cd /var/www/
 
 sudo mkdir .cache
+
 sudo mkdir .config
+
 chown -R www-data .cache
+
 chown -R www-data .config
 
 Öffne Nextcloud Ordner mit Kommdanozeile
@@ -49,12 +52,12 @@ cd shifts/
 
 Installation der benötigten PHP und Node Pakete
 
-make composer
+sudo -u www-data make composer
 
-make dev-setup
+sudo -u www-data make dev-setup
 
 Kompilieren des Frontend-Codes
 
-make build-js
+sudo -u www-data make build-js
 
 Anschließende Aktivierung der App "Shifts"in den Nextcloud Apps-Einstellungen
