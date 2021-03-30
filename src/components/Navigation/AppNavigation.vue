@@ -10,9 +10,9 @@
 				to="/" />
 		<!--
 		 -	<AppNavigationItem
-		 -		:title="t('shifts', 'Schichtwechsel')"
-		 -		icon="icon-category-organization"
-		 -		to="/requests" />
+		 -	:title="t('shifts', 'Schichtwechsel')"
+		 -	icon="icon-category-organization"
+		 -	to="/requests" />
 		 -->
 		</template>
 	</AppNavigationVue>
