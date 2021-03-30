@@ -24,6 +24,13 @@
 
 # Installation
 
+cd /var/www/
+
+sudo mkdir .cache
+sudo mkdir .config
+chown -R www-data .cache
+chown -R www-data .config
+
 Öffne Nextcloud Ordner mit Kommdanozeile
 
 normalerweise /var/www/nextcloud (Apache2 Webserver)
