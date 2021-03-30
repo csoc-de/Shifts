@@ -8,12 +8,12 @@
 				:title="t('shifts', 'Schichtplan')"
 				icon="icon-calendar-dark"
 				to="/" />
-				<!--
-			<AppNavigationItem
-				:title="t('shifts', 'Schichtwechsel')"
-				icon="icon-category-organization"
-				to="/requests" />
-				-->
+		<!--
+		 -	<AppNavigationItem
+		 -		:title="t('shifts', 'Schichtwechsel')"
+		 -		icon="icon-category-organization"
+		 -		to="/requests" />
+		 -->
 		</template>
 	</AppNavigationVue>
 </template>
