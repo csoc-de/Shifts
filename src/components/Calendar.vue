@@ -138,7 +138,8 @@ export default {
 				difference.forEach((shift) => {
 					const start = GSTC.api.date(shift.date)
 					const id = GSTC.api.GSTCID(shift.id)
-					const rowId = GSTC.api.GSTCID(shift.userId)
+					let rowId = GSTC.api.GSTCID(shift.userId)
+					rowId = rowId.replaceAll('.', '-')
 					const newItem = {
 						id,
 						label: `${shift.shiftsType.name}`,
@@ -239,12 +240,14 @@ export default {
 		generateRows() {
 			const rows = []
 			this.analysts.forEach((analyst) => {
-				const id = analyst.uid
+				let id = analyst.uid
+				id = id.replaceAll('.', '-')
 				rows.push({
 					id,
 					label: analyst.name,
 				})
 			})
+			console.log(rows)
 			return rows
 		},
 		// generates and returns item for each shift
@@ -253,7 +256,8 @@ export default {
 			this.shifts.forEach((shift, index) => {
 				const start = GSTC.api.date(shift.date)
 				const id = shift.id
-				const rowId = shift.userId
+				let rowId = shift.userId
+				rowId = rowId.replaceAll('.', '-')
 				const shiftsType = shift.shiftsType
 				items.push({
 					id,
