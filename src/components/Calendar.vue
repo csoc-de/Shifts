@@ -115,7 +115,7 @@ export default {
 				month: getMonthTranslated(),
 				week: getWeekTranslated(),
 			},
-			selectedCalendarFormat: 1,
+			selectedCalendarFormat: 2,
 			calendarFormats: [
 				{
 					value: 1,
@@ -161,11 +161,15 @@ export default {
 	},
 	mounted() {
 		this.currentShifts = this.shifts.slice()
-		const today = GSTC.api.date()
+		let today = GSTC.api.date()
+		if (today.day() === 0) {
+			today = today.add(-1, 'week')
+		}
 		// config for the GSTC Calendar
 		const config = {
 			licenseKey: '====BEGIN LICENSE KEY====\\nV8zWVvgA1wKSVy/+L0kuD3vf/2wHxj6aOSJiiHox7NEDrQn/ZkhX+umaZwWa+BZyeAsbBMS2D9QffCcouGoEjd6zZ6TKg1czvQGs9x+eQJvmZVttYDyNawEgVTVwRGV9K/Qcmc5fG6R9ZOpjHZVGLS1awi01kt6zu21IOyxCZKLXz4fnCfiLpplkjclMLJxBbFud0sa1fUpKwEtZpw1kW+UN3saFnesar4oepA2RMM/3FofbKRALa2qsMbOdAlEE6UEPYi0htImFUg01qISsGZfXmQ8i/4Na/S5aoUAfWKoI1NcOZ3xF1tnIMYIkJSXss6v24oeeu+MlIMydxMGnaw==||U2FsdGVkX1+qbfbvzH+haFNfV1T1S/m3Hv8UbDUTXL+KQxlOlSZ9bIGaMYnMw6pfP17wHzHvKSzflwCZS2S3OupgS8Vf+7HAEujkKjdh5Rw=\\nIPM1F53nZFXPaGSRHqUPk11mQ/KzcyDlcPYs9QgQ3JdG84twvjKNrirKZ+4N55aNZUrG0Wy4ffJr81XmPAgOMkSr4TX7lvhqQz0TkZ/C70BVevOxB+grlbTT1XaQMxvPK7ouQ4M/nToodmYLZCZ5z3tpZs0p2LjRx8CDvYBLvd2XnjU6ky1R8CXUm9F45j1HDody9dJ/dX/xpOqQ0VzeRO9zKGuZjDtTYYAyBLHnqTvZnJ3M78GkHaV/uNQeWqwmW3Kg2HQ0pFv95tLF3JL/5nvVZxevGWHQMYf+BJhez+mQSmqaTZPhHKuobb4SFE2tTXi+2gjjjx5jaTF6RNVYmQ==\\n====END LICENSE KEY====',
 			plugins: [TimeLinePointer()],
+			innerHeight: 600,
 			list: {
 				columns: {
 					data: {
@@ -187,8 +191,8 @@ export default {
 			chart: {
 				items: GSTC.api.fromArray(this.generateItems()),
 				time: {
-					from: today.startOf('month').valueOf(),
-					to: today.endOf('month').valueOf(),
+					from: today.startOf('week').add(1, 'day').valueOf(),
+					to: today.endOf('week').add(1, 'day').valueOf(),
 					calculatedZoomMode: true,
 				},
 			},

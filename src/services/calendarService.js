@@ -79,9 +79,13 @@ let calendar
 const findShiftsCalendar = async() => {
 	if (!calendar || calendar.owner.includes(organizerName)) {
 		const calendars = await findAllCalendars()
+		console.log(calendars)
 		calendar = calendars.find(calendar => {
-			return calendar.owner.includes(organizerName)
+			console.log(calendar.owner.includes(organizerName))
+			console.log(calendar.displayname.includes('Leitstellen'))
+			return calendar.owner.includes(organizerName) && calendar.displayname.includes('Leitstellen')
 		})
+		console.log(calendar)
 		return calendar
 	} else {
 		return calendar
