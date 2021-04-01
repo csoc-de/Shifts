@@ -109,7 +109,7 @@ class ShiftController extends Controller{
 	 */
 	public function getAllAnalysts(): DataResponse
 	{
-		$group = $this->groupManager->get('Blueteam');
+		$group = $this->groupManager->get('Analysten');
 		$users = [];
 		$result = $group->getUsers();
 		foreach( $result as $user) {
