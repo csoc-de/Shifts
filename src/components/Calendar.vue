@@ -251,7 +251,6 @@ export default {
 					label: analyst.name,
 				})
 			})
-			console.log(rows)
 			return rows
 		},
 		// generates and returns item for each shift
