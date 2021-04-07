@@ -59,6 +59,36 @@
 				@click:minute="$refs.stopMenu.save(newShiftType.stopTimestamp)">
 			</v-time-picker>
 		</v-menu>
+		<v-menu
+			ref="colorMenu"
+			v-model="colorMenu"
+			:close-on-content-click="false"
+			:nudge-right="40"
+			:return-value.sync="newShiftType.color"
+			transition="scale-transition"
+			offset-y
+			min-width="290px">
+			<template v-slot:activator="{ on, attrs }">
+				<v-text-field
+					v-model="newShiftType.color"
+					label="Calendar Color"
+					v-bind="attrs"
+					v-on="on">
+				</v-text-field>
+			</template>
+			<v-color-picker
+				dot-size="25"
+				mode="hexa"
+				swatches-max-height="200"
+				v-model="newShiftType.color">
+			</v-color-picker>
+			<v-btn color="primary" @click="colorMenu = false">
+				Cancel
+			</v-btn>
+			<v-btn color="primary" @click="$refs.colorMenu.save(newShiftType.color)">
+				Ok
+			</v-btn>
+		</v-menu>
 		<!-- eslint-enable -->
 		<v-btn color="primary" @click="cancel">
 			Cancel
@@ -81,11 +111,13 @@ export default {
 			isLoading: false,
 			startMenu: false,
 			stopMenu: false,
+			colorMenu: false,
 			newShiftType: {
 				name: '',
 				description: '',
 				startTimestamp: '00:00',
 				stopTimestamp: '00:00',
+				color: '',
 			},
 		}
 	},
@@ -121,6 +153,7 @@ export default {
 				description: '',
 				startTimestamp: '00:00',
 				stopTimestamp: '00:00',
+				calendarColor: '',
 			}
 		},
 	},

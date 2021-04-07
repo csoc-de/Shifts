@@ -9,6 +9,7 @@
 				v-model="shiftOpen"
 				:close-on-content-click="false"
 				:nudge-width="200"
+				attach
 				offset-y>
 				<template v-slot:activator="{ on, attrs }">
 					<v-btn
@@ -30,6 +31,7 @@
 				v-model="shiftTypeOpen"
 				:close-on-content-click="false"
 				:nudge-width="200"
+				attach
 				offset-y>
 				<template v-slot:activator="{ on, attrs }">
 					<v-btn
@@ -48,7 +50,8 @@
 		</div>
 		<Calendar v-if="!loading"
 			:analysts="analysts"
-			:shifts="shifts" />
+			:shifts="shifts"
+			:is-admin="isAdmin"/>
 		<!-- eslint-enable-->
 	</div>
 </template>

@@ -21,6 +21,10 @@ class Application extends App {
 		$dispatcher->addListener(AddContentSecurityPolicyEvent::class, function (AddContentSecurityPolicyEvent $event){
 			$event->addPolicy($this->createCsp());
 		});
+
+		$container->registerService('URLGenerator', function($c) {
+			return $c->query('ServerContainer')->getURLGenerator();
+		});
 	}
 
 	/**

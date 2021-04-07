@@ -10,7 +10,7 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 use OCP\IGroupManager;
 
-class ShiftController extends Controller{
+class ShiftController extends Controller {
 	/** @var ShiftService */
 	private $service;
 
@@ -33,6 +33,8 @@ class ShiftController extends Controller{
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
 	 */
 	public function index(): DataResponse {
 		return new DataResponse($this->service->findAll());

@@ -40,22 +40,24 @@ class ShiftsTypeService {
 		}
 	}
 
-	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp){
+	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color){
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
 		$shiftsType->setStartTimeStamp($startTimeStamp);
 		$shiftsType->setStopTimeStamp($stopTimeStamp);
+		$shiftsType->setCalendarColor($color);
 		return $this->mapper->insert($shiftsType);
 	}
 
-	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp){
+	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color){
 		try{
 			$shiftsType = $this->mapper->find($id);
 			$shiftsType->setName($name);
 			$shiftsType->setDesc($desc);
 			$shiftsType->setStartTimeStamp($startTimeStamp);
 			$shiftsType->setStopTimeStamp($stopTimeStamp);
+			$shiftsType->setCalendarColor($color);
 			return $this->mapper->update($shiftsType);
 		} catch(Exception $e){
 			$this->handleException($e);

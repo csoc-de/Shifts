@@ -13,6 +13,7 @@ class ShiftsType extends Entity implements JsonSerializable {
 	protected $desc;
 	protected $startTimeStamp;
 	protected $stopTimeStamp;
+	protected $calendarColor;
 
 	public function __construct(){
 		$this->addType('id','integer');
@@ -24,7 +25,8 @@ class ShiftsType extends Entity implements JsonSerializable {
 			'name' => $this->name,
 			'desc' => $this->desc,
 			'startTimeStamp' => $this->startTimeStamp,
-			'stopTimeStamp' => $this->stopTimeStamp
+			'stopTimeStamp' => $this->stopTimeStamp,
+			'calendarColor' => $this->calendarColor
 		];
 	}
 

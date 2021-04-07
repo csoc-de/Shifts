@@ -60,34 +60,13 @@
 <script>
 import GSTC from 'gantt-schedule-timeline-calendar'
 import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js'
+import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { getYYYYMMDDFromDate } from '../utils/date'
 import { translate } from '@nextcloud/l10n'
 
 let gstc, state
-// Function to determine and return the color of calendar items
-function getBackground(shiftType) {
-	const hash = hashCode(shiftType)
 
-	const c = (hash & 0x00FFFFFF)
-		.toString(16)
-		.toUpperCase()
-
-	return '#' + '00000'.substring(0, 6 - c.length) + c
-}
-// Function to return the hash of given string
-function hashCode(string) {
-	let hash = 0
-	let i
-	let chr
-	if (string.length === 0) return hash
-	for (i = 0; i < string.length; i++) {
-		chr = string.charCodeAt(i)
-		hash = ((hash << 5) - hash) + chr
-		hash |= 0
-	}
-	return hash
-}
 function getMonthTranslated() {
 	return translate('shifts', 'Monat')
 }
@@ -106,6 +85,10 @@ export default {
 			type: Array,
 			required: true,
 		},
+		isAdmin: {
+			type: Boolean,
+			required: true,
+		}
 	},
 	data() {
 		return {
@@ -149,7 +132,7 @@ export default {
 							end: start.endOf('day').valueOf(),
 						},
 						style: {
-							background: getBackground(shift.shiftsType.name),
+							background: shift.shiftsType.calendarColor,
 						},
 					}
 					state.update(`config.chart.items.${id}`, newItem)
@@ -164,6 +147,10 @@ export default {
 		let today = GSTC.api.date()
 		if (today.day() === 0) {
 			today = today.add(-1, 'week')
+		}
+		const plugins = [TimeLinePointer()]
+		if (this.isAdmin) {
+			plugins.push(MovementPlugin())
 		}
 		// config for the GSTC Calendar
 		const config = {
@@ -272,7 +259,7 @@ export default {
 					},
 					minWidth: 200,
 					style: {
-						background: getBackground(shiftsType.name),
+						background: shiftsType.calendarColor,
 					},
 				})
 			})
