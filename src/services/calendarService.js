@@ -70,6 +70,29 @@ const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, o
 	}
 }
 
+const moveExistingCalendarObject = async(shiftsType, oldDate, newDate) => {
+	const timezone = findCurrentTimezone()
+	const shiftsCalendar = await findShiftsCalendar('Leitstellen Schichtplan')
+
+	const [vObject, eventComponent] = await findEventComponent(shiftsCalendar, oldDate, shiftsType, timezone)
+
+	const startDate = calcShiftDate(newDate, shiftsType.startTimeStamp)
+	eventComponent.startDate.year = startDate.getFullYear()
+	eventComponent.startDate.month = startDate.getMonth() + 1
+	eventComponent.startDate.day = startDate.getDate()
+
+	const endDate = calcShiftDate(newDate, shiftsType.stopTimeStamp)
+	eventComponent.endDate.year = endDate.getFullYear()
+	eventComponent.endDate.month = endDate.getMonth() + 1
+	eventComponent.endDate.day = endDate.getDate()
+
+	if (eventComponent.isDirty()) {
+		vObject.data = eventComponent.root.toICS()
+		console.log(vObject.data)
+		await vObject.update()
+	}
+}
+
 /**
  * returns the dedicated Shifts-Calendar based on the Organizers name
  *
@@ -252,4 +275,5 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 export {
 	saveCalendarObjectFromNewShift,
 	updateExistingCalendarObjectFromShiftsChange,
+	moveExistingCalendarObject,
 }

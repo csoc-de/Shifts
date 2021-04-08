@@ -52,10 +52,11 @@ class ShiftsTypeController extends Controller{
 	 * @param string $description
 	 * @param string $startTimestamp
 	 * @param string $stopTimestamp
+	 * @param string $color
 	 * @return DataResponse
 	 */
-	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp): DataResponse {
-		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp));
+	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp, string $color): DataResponse {
+		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp, $color));
 	}
 
 	/**
@@ -66,12 +67,13 @@ class ShiftsTypeController extends Controller{
 	 * @param string $desc
 	 * @param string $startTimeStamp
 	 * @param string $stopTimeStamp
+	 * @param string $color
 	 * @return DataResponse
 	 */
-	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp): DataResponse
+	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color): DataResponse
 	{
-		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimeStamp, $stopTimeStamp){
-			return $this->service->update($id, $name, $desc, $startTimeStamp, $stopTimeStamp);
+		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimeStamp, $stopTimeStamp, $color){
+			return $this->service->update($id, $name, $desc, $startTimeStamp, $stopTimeStamp, $color);
 		});
 	}
 

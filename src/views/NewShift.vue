@@ -7,9 +7,7 @@
 			<AnalystsList
 				v-if="!isLoading"
 				:is-read-only="false"
-				:new-shift-instance="newShiftInstance"
-				@addAnalyst="addAnalyst"
-				@removeAnalyst="removeAnalyst" />
+				:new-shift-instance="newShiftInstance" />
 		</div>
 		<Multiselect v-model="value1"
 			:options="shiftsTypes"
@@ -62,7 +60,7 @@
 <script>
 import AnalystsList from '../components/Editor/Analysts/AnalystsList'
 import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
-import { getYYYYMMDDFromDate } from '../utils/date'
+import { mapState } from 'vuex'
 export default {
 	name: 'NewShift',
 	components: {
@@ -83,12 +81,12 @@ export default {
 				name: t('shifts', 'Schichtauswahl'),
 			},
 			dateMenu: false,
-			newShiftInstance: {
-				analysts: [],
-				shiftsType: '',
-				dates: [getYYYYMMDDFromDate(new Date())],
-			},
 		}
+	},
+	computed: {
+		...mapState({
+			newShiftInstance: (state) => state.newShiftInstance.newShiftInstance,
+		}),
 	},
 	mounted() {
 		this.isLoading = false
@@ -104,27 +102,12 @@ export default {
 
 			this.closeEditor()
 		},
-		addAnalyst(analyst) {
-			this.newShiftInstance.analysts.push(analyst)
-		},
-		removeAnalyst(analyst) {
-			const index = this.newShiftInstance.analysts.indexOf(analyst)
-			this.newShiftInstance.analysts.splice(index, 1)
-		},
 		updateShiftType(shiftType) {
-			this.newShiftInstance.shiftsType = shiftType
+			this.$store.commit('changeShiftsType', shiftType)
 		},
 		save() {
-			this.$emit('save', this.newShiftInstance)
-			this.newShiftInstance = {
-				analysts: [],
-				shiftsType: '',
-				dates: [],
-			}
-			this.value1 = {
-				id: -1,
-				name: 'Select ShiftType',
-			}
+			this.closeEditor()
+			this.$store.dispatch('saveNewShift', {})
 		},
 	},
 }
