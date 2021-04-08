@@ -64,7 +64,6 @@ import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist
 // import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
 import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js'
 import 'gantt-schedule-timeline-calendar/dist/style.css'
-import { getYYYYMMDDFromDate } from '../utils/date'
 import { translate } from '@nextcloud/l10n'
 // import { generateUrl } from '@nextcloud/router'
 // import axios from '@nextcloud/axios'
@@ -378,7 +377,8 @@ export default {
 		},
 		// changes the time of calendar to current timespan including today
 		setToday() {
-			const today = GSTC.api.date(getYYYYMMDDFromDate(new Date()))
+			const today = GSTC.api.date()
+			this.date = today
 			let startOf, endOf
 			switch (this.selectedCalendarFormat) {
 			// month

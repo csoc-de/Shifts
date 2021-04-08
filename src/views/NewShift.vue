@@ -37,7 +37,9 @@
 			<v-date-picker v-model="newShiftInstance.dates"
 					multiple
 					no-title
-					scrollable>
+					scrollable
+					locale="de-DE"
+					first-day-of-week="1">
 				<v-spacer></v-spacer>
 				<v-btn color="primary" @click="dateMenu = false">
 					Cancel
