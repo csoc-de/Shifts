@@ -61,14 +61,14 @@
 <script>
 import GSTC from 'gantt-schedule-timeline-calendar'
 import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js'
-import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
+// import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
 import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js'
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { getYYYYMMDDFromDate } from '../utils/date'
 import { translate } from '@nextcloud/l10n'
 // import { generateUrl } from '@nextcloud/router'
 // import axios from '@nextcloud/axios'
-import { moveExistingCalendarObject } from '../services/calendarService'
+// import { moveExistingCalendarObject } from '../services/calendarService'
 
 let gstc, state
 
@@ -78,7 +78,7 @@ function getMonthTranslated() {
 function getWeekTranslated() {
 	return translate('shifts', 'Woche')
 }
-function isCollision(movedShift) {
+/* function isCollision(movedShift) {
 	const allItems = gstc.api.getAllItems()
 	for (const currentShiftId in allItems) {
 		if (currentShiftId === movedShift.id) continue
@@ -107,7 +107,7 @@ function isCollision(movedShift) {
 		}
 	}
 	return false
-}
+} */
 
 export default {
 	name: 'Calendar',
@@ -185,7 +185,7 @@ export default {
 			today = today.add(-1, 'week')
 		}
 		const plugins = [TimeLinePointer()]
-		const movementPluginConfig = {
+		/* const movementPluginConfig = {
 			events: {
 				onMove({ items }) {
 					return items.before.map((beforeMovementItem, index) => {
@@ -227,10 +227,10 @@ export default {
 					return startTime.startOf('day')
 				},
 			},
-		}
+		} */
 		if (this.isAdmin) {
 			plugins.push(Selection())
-			plugins.push(MovementPlugin(movementPluginConfig))
+			// plugins.push(MovementPlugin(movementPluginConfig))
 		}
 		// config for the GSTC Calendar
 		const config = {
