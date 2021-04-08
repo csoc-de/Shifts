@@ -22,8 +22,7 @@
 				</template>
 				<v-layout class="popover-menu-layout">
 					<NewShift :shifts-types="shiftsTypes"
-							  @cancel="closeNewShift"
-							  @save="newShift">
+							  @close="closeNewShift">
 					</NewShift>
 				</v-layout>
 			</v-menu>
@@ -62,9 +61,6 @@ import NewShift from './NewShift'
 import { generateUrl } from '@nextcloud/router'
 import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
-import {
-	saveCalendarObjectFromNewShift,
-} from '../services/calendarService'
 
 export default {
 	name: 'Shifts',
@@ -116,15 +112,6 @@ export default {
 		closeNewShift() {
 			this.shiftOpen = false
 		},
-		async newShift(shift) {
-			if (shift.analysts && shift.dates) {
-				await this.createShift(shift)
-				this.closeNewShift()
-			} else {
-				console.log('No Name for ShiftType')
-				showWarning(t('shifts', 'No Analysts or Dates for Shift given'))
-			}
-		},
 		async newShiftType(shiftType) {
 			if (shiftType.name) {
 				await this.createShiftType(shiftType)
@@ -133,34 +120,6 @@ export default {
 				showWarning(t('shifts', 'No Name for Shift-Type given'))
 			}
 			this.closeNewShiftType()
-		},
-		// saves created Shift
-		async createShift(shift) {
-			try {
-				await saveCalendarObjectFromNewShift(shift)
-				await Promise.all(shift.analysts.map(async(analyst) => {
-					const analystId = analyst.userId
-					const shiftTypeId = shift.shiftsType.id
-					const newShifts = shift.dates.map((date) => {
-						return {
-							analystId,
-							shiftTypeId,
-							date,
-						}
-					})
-					await Promise.all(newShifts.map(async(newShift) => {
-						await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
-					}))
-				}))
-				const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
-				shiftResponse.data.forEach(shift => {
-					shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-					this.shifts.push(shift)
-				})
-			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not create the shift'))
-			}
 		},
 		// saves created Shiftstype
 		async createShiftType(shiftType) {

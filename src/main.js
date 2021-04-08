@@ -3,7 +3,9 @@ import '@nextcloud/dialogs/styles/toast.scss'
 
 import Vue from 'vue'
 import App from './App'
+import store from './store'
 import router from './router'
+import { sync } from 'vuex-router-sync'
 import ClickOutside from 'vue-click-outside'
 import VueClipboard from 'vue-clipboard2'
 import VTooltip from 'v-tooltip'
@@ -31,6 +33,8 @@ Vue.use(VueShortKey, { prevent: ['input', 'textarea'] })
 
 Vue.mixin({ methods: { t, n } })
 
+sync(store, router)
+
 // Translation Compatibility
 Vue.prototype.$t = translate
 Vue.prototype.$n = translatePlural
@@ -43,5 +47,6 @@ export default new Vue({
 	el: '#content',
 	router,
 	vuetify,
+	store,
 	render: h => h(App),
 })

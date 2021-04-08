@@ -92,10 +92,10 @@ export default {
 	},
 	methods: {
 		addAnalyst(analyst) {
-			this.$emit('addAnalyst', analyst)
+			this.$store.commit('addAnalyst', analyst)
 		},
 		removeAnalyst(analyst) {
-			this.$emit('removeAnalyst', analyst)
+			this.$store.commit('removeAnalyst', analyst.userId)
 		},
 	},
 }

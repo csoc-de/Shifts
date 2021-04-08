@@ -3,6 +3,7 @@
   - Implements the GSTC-Calendar by neuronetio
   - https://github.com/neuronetio/gantt-schedule-timeline-calendar
   -->
+<!--suppress JSUnfilteredForInLoop -->
 <template>
 	<div>
 		<!--eslint-disable-->
@@ -61,9 +62,13 @@
 import GSTC from 'gantt-schedule-timeline-calendar'
 import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js'
 import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
+import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js'
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { getYYYYMMDDFromDate } from '../utils/date'
 import { translate } from '@nextcloud/l10n'
+// import { generateUrl } from '@nextcloud/router'
+// import axios from '@nextcloud/axios'
+import { moveExistingCalendarObject } from '../services/calendarService'
 
 let gstc, state
 
@@ -72,6 +77,36 @@ function getMonthTranslated() {
 }
 function getWeekTranslated() {
 	return translate('shifts', 'Woche')
+}
+function isCollision(movedShift) {
+	const allItems = gstc.api.getAllItems()
+	for (const currentShiftId in allItems) {
+		if (currentShiftId === movedShift.id) continue
+		const currentShift = allItems[currentShiftId]
+		if (currentShift.rowId === movedShift.rowId) {
+			if (
+				movedShift.time.start >= currentShift.time.start && movedShift.time.start <= currentShift.time.end
+			) {
+				return true
+			}
+			if (
+				movedShift.time.end >= currentShift.time.start && movedShift.time.end <= currentShift.time.end
+			) {
+				return true
+			}
+			if (
+				movedShift.time.start <= currentShift.time.start && movedShift.time.end >= currentShift.time.end
+			) {
+				return true
+			}
+			if (
+				movedShift.time.start >= currentShift.time.start && movedShift.time.end <= currentShift.time.end
+			) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 export default {
@@ -88,7 +123,7 @@ export default {
 		isAdmin: {
 			type: Boolean,
 			required: true,
-		}
+		},
 	},
 	data() {
 		return {
@@ -134,6 +169,7 @@ export default {
 						style: {
 							background: shift.shiftsType.calendarColor,
 						},
+						shiftsType: shift.shiftsType,
 					}
 					state.update(`config.chart.items.${id}`, newItem)
 				})
@@ -149,13 +185,57 @@ export default {
 			today = today.add(-1, 'week')
 		}
 		const plugins = [TimeLinePointer()]
+		const movementPluginConfig = {
+			events: {
+				onMove({ items }) {
+					return items.before.map((beforeMovementItem, index) => {
+						const afterMovementItem = items.after[index]
+						const myItem = GSTC.api.merge({}, afterMovementItem)
+						if (isCollision(myItem)) {
+							myItem.time = { ...beforeMovementItem.time }
+							myItem.rowId = beforeMovementItem.rowId
+						}
+						return myItem
+					})
+				},
+				onEnd({ items }) {
+					return items.initial.map(async(initialItem, index) => {
+						const afterItem = items.after[index]
+						// const shiftsId = GSTC.api.sourceID(initialItem.id)
+						// const oldAnalystId = GSTC.api.sourceID(initialItem.rowId)
+						console.log(afterItem)
+						// const newAnalystId = GSTC.api.sourceID(afterItem.rowId)
+
+						const oldDate = GSTC.api.date(initialItem.time.start).format('YYYY-MM-DD')
+						const newDate = GSTC.api.date(afterItem.time.start).format('YYYY-MM-DD')
+
+						// const newShift = {
+						// id: shiftsId,
+						// userId: newAnalystId,
+						// shiftTypeId: initialItem.shiftsType.id,
+						// date: newDate,
+						// }
+						await moveExistingCalendarObject(initialItem.shiftsType, oldDate, newDate)
+						// await axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift)
+
+						return initialItem
+					})
+				},
+			},
+			snapToTime: {
+				start({ startTime, time }) {
+					return startTime.startOf('day')
+				},
+			},
+		}
 		if (this.isAdmin) {
-			plugins.push(MovementPlugin())
+			plugins.push(Selection())
+			plugins.push(MovementPlugin(movementPluginConfig))
 		}
 		// config for the GSTC Calendar
 		const config = {
 			licenseKey: '====BEGIN LICENSE KEY====\\nV8zWVvgA1wKSVy/+L0kuD3vf/2wHxj6aOSJiiHox7NEDrQn/ZkhX+umaZwWa+BZyeAsbBMS2D9QffCcouGoEjd6zZ6TKg1czvQGs9x+eQJvmZVttYDyNawEgVTVwRGV9K/Qcmc5fG6R9ZOpjHZVGLS1awi01kt6zu21IOyxCZKLXz4fnCfiLpplkjclMLJxBbFud0sa1fUpKwEtZpw1kW+UN3saFnesar4oepA2RMM/3FofbKRALa2qsMbOdAlEE6UEPYi0htImFUg01qISsGZfXmQ8i/4Na/S5aoUAfWKoI1NcOZ3xF1tnIMYIkJSXss6v24oeeu+MlIMydxMGnaw==||U2FsdGVkX1+qbfbvzH+haFNfV1T1S/m3Hv8UbDUTXL+KQxlOlSZ9bIGaMYnMw6pfP17wHzHvKSzflwCZS2S3OupgS8Vf+7HAEujkKjdh5Rw=\\nIPM1F53nZFXPaGSRHqUPk11mQ/KzcyDlcPYs9QgQ3JdG84twvjKNrirKZ+4N55aNZUrG0Wy4ffJr81XmPAgOMkSr4TX7lvhqQz0TkZ/C70BVevOxB+grlbTT1XaQMxvPK7ouQ4M/nToodmYLZCZ5z3tpZs0p2LjRx8CDvYBLvd2XnjU6ky1R8CXUm9F45j1HDody9dJ/dX/xpOqQ0VzeRO9zKGuZjDtTYYAyBLHnqTvZnJ3M78GkHaV/uNQeWqwmW3Kg2HQ0pFv95tLF3JL/5nvVZxevGWHQMYf+BJhez+mQSmqaTZPhHKuobb4SFE2tTXi+2gjjjx5jaTF6RNVYmQ==\\n====END LICENSE KEY====',
-			plugins: [TimeLinePointer()],
+			plugins,
 			innerHeight: 600,
 			list: {
 				columns: {
@@ -261,6 +341,7 @@ export default {
 					style: {
 						background: shiftsType.calendarColor,
 					},
+					shiftsType,
 				})
 			})
 			return items
