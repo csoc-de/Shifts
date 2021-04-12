@@ -37,7 +37,9 @@
 			<v-date-picker v-model="newShiftInstance.dates"
 					multiple
 					no-title
-					scrollable>
+					scrollable
+					locale="de-DE"
+					first-day-of-week="1">
 				<v-spacer></v-spacer>
 				<v-btn color="primary" @click="dateMenu = false">
 					Cancel
@@ -60,18 +62,12 @@
 <script>
 import AnalystsList from '../components/Editor/Analysts/AnalystsList'
 import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
 	name: 'NewShift',
 	components: {
 		AnalystsList,
 		Multiselect,
-	},
-	props: {
-		shiftsTypes: {
-			type: Array,
-			default: () => [],
-		},
 	},
 	data() {
 		return {
@@ -84,6 +80,9 @@ export default {
 		}
 	},
 	computed: {
+		...mapGetters({
+			shiftsTypes: 'allShiftsTypes',
+		}),
 		...mapState({
 			newShiftInstance: (state) => state.newShiftInstance.newShiftInstance,
 		}),

@@ -13,7 +13,6 @@ return [
 		['name' => 'shift#getAnalystsExcludingCurrent', 'url' => '/getAnalysts', 'verb' => 'GET'],
 		['name' => 'shift#getShiftsByUserId', 'url' => '/shifts/getAllByUserId', 'verb' => 'GET'],
 		['name' => 'shift#getCurrentUserId', 'url' => '/getCurrentUserId', 'verb' => 'GET'],
-		['name' => 'shiftsChange#getAllByUserId', 'url' => '/shiftsChange/getAllByUserId', 'verb' => 'GET'],
 		['name' => 'settings#getSettings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#saveSettings', 'url' => '/settings', 'verb' => 'PUT'],
 	]

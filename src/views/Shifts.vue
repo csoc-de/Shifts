@@ -21,8 +21,7 @@
 					</v-btn>
 				</template>
 				<v-layout class="popover-menu-layout">
-					<NewShift :shifts-types="shiftsTypes"
-							  @close="closeNewShift">
+					<NewShift @close="closeNewShift">
 					</NewShift>
 				</v-layout>
 			</v-menu>
@@ -47,10 +46,7 @@
 				</v-layout>
 			</v-menu>
 		</div>
-		<Calendar v-if="!loading"
-			:analysts="analysts"
-			:shifts="shifts"
-			:is-admin="isAdmin"/>
+		<Calendar v-if="!loading" />
 		<!-- eslint-enable-->
 	</div>
 </template>
@@ -61,6 +57,7 @@ import NewShift from './NewShift'
 import { generateUrl } from '@nextcloud/router'
 import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
+import { mapGetters } from 'vuex'
 
 export default {
 	name: 'Shifts',
@@ -72,37 +69,19 @@ export default {
 	data() {
 		return {
 			currentShiftsChange: Object,
-			isAdmin: false,
 			loading: true,
 			shiftTypeOpen: false,
 			shiftOpen: false,
-			shiftsChanges: [],
-			analysts: [],
-			shiftsTypes: [],
-			shifts: [],
 			shiftsService: null,
 		}
 	},
+	computed: {
+		...mapGetters({
+			isAdmin: 'isAdmin',
+		}),
+	},
 	async mounted() {
-		try {
-			// fetches all neccessary data
-			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
-			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
-			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
-			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
-			const analystsResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
-			this.analysts = analystsResponse.data
-			this.shiftsTypes = shiftTypeResponse.data
-			shiftResponse.data.forEach(shift => {
-				shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				this.shifts.push(shift)
-			})
-			this.shiftsChanges = shiftsChangeResponse.data
-			this.isAdmin = isAdminResponse.data
-		} catch (e) {
-			console.error(e)
-			showError(t('shifts', 'Could not fetch shifts'))
-		}
+		await this.$store.dispatch('setup')
 		this.loading = false
 	},
 	methods: {
@@ -125,8 +104,7 @@ export default {
 		async createShiftType(shiftType) {
 			try {
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), shiftType)
-				const shiftTypesResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
-				this.shiftsTypes = shiftTypesResponse.data
+				await this.$store.dispatch('updateShiftsTypes')
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shiftType'))
