@@ -358,8 +358,12 @@ export default {
 			const shiftId = GSTC.api.sourceID(item.id)
 			const shift = this.$store.getters.getShiftById(shiftId)
 			const shiftsType = this.$store.getters.getShiftsTypeById(shift.shiftTypeId)
-			return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}
+			if (this.isAdmin) {
+				return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}
 				<i class="v-icon icon icon-delete" @click="${() => this.onItemClick(item)}"></i></div>`
+			} else {
+				return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}</div>`
+			}
 		},
 		onItemClick(item) {
 			this.$store.dispatch('deleteShift', GSTC.api.sourceID(item.id))
