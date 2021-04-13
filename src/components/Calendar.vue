@@ -61,13 +61,14 @@
 <script>
 import GSTC from 'gantt-schedule-timeline-calendar'
 import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js'
-// import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
+import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
 import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js'
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { translate } from '@nextcloud/l10n'
-// import { generateUrl } from '@nextcloud/router'
-// import axios from '@nextcloud/axios'
-// import { moveExistingCalendarObject } from '../services/calendarService'
+import { mapGetters } from 'vuex'
+import { generateUrl } from '@nextcloud/router'
+import axios from '@nextcloud/axios'
+import { moveExistingCalendarObject } from '../services/calendarService'
 
 let gstc, state
 
@@ -77,7 +78,7 @@ function getMonthTranslated() {
 function getWeekTranslated() {
 	return translate('shifts', 'Woche')
 }
-/* function isCollision(movedShift) {
+function isCollision(movedShift) {
 	const allItems = gstc.api.getAllItems()
 	for (const currentShiftId in allItems) {
 		if (currentShiftId === movedShift.id) continue
@@ -106,24 +107,10 @@ function getWeekTranslated() {
 		}
 	}
 	return false
-} */
+}
 
 export default {
 	name: 'Calendar',
-	props: {
-		analysts: {
-			type: Array,
-			required: true,
-		},
-		shifts: {
-			type: Array,
-			required: true,
-		},
-		isAdmin: {
-			type: Boolean,
-			required: true,
-		},
-	},
 	data() {
 		return {
 			currentShifts: [],
@@ -145,34 +132,45 @@ export default {
 			],
 		}
 	},
+	computed: {
+		...mapGetters({
+			isAdmin: 'isAdmin',
+			analysts: 'allAnalysts',
+			shifts: 'allShifts',
+		}),
+	},
 	watch: {
 		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
-			handler(newVal) {
-				const difference = newVal
-					.filter(x => !this.currentShifts.includes(x))
-					.concat(this.currentShifts.filter(x => !newVal.includes(x)))
-				difference.forEach((shift) => {
-					const start = GSTC.api.date(shift.date)
-					const id = GSTC.api.GSTCID(shift.id)
-					let rowId = GSTC.api.GSTCID(shift.userId)
-					rowId = rowId.replaceAll('.', '-')
-					const newItem = {
-						id,
-						label: `${shift.shiftsType.name}`,
-						rowId,
-						time: {
-							start: start.valueOf(),
-							end: start.endOf('day').valueOf(),
-						},
-						style: {
-							background: shift.shiftsType.calendarColor,
-						},
-						shiftsType: shift.shiftsType,
-					}
-					state.update(`config.chart.items.${id}`, newItem)
-				})
-				this.currentShifts = newVal.slice()
+			handler(newVal, oldVal) {
+				if (newVal.length > oldVal.length) {
+					const difference = newVal.slice(newVal.length - (newVal.length - oldVal.length))
+					difference.forEach((shift) => {
+						const start = GSTC.api.date(shift.date)
+						const id = GSTC.api.GSTCID(shift.id)
+						let rowId = GSTC.api.GSTCID(shift.userId)
+						rowId = rowId.replaceAll('.', '-')
+						const newItem = {
+							id,
+							label: this.generateItemLabel,
+							rowId,
+							time: {
+								start: start.valueOf(),
+								end: start.endOf('day').valueOf(),
+							},
+							style: {
+								background: shift.shiftsType.calendarColor,
+							},
+						}
+						state.update(`config.chart.items.${id}`, newItem)
+					})
+				} else if (newVal.length < oldVal.length) {
+					this.currentShifts = newVal
+					state.update('config.chart.items', () => {
+						return GSTC.api.fromArray(this.generateItems())
+					})
+				}
+				this.currentShifts = newVal
 			},
 			deep: true,
 		},
@@ -184,7 +182,8 @@ export default {
 			today = today.add(-1, 'week')
 		}
 		const plugins = [TimeLinePointer()]
-		/* const movementPluginConfig = {
+		const store = this.$store
+		const movementPluginConfig = {
 			events: {
 				onMove({ items }) {
 					return items.before.map((beforeMovementItem, index) => {
@@ -198,26 +197,36 @@ export default {
 					})
 				},
 				onEnd({ items }) {
-					return items.initial.map(async(initialItem, index) => {
+					return items.initial.map((initialItem, index) => {
 						const afterItem = items.after[index]
-						// const shiftsId = GSTC.api.sourceID(initialItem.id)
-						// const oldAnalystId = GSTC.api.sourceID(initialItem.rowId)
-						console.log(afterItem)
-						// const newAnalystId = GSTC.api.sourceID(afterItem.rowId)
+						const shiftsId = GSTC.api.sourceID(initialItem.id)
+						const oldAnalystId = GSTC.api.sourceID(initialItem.rowId)
+						const newAnalystId = GSTC.api.sourceID(afterItem.rowId)
 
 						const oldDate = GSTC.api.date(initialItem.time.start).format('YYYY-MM-DD')
 						const newDate = GSTC.api.date(afterItem.time.start).format('YYYY-MM-DD')
 
-						// const newShift = {
-						// id: shiftsId,
-						// userId: newAnalystId,
-						// shiftTypeId: initialItem.shiftsType.id,
-						// date: newDate,
-						// }
-						await moveExistingCalendarObject(initialItem.shiftsType, oldDate, newDate)
-						// await axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift)
+						const oldShift = store.getters.getShiftById(shiftsId)
 
-						return initialItem
+						if (oldAnalystId !== newAnalystId && oldDate !== newDate) {
+							const newShift = {
+								id: shiftsId,
+								userId: newAnalystId,
+								shiftTypeId: oldShift.shiftTypeId,
+								date: newDate,
+							}
+							const oldAnalyst = store.getters.getAnalystById(oldAnalystId)
+							const newAnalyst = store.getters.getAnalystById(newAnalystId)
+							const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
+							Promise.all([
+								moveExistingCalendarObject(shiftsType, oldDate, newDate, oldAnalyst, newAnalyst),
+								axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
+							]).then(values => {
+								console.log(values)
+							})
+						}
+
+						return afterItem
 					})
 				},
 			},
@@ -226,10 +235,10 @@ export default {
 					return startTime.startOf('day')
 				},
 			},
-		} */
+		}
 		if (this.isAdmin) {
 			plugins.push(Selection())
-			// plugins.push(MovementPlugin(movementPluginConfig))
+			plugins.push(MovementPlugin(movementPluginConfig))
 		}
 		// config for the GSTC Calendar
 		const config = {
@@ -330,7 +339,7 @@ export default {
 				const shiftsType = shift.shiftsType
 				items.push({
 					id,
-					label: `${shiftsType.name}`,
+					label: this.generateItemLabel,
 					rowId,
 					time: {
 						start: start.valueOf(),
@@ -340,10 +349,19 @@ export default {
 					style: {
 						background: shiftsType.calendarColor,
 					},
-					shiftsType,
 				})
 			})
 			return items
+		},
+		generateItemLabel({ item, vido }) {
+			const shiftId = GSTC.api.sourceID(item.id)
+			const shift = this.$store.getters.getShiftById(shiftId)
+			const shiftsType = this.$store.getters.getShiftsTypeById(shift.shiftTypeId)
+			return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}
+				<i class="v-icon icon icon-delete" @click="${() => this.onItemClick(item)}"></i></div>`
+		},
+		onItemClick(item) {
+			this.$store.dispatch('deleteShift', GSTC.api.sourceID(item.id))
 		},
 		// changes the Calendar Timespan to Month or Week
 		updateCalendar() {

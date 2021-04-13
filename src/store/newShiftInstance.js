@@ -62,6 +62,7 @@ const actions = {
 					}))
 				}))
 				commit('resetNewShiftInstance')
+				dispatch('updateShifts')
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not create the shift'))

@@ -173,7 +173,9 @@ export default {
 			} else {
 				this.inputGiven = false
 				this.isLoading = false
+				matches.push(...this.allAnalysts)
 			}
+
 			this.matches = matches
 		}, 500),
 		addAnalyst(selectedValue) {
@@ -183,34 +185,13 @@ export default {
 			const data = this.allAnalysts.filter((analyst) => {
 				query = query.toLowerCase()
 				const lemail = analyst.email.toLowerCase()
-				const lname = analyst.name.toLowerCase()
+				const lname = analyst.commonName.toLowerCase()
 				return lemail.includes(query) || lname.includes(query)
 			})
-			return data.reduce((arr, result) => {
-				let name
-				if (result.name) {
-					name = result.name
-				} else if (result.name && result.email) {
-					name = `${result.name} (${result.email})`
-				} else {
-					name = result.email
-				}
-
-				if (this.alreadyInvitedEmails.includes(result.email)) {
-					return
-				}
-
-				arr.push({
-					calendarUserType: 'INDIVIDUAL',
-					commonName: result.name,
-					email: result.email,
-					isUser: true,
-					avatar: result.uid,
-					dropdownName: name,
-					userId: result.uid,
-				})
-				return arr
-			}, [])
+			console.log(data)
+			return data.filter((analyst) => {
+				return !this.alreadyInvitedEmails.includes(analyst.email)
+			})
 		},
 	},
 }

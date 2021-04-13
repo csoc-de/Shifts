@@ -103,17 +103,4 @@ class ShiftsChangeController extends Controller{
 			return $this->service->delete($id);
 		});
 	}
-
-	/**
-	 * @NoAdminRequired
-	 *
-	 * Fetches all ShiftsChanges by current UserId
-	 */
-	public function getAllByUserId(): DataResponse
-	{
-		$userId = $this->userId;
-		return $this->handleNotFound(function () use($userId){
-			return $this->service->findAllByUserId($userId);
-		});
-	}
 }

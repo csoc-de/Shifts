@@ -17,7 +17,7 @@
 			@saved="dialogSaved" />
 		<h1>{{ t('shifts','In Bearbeitung') }}</h1>
 		<!--eslint-disable-->
-		<v-list v-if="!loading">
+		<v-list>
 			<v-list-group
 				v-for="shiftsChange in inProgressShiftsChanges"
 				:key="shiftsChange.id"
@@ -147,6 +147,7 @@ import { showError } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { updateExistingCalendarObjectFromShiftsChange } from '../services/calendarService'
+import { mapGetters } from 'vuex'
 export default {
 	name: 'Requests',
 	components: {
@@ -154,17 +155,18 @@ export default {
 	},
 	data() {
 		return {
-			loading: true,
 			dialogOpen: false,
-			isAdmin: false,
-			shiftsChanges: [],
-			analysts: [],
-			shiftsTypes: [],
-			shifts: [],
-			currentUser: '',
 		}
 	},
 	computed: {
+		...mapGetters({
+			shiftsChanges: 'allShiftsChanges',
+			analysts: 'allAnalysts',
+			shiftsTypes: 'allShiftsTypes',
+			shifts: 'allShifts',
+			isAdmin: 'isAdmin',
+			currentUser: 'currentUserId',
+		}),
 		// returns ShiftsChanges which are still in Progress and needs approval
 		inProgressShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
@@ -188,34 +190,6 @@ export default {
 			}
 			return found
 		},
-	},
-	async mounted() {
-		try {
-			// fetches all necessary data
-			let shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange/getAllByUserId'))
-			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
-			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
-			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
-			const analystsResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
-			const currentUserResponse = await axios.get(generateUrl('/apps/shifts/getCurrentUserId'))
-			this.currentUser = currentUserResponse.data
-			this.isAdmin = isAdminResponse.data
-			if (this.isAdmin) {
-				shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
-			}
-			this.analysts = analystsResponse.data
-			this.shiftsTypes = shiftTypeResponse.data
-			shiftResponse.data.forEach(shift => {
-				shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				this.shifts.push(shift)
-			})
-			this.shiftsChanges = shiftsChangeResponse.data
-			this.isAdmin = isAdminResponse.data
-		} catch (e) {
-			console.error(e)
-			showError(t('shifts', 'Could not fetch shifts'))
-		}
-		this.loading = false
 	},
 	methods: {
 		openDialog() {
@@ -287,17 +261,12 @@ export default {
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
 					// fetches and updates shifts
-					const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
 					await updateExistingCalendarObjectFromShiftsChange(oldShift, newShift, oldAnalyst, newAnalyst)
-					shiftResponse.data.forEach(shift => {
-						shift.shiftsType = this.shiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-						this.shifts.push(shift)
-					})
+					await this.$store.dispatch('updateShifts')
 				}
 				// updates shiftsChange
 				await axios.put(generateUrl(`/apps/shifts/shiftsChange/${shiftsChange.id}`), shiftsChange)
-				const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
-				this.shiftsChanges = shiftsChangeResponse.data
+				await this.$store.dispatch('updateShiftsChanges')
 			} catch (e) {
 				console.error(e)
 				showError(t('shifts', 'Could not save shifts Changes'))
