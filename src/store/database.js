@@ -27,16 +27,16 @@ const getters = {
 	allAnalysts(state) {
 		return state.allAnalysts
 	},
-	allShiftsChanges(state) {
+	allShiftsChanges(state, getters) {
 		if (state.isCurrentUserAdmin) {
 			return state.allShiftsChanges
 		} else {
-			this.getShiftsChangesByUserId()
+			return getters.getShiftsChangesByUserId
 		}
 	},
-	getShiftsChangesByUserId(state) {
+	getShiftsChangesByUserId(state, getters) {
 		return state.allShiftsChanges.filter((shiftsChange) => {
-			return shiftsChange.oldAnalystId === this.currentUserId || shiftsChange.newAnalystId === this.currentUserId
+			return shiftsChange.oldAnalystId === getters.currentUserId || shiftsChange.newAnalystId === getters.currentUserId
 		})
 	},
 	allShiftsTypes(state) {
