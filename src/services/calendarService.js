@@ -143,7 +143,7 @@ const deleteExistingCalendarObject = async(shiftsType, shift, analyst) => {
 		const attendeeToBeRemoved = attendees.find((attendee) => {
 			return attendee.email === 'mailto:' + analyst.email
 		})
-		console.log(attendeeToBeRemoved)
+
 		eventComponent.removeAttendee(attendeeToBeRemoved)
 		eventComponent.title = eventComponent.title.replace(' ' + analyst.name, '')
 
@@ -295,6 +295,7 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}
+
 	let vObject
 	for (const obj of vObjects) {
 		if (obj.data.includes(`SUMMARY:${shiftsType.name}`)) {
@@ -302,6 +303,7 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 			break
 		}
 	}
+
 	if (!vObject) {
 		throw new Error('Could not find corresponding Event')
 	}

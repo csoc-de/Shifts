@@ -144,29 +144,33 @@ export default {
 		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
 			handler(newVal, oldVal) {
-				let difference = []
 				if (newVal.length > oldVal.length) {
-					difference = newVal.slice(newVal.length - (newVal.length - oldVal.length))
+					const difference = newVal.slice(newVal.length - (newVal.length - oldVal.length))
+					difference.forEach((shift) => {
+						const start = GSTC.api.date(shift.date)
+						const id = GSTC.api.GSTCID(shift.id)
+						let rowId = GSTC.api.GSTCID(shift.userId)
+						rowId = rowId.replaceAll('.', '-')
+						const newItem = {
+							id,
+							label: this.generateItemLabel,
+							rowId,
+							time: {
+								start: start.valueOf(),
+								end: start.endOf('day').valueOf(),
+							},
+							style: {
+								background: shift.shiftsType.calendarColor,
+							},
+						}
+						state.update(`config.chart.items.${id}`, newItem)
+					})
+				} else if (newVal.length < oldVal.length) {
+					this.currentShifts = newVal
+					state.update('config.chart.items', () => {
+						return GSTC.api.fromArray(this.generateItems())
+					})
 				}
-				difference.forEach((shift) => {
-					const start = GSTC.api.date(shift.date)
-					const id = GSTC.api.GSTCID(shift.id)
-					let rowId = GSTC.api.GSTCID(shift.userId)
-					rowId = rowId.replaceAll('.', '-')
-					const newItem = {
-						id,
-						label: this.generateItemLabel,
-						rowId,
-						time: {
-							start: start.valueOf(),
-							end: start.endOf('day').valueOf(),
-						},
-						style: {
-							background: shift.shiftsType.calendarColor,
-						},
-					}
-					state.update(`config.chart.items.${id}`, newItem)
-				})
 				this.currentShifts = newVal
 			},
 			deep: true,
@@ -205,19 +209,23 @@ export default {
 
 						const oldShift = store.getters.getShiftById(shiftsId)
 
-						const newShift = {
-							id: shiftsId,
-							userId: newAnalystId,
-							shiftTypeId: oldShift.shiftTypeId,
-							date: newDate,
+						if (oldAnalystId !== newAnalystId && oldDate !== newDate) {
+							const newShift = {
+								id: shiftsId,
+								userId: newAnalystId,
+								shiftTypeId: oldShift.shiftTypeId,
+								date: newDate,
+							}
+							const oldAnalyst = store.getters.getAnalystById(oldAnalystId)
+							const newAnalyst = store.getters.getAnalystById(newAnalystId)
+							const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
+							Promise.all([
+								moveExistingCalendarObject(shiftsType, oldDate, newDate, oldAnalyst, newAnalyst),
+								axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
+							]).then(values => {
+								console.log(values)
+							})
 						}
-						const oldAnalyst = store.getters.getAnalystById(oldAnalystId)
-						const newAnalyst = store.getters.getAnalystById(newAnalystId)
-						const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
-						Promise.all([
-							moveExistingCalendarObject(shiftsType, oldDate, newDate, oldAnalyst, newAnalyst),
-							axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
-						]).then()
 
 						return afterItem
 					})
