@@ -23,7 +23,7 @@
 	</settings>
     <navigations>
         <navigation>
-            <name>Shifts</name>
+            <name>Schichtplan</name>
             <route>shifts.page.index</route>
         </navigation>
     </navigations>
