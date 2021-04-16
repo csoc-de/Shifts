@@ -3,17 +3,17 @@
   -->
 <template>
 	<div>
+		<Multiselect v-model="value1"
+			:options="shiftsTypes"
+			track-by="id"
+			label="name"
+			@change="updateShiftType" />
 		<div class="app-sidebar-tab__content">
 			<AnalystsList
 				v-if="!isLoading"
 				:is-read-only="false"
 				:new-shift-instance="newShiftInstance" />
 		</div>
-		<Multiselect v-model="value1"
-			:options="shiftsTypes"
-			track-by="id"
-			label="name"
-			@change="updateShiftType" />
 		<!--eslint-disable-->
 		<v-menu
 			ref="dateMenu"
