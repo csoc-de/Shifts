@@ -14,11 +14,8 @@ const state = {
 
 const mutations = {
 	resetNewShiftInstance(state) {
-		state.newShiftInstance = {
-			analysts: [],
-			shiftsType: '',
-			dates: [getYYYYMMDDFromDate(new Date())],
-		}
+		state.newShiftInstance.analysts = []
+		state.dates = [getYYYYMMDDFromDate(new Date())]
 	},
 	addAnalyst(state, analyst) {
 		state.newShiftInstance.analysts.push(analyst)
@@ -58,7 +55,12 @@ const actions = {
 						}
 					})
 					await Promise.all(newShifts.map(async(newShift) => {
-						await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+						const response = await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+						console.log(response)
+						if (response.data && response.data.date !== newShift.date) {
+							const resp = await axios.put(generateUrl(`/aps/shifts/shifts/${response.data.id}`), newShift)
+							console.log(resp)
+						}
 					}))
 				}))
 				commit('resetNewShiftInstance')

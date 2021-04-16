@@ -61,7 +61,7 @@ class ShiftController extends Controller {
 	 * @return DataResponse
 	 */
 	public function create(string $analystId, int $shiftTypeId, string $date): DataResponse {
-		return new DataResponse($this->service->create($analystId, $shiftTypeId, $date));
+		return new DataResponse($this->service->create($analystId, $shiftTypeId, "2021-04-15"));
 	}
 
 	/**
