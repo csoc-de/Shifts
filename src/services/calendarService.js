@@ -107,6 +107,7 @@ const moveExistingCalendarObject = async(shiftsType, oldDate, newDate, oldAnalys
 		newEventComponent.title = title
 
 		if (newEventComponent.isDirty()) {
+			console.log('not dirty')
 			await shiftsCalendar.createVObject(newEventComponent.root.toICS())
 		}
 	}

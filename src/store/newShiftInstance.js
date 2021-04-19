@@ -1,4 +1,3 @@
-import { getYYYYMMDDFromDate } from '../utils/date'
 import { showError, showWarning } from '@nextcloud/dialogs'
 import { saveCalendarObjectFromNewShift } from '../services/calendarService'
 import axios from '@nextcloud/axios'
@@ -8,14 +7,14 @@ const state = {
 	newShiftInstance: {
 		analysts: [],
 		shiftsType: '',
-		dates: [getYYYYMMDDFromDate(new Date())],
+		dates: [],
 	},
 }
 
 const mutations = {
 	resetNewShiftInstance(state) {
 		state.newShiftInstance.analysts = []
-		state.dates = [getYYYYMMDDFromDate(new Date())]
+		state.dates = []
 	},
 	addAnalyst(state, analyst) {
 		state.newShiftInstance.analysts.push(analyst)
@@ -24,7 +23,6 @@ const mutations = {
 		const index = state.newShiftInstance.analysts.findIndex((analyst) => {
 			return analyst.userId === userId
 		})
-		console.log(index)
 		if (index !== -1) {
 			state.newShiftInstance.analysts.splice(index, 1)
 		}
@@ -56,10 +54,8 @@ const actions = {
 					})
 					await Promise.all(newShifts.map(async(newShift) => {
 						const response = await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
-						console.log(response)
 						if (response.data && response.data.date !== newShift.date) {
-							const resp = await axios.put(generateUrl(`/aps/shifts/shifts/${response.data.id}`), newShift)
-							console.log(resp)
+							await axios.put(generateUrl(`/apps/shifts/shifts/${response.data.id}`), newShift)
 						}
 					}))
 				}))

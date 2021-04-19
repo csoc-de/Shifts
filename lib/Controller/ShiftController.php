@@ -61,23 +61,23 @@ class ShiftController extends Controller {
 	 * @return DataResponse
 	 */
 	public function create(string $analystId, int $shiftTypeId, string $date): DataResponse {
-		return new DataResponse($this->service->create($analystId, $shiftTypeId, "2021-04-15"));
+		return new DataResponse($this->service->create($analystId, $shiftTypeId, $date));
 	}
 
 	/**
 	 * @NoAdminRequired
 	 *
 	 * @param int $id
-	 * @param string $userId
+	 * @param string $analystId
 	 * @param int $shiftTypeId
 	 * @param string $date
 	 * @return DataResponse
 	 */
-	public function update(int $id, string $userId, int $shiftTypeId, string $date): DataResponse
+	public function update(int $id, string $analystId, int $shiftTypeId, string $date): DataResponse
 	{
 		error_log($id);
-		return $this->handleNotFound(function() use ($id, $userId, $shiftTypeId, $date){
-			return $this->service->update($id, $userId, $shiftTypeId, $date);
+		return $this->handleNotFound(function() use ($id, $analystId, $shiftTypeId, $date){
+			return $this->service->update($id, $analystId, $shiftTypeId, $date);
 		});
 	}
 

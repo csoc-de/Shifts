@@ -21,7 +21,7 @@
 					</v-btn>
 				</template>
 				<v-layout class="popover-menu-layout">
-					<NewShift @close="closeNewShift">
+					<NewShift @cancel="closeNewShift">
 					</NewShift>
 				</v-layout>
 			</v-menu>
@@ -89,6 +89,7 @@ export default {
 			this.shiftTypeOpen = false
 		},
 		closeNewShift() {
+			console.log('test')
 			this.shiftOpen = false
 		},
 		async newShiftType(shiftType) {
@@ -98,7 +99,6 @@ export default {
 				console.log('No Name for ShiftType')
 				showWarning(t('shifts', 'No Name for Shift-Type given'))
 			}
-			this.closeNewShiftType()
 		},
 		// saves created Shiftstype
 		async createShiftType(shiftType) {

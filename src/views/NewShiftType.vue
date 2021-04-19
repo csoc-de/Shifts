@@ -82,7 +82,7 @@
 				swatches-max-height="200"
 				v-model="newShiftType.color">
 			</v-color-picker>
-			<v-btn color="primary" @click="colorMenu = false">
+			<v-btn color="primary" @click="cancel()">
 				Cancel
 			</v-btn>
 			<v-btn color="primary" @click="$refs.colorMenu.save(newShiftType.color)">
@@ -140,7 +140,7 @@ export default {
 			if (this.isLoading) {
 				return
 			}
-
+			this.colorMenu = false
 			this.closeEditor()
 		},
 		updateName(name) {

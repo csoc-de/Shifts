@@ -208,10 +208,10 @@ export default {
 
 						const oldShift = store.getters.getShiftById(shiftsId)
 
-						if (oldAnalystId !== newAnalystId && oldDate !== newDate) {
+						if (oldAnalystId !== newAnalystId || oldDate !== newDate) {
 							const newShift = {
 								id: shiftsId,
-								userId: newAnalystId,
+								analystId: newAnalystId,
 								shiftTypeId: oldShift.shiftTypeId,
 								date: newDate,
 							}

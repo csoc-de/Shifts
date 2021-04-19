@@ -41,7 +41,7 @@
 					locale="de-DE"
 					first-day-of-week="1">
 				<v-spacer></v-spacer>
-				<v-btn color="primary" @click="dateMenu = false">
+				<v-btn color="primary" @click="cancel()">
 					Cancel
 				</v-btn>
 				<v-btn color="primary" @click="$refs.dateMenu.save(newShiftInstance.dates)">
@@ -98,14 +98,13 @@ export default {
 			if (this.isLoading) {
 				return
 			}
-
+			this.dateMenu = false
 			this.closeEditor()
 		},
 		updateShiftType(shiftType) {
 			this.$store.commit('changeShiftsType', shiftType)
 		},
 		save() {
-			this.closeEditor()
 			this.$store.dispatch('saveNewShift', {})
 		},
 	},
