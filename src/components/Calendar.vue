@@ -137,6 +137,7 @@ export default {
 			isAdmin: 'isAdmin',
 			analysts: 'allAnalysts',
 			shifts: 'allShifts',
+			shiftsTypes: 'allShiftsTypes',
 		}),
 	},
 	watch: {
@@ -318,6 +319,10 @@ export default {
 		// generates and returns rows for each analyst
 		generateRows() {
 			const rows = []
+			rows.push({
+				id: 'unassigned',
+				label: t('shifts', 'Offene Schichten'),
+			})
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
 				id = id.replaceAll('.', '-')
@@ -330,6 +335,7 @@ export default {
 		},
 		// generates and returns item for each shift
 		generateItems() {
+			this.generateUnassignedShifts()
 			const items = []
 			this.shifts.forEach((shift, index) => {
 				const start = GSTC.api.date(shift.date)
@@ -482,6 +488,35 @@ export default {
 				time.to = endOf
 				return time
 			})
+		},
+		generateUnassignedShifts() {
+			// const shiftsNum = this.shiftsTypes.length
+			// const today = new Date()
+			// let unassignedStart = today,
+			// unassignedEnd = today
+			// unassignedStart.setDate(today.getDate() - 30)
+			// unassignedEnd.setDate(today.getDate() + 30)
+
+			let mutabelShifts = this.shifts.slice()
+
+			const occurrences = []
+
+			while (mutabelShifts.length > 0) {
+				const item = mutabelShifts[0]
+				const matchingItems = mutabelShifts.filter(obj => obj.date === item.date)
+
+				occurrences.push({
+					date: item.date,
+					count: matchingItems.length,
+					types: matchingItems.map(el => el.shiftTypeId),
+				})
+
+				mutabelShifts = mutabelShifts.filter(el => {
+					return !matchingItems.includes(el)
+				})
+			}
+
+			console.log(occurrences)
 		},
 	},
 }
