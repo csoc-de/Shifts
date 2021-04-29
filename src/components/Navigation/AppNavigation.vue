@@ -13,17 +13,33 @@
 				:title="t('shifts', 'Schichtwechsel')"
 				icon="icon-category-organization"
 				to="/requests" />
+
+			<AppNavigationItem
+				v-if="isAdmin && !loading"
+				:title="t('shifts', 'Schichttypen')"
+				icon="icon-category-customization"
+				to="/shiftsTypes" />
+		</template>
+		<template #footer>
+			Version: 1.4
 		</template>
 	</AppNavigationVue>
 </template>
 
 <script>
 import { AppNavigation as AppNavigationVue, AppNavigationItem } from '@nextcloud/vue'
+import { mapGetters } from 'vuex'
 export default {
 	name: 'AppNavigation',
 	components: {
 		AppNavigationVue,
 		AppNavigationItem,
+	},
+	computed: {
+		...mapGetters({
+			isAdmin: 'isAdmin',
+			loading: 'loading',
+		}),
 	},
 }
 </script>

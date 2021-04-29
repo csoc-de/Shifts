@@ -30,6 +30,7 @@
 		"calendar-js": "github:nextcloud/calendar-js",
 		"cdav-library": "github:nextcloud/cdav-library",
 		"core-js": "^3.8.3",
+		"dayjs": "^1.10.4",
 		"debounce": "^1.2.0",
 		"gantt-schedule-timeline-calendar": "^3.6.6",
 		"ical.js": "^1.4.0",

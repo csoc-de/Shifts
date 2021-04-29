@@ -1,6 +1,5 @@
 import { getYYYYMMDDFromDate } from '../utils/date'
 import { showError, showWarning } from '@nextcloud/dialogs'
-import { saveCalendarObjectFromNewShift } from '../services/calendarService'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 
@@ -43,7 +42,6 @@ const actions = {
 		const newShiftInstance = state.newShiftInstance
 		if (newShiftInstance.analysts && newShiftInstance.dates && newShiftInstance.shiftsType) {
 			try {
-				await saveCalendarObjectFromNewShift(newShiftInstance)
 				await Promise.all(newShiftInstance.analysts.map(async(analyst) => {
 					const analystId = analyst.userId
 					const shiftTypeId = newShiftInstance.shiftsType.id
@@ -56,10 +54,8 @@ const actions = {
 					})
 					await Promise.all(newShifts.map(async(newShift) => {
 						const response = await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
-						console.log(response)
 						if (response.data && response.data.date !== newShift.date) {
-							const resp = await axios.put(generateUrl(`/aps/shifts/shifts/${response.data.id}`), newShift)
-							console.log(resp)
+							await axios.put(generateUrl(`/apps/shifts/shifts/${response.data.id}`), newShift)
 						}
 					}))
 				}))

@@ -53,10 +53,19 @@ class ShiftsTypeController extends Controller{
 	 * @param string $startTimestamp
 	 * @param string $stopTimestamp
 	 * @param string $color
+	 * @param int $moRule
+	 * @param int $tuRule
+	 * @param int $weRule
+	 * @param int $thRule
+	 * @param int $frRule
+	 * @param int $saRule
+	 * @param int $soRule
 	 * @return DataResponse
 	 */
-	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp, string $color): DataResponse {
-		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp, $color));
+	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp, string $color,
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule): DataResponse {
+		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp, $color,
+														$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule));
 	}
 
 	/**
@@ -65,15 +74,25 @@ class ShiftsTypeController extends Controller{
 	 * @param int $id
 	 * @param string $name
 	 * @param string $desc
-	 * @param string $startTimeStamp
-	 * @param string $stopTimeStamp
+	 * @param string $startTimestamp
+	 * @param string $stopTimestamp
 	 * @param string $color
+	 * @param int $moRule
+	 * @param int $tuRule
+	 * @param int $weRule
+	 * @param int $thRule
+	 * @param int $frRule
+	 * @param int $saRule
+	 * @param int $soRule
 	 * @return DataResponse
 	 */
-	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color): DataResponse
+	public function update(int $id, string $name, string $desc, string $startTimestamp, string $stopTimestamp, string $color,
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule): DataResponse
 	{
-		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimeStamp, $stopTimeStamp, $color){
-			return $this->service->update($id, $name, $desc, $startTimeStamp, $stopTimeStamp, $color);
+		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimestamp, $stopTimestamp, $color,
+			$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule){
+			return $this->service->update($id, $name, $desc, $startTimestamp, $stopTimestamp, $color,
+											$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule);
 		});
 	}
 

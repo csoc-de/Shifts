@@ -9,6 +9,43 @@ import AttendeeProperty from 'calendar-js/src/properties/attendeeProperty'
 const organizerName = 'admin'
 const organizerEmail = 'technik@csoc.de'
 
+/**
+ * returns the calDav conform Timezone
+ *
+ * @returns {Timezone}
+ */
+const findCurrentTimezone = () => {
+	const timezoneManager = getTimezoneManager()
+	const determinedTimezone = jstz.determine()
+	return timezoneManager.getTimezoneForId(determinedTimezone.name())
+}
+
+const timezone = findCurrentTimezone()
+
+const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
+	const shiftsCalendar = await findShiftsCalendar()
+	const groups = shiftsList.reduce((array, item) => {
+		const group = (array[item.date] || [])
+		group.push(item)
+		array[item.date] = group
+		return array
+	}, {})
+	for (const group in groups) {
+		for (const shiftType of shiftTypes) {
+			const analysts = []
+			const shifts = groups[group].filter(item => item.shiftTypeId === shiftType.id.toString())
+			shifts.forEach(shift => {
+				analysts.push(allAnalysts.find((analyst) => {
+					analyst.uid = analyst.uid.replaceAll('.', '-')
+					return shift.userId === analyst.uid
+				}))
+			})
+
+			await syncCalendarObject(shiftsCalendar, shiftType, group, analysts)
+		}
+	}
+}
+
 const saveCalendarObjectFromNewShift = async(newShift) => {
 	const dates = newShift.dates
 	const shiftsType = newShift.shiftsType
@@ -18,8 +55,8 @@ const saveCalendarObjectFromNewShift = async(newShift) => {
 	const shiftsCalendar = await findShiftsCalendar()
 	await Promise.all(dates.map(async(date) => {
 		const eventComponent = createEventComponent(
-			calcShiftDate(date, shiftsType.startTimeStamp),
-			calcShiftDate(date, shiftsType.stopTimeStamp),
+			calcShiftDate(date, shiftsType.startTimestamp),
+			calcShiftDate(date, shiftsType.stopTimestamp),
 			timezone)
 
 		let title = shiftsType.name + ': '
@@ -92,8 +129,8 @@ const moveExistingCalendarObject = async(shiftsType, oldDate, newDate, oldAnalys
 	} catch (e) {
 		console.log(e)
 		const newEventComponent = createEventComponent(
-			calcShiftDate(newDate, shiftsType.startTimeStamp),
-			calcShiftDate(newDate, shiftsType.stopTimeStamp),
+			calcShiftDate(newDate, shiftsType.startTimestamp),
+			calcShiftDate(newDate, shiftsType.stopTimestamp),
 			timezone)
 
 		let title = shiftsType.name + ': '
@@ -156,6 +193,70 @@ const deleteExistingCalendarObject = async(shiftsType, shift, analyst) => {
 }
 
 /**
+ * synchronizes the calendar for a given ShiftsType and a list of
+ *
+ * @param {Calendar} calendar Shifts-Calendar
+ * @param {Object} shiftsType ShiftsType of the Shift
+ * @param {String} dateString Date of Shifts
+ * @param {array} analysts list of participating analysts
+ */
+const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => {
+	try {
+		// eslint-disable-next-line
+		const [vObject, eventComponent] = await findEventComponent(calendar, dateString, shiftsType, timezone)
+		const attendeeIterator = eventComponent.getPropertyIterator('ATTENDEE')
+		const attendees = Array.from(attendeeIterator)
+		for (const analyst of analysts) {
+			if (!attendees.some(attendee => attendee.email === 'mailto:' + analyst.email)) {
+
+				const attendee = createAttendeeFromAnalyst(analyst)
+
+				eventComponent.addProperty(attendee)
+
+				eventComponent.title = eventComponent.title + ' ' + analyst.name
+			}
+		}
+		for (const attendee of attendees) {
+			if (!analysts.some(analyst => attendee.email === 'mailto:' + analyst.email)) {
+				eventComponent.removeAttendee(attendee)
+
+				eventComponent.title = eventComponent.title.replace(attendee.commonName, '')
+			}
+		}
+
+		if (eventComponent.isDirty()) {
+			vObject.data = eventComponent.root.toICS()
+			await vObject.update()
+		}
+	} catch (e) {
+		if (e.message.includes('Could not find corresponding Event')) {
+			const eventComponent = createEventComponent(
+				calcShiftDate(dateString, shiftsType.startTimestamp),
+				calcShiftDate(dateString, shiftsType.stopTimestamp))
+
+			let title = shiftsType.name + ': '
+
+			eventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
+			console.log(analysts)
+			analysts.forEach((analyst) => {
+				console.log(analyst)
+				const attendee = createAttendeeFromAnalyst(analyst)
+				title = title + ' ' + analyst.name
+				eventComponent.addProperty(attendee)
+			})
+
+			eventComponent.title = title
+
+			if (eventComponent.isDirty()) {
+				await calendar.createVObject(eventComponent.root.toICS())
+			}
+		} else {
+			throw new Error(e)
+		}
+	}
+}
+
+/**
  * returns the dedicated Shifts-Calendar based on the Organizers name
  *
  * @returns {Calendar}
@@ -174,26 +275,14 @@ const findShiftsCalendar = async() => {
 }
 
 /**
- * returns the calDav conform Timezone
- *
- * @returns {Timezone}
- */
-const findCurrentTimezone = () => {
-	const timezoneManager = getTimezoneManager()
-	const determinedTimezone = jstz.determine()
-	return timezoneManager.getTimezoneForId(determinedTimezone.name())
-}
-
-/**
  * creates an Eventcomponent from Timestamps
  *
  * @param {Date} startDate Date of start of new event
  * @param {Date} stopDate Date of stop of new event
- * @param {Timezone} timezone Timezone of new event
  *
  * @returns {EventComponent}
  */
-const createEventComponent = (startDate, stopDate, timezone) => {
+const createEventComponent = (startDate, stopDate) => {
 	const startDateTime = DateTimeValue
 		.fromJSDate(startDate, true)
 		.getInTimezone(timezone)
@@ -220,11 +309,10 @@ const createEventComponent = (startDate, stopDate, timezone) => {
  * returns AttendeeProperty from Analyst
  *
  * @param {Object} analyst Analyst-Object of attendee to be created
- * @param {Timezone} timezone Timezone of the current instance
  *
  * @returns {AttendeeProperty}
  */
-const createAttendeeFromAnalyst = (analyst, timezone) => {
+const createAttendeeFromAnalyst = (analyst) => {
 	let name = ''
 	if (analyst.name) {
 		name = analyst.name
@@ -290,8 +378,8 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
  */
 const findEventComponent = async(calendar, dateString, shiftsType, timezone) => {
 	const vObjects = await calendar.findByTypeInTimeRange('VEVENT',
-		calcShiftDate(dateString, shiftsType.startTimeStamp),
-		calcShiftDate(dateString, shiftsType.stopTimeStamp))
+		calcShiftDate(dateString, shiftsType.startTimestamp),
+		calcShiftDate(dateString, shiftsType.stopTimestamp))
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}
@@ -330,7 +418,7 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 	}
 
 	const startDateTime = DateTimeValue
-		.fromJSDate(calcShiftDate(dateString, shiftsType.startTimeStamp), true)
+		.fromJSDate(calcShiftDate(dateString, shiftsType.startTimestamp), true)
 		.getInTimezone(timezone)
 
 	return [vObject, firstVObject.recurrenceManager.getOccurrenceAtExactly(startDateTime)]
@@ -341,4 +429,5 @@ export {
 	updateExistingCalendarObjectFromShiftsChange,
 	moveExistingCalendarObject,
 	deleteExistingCalendarObject,
+	syncAllAssignedShifts,
 }

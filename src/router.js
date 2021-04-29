@@ -5,8 +5,8 @@ import { getRootUrl, generateUrl } from '@nextcloud/router'
 import Shifts from './views/Shifts'
 
 import NewShift from './views/NewShift'
-import NewShiftType from './views/NewShiftType'
 import Requests from './views/Requests'
+import ShiftsTypes from './views/ShiftsTypes'
 
 Vue.use(Router)
 
@@ -32,17 +32,17 @@ const router = new Router({
 					name: 'NewShiftPopoverView',
 					component: NewShift,
 				},
-				{
-					path: 'newShiftType',
-					name: 'NewShiftTypePopoverView',
-					component: NewShiftType,
-				},
 			],
 		},
 		{
 			path: '/requests',
 			component: Requests,
 			name: 'RequestsView',
+		},
+		{
+			path: '/shiftsTypes',
+			component: ShiftsTypes,
+			name: 'ShiftsTypes',
 		},
 	],
 })

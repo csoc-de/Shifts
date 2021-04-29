@@ -48,5 +48,8 @@ export default new Vue({
 	router,
 	vuetify,
 	store,
+	created() {
+		this.$store.dispatch('setup')
+	},
 	render: h => h(App),
 })
