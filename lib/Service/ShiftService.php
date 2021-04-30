@@ -107,6 +107,7 @@ class ShiftService {
 			if ($lastDate) {
 				$start = date_create();
 				$start->setTimestamp($lastDate);
+				$start = date_add($start, date_interval_create_from_date_string('1 days'));
 			}
 			$end = date_create(date('Y-m-d'));
 			$end = date_add($end, date_interval_create_from_date_string('365 days'));

@@ -191,8 +191,17 @@ const actions = {
 			showError(t('shifts', 'Could not delete shift'))
 		}
 	},
+	async deleteShiftsType({ state, dispatch, getters }, shiftsType) {
+		try {
+			await axios.delete(generateUrl(`/apps/shifts/shiftsType/${shiftsType.id}`))
+			dispatch('updateShiftsTypes')
+		} catch (e) {
+			console.error(e)
+			showError(t('shifts', 'Could not delete shiftsType'))
+		}
+	},
 	async syncCalendar({ state, dispatch, getters }) {
-		await syncAllAssignedShifts(state.assignedShifts, state.allShiftsTypes, state.allAnalysts)
+		await syncAllAssignedShifts(state.allShifts, state.allShiftsTypes, state.allAnalysts)
 	},
 }
 

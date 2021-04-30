@@ -35,46 +35,27 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 			const analysts = []
 			const shifts = groups[group].filter(item => item.shiftTypeId === shiftType.id.toString())
 			shifts.forEach(shift => {
-				analysts.push(allAnalysts.find((analyst) => {
+				const foundAnalysts = allAnalysts.find((analyst) => {
 					analyst.uid = analyst.uid.replaceAll('.', '-')
 					return shift.userId === analyst.uid
-				}))
+				})
+				if (foundAnalysts) {
+					analysts.push(foundAnalysts)
+				}
 			})
-
-			await syncCalendarObject(shiftsCalendar, shiftType, group, analysts)
+			if (analysts.length > 0) {
+				await syncCalendarObject(shiftsCalendar, shiftType, group, analysts)
+			} else {
+				try {
+					// eslint-disable-next-line
+					const [vObject, eventComponent] = await findEventComponent(calendar, group, shiftType, timezone)
+					await vObject.delete()
+				} catch (e) {
+					// do nothing when no Event is found
+				}
+			}
 		}
 	}
-}
-
-const saveCalendarObjectFromNewShift = async(newShift) => {
-	const dates = newShift.dates
-	const shiftsType = newShift.shiftsType
-	const analysts = newShift.analysts
-
-	const timezone = findCurrentTimezone()
-	const shiftsCalendar = await findShiftsCalendar()
-	await Promise.all(dates.map(async(date) => {
-		const eventComponent = createEventComponent(
-			calcShiftDate(date, shiftsType.startTimestamp),
-			calcShiftDate(date, shiftsType.stopTimestamp),
-			timezone)
-
-		let title = shiftsType.name + ': '
-
-		eventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
-
-		analysts.forEach((analyst) => {
-			const attendee = createAttendeeFromAnalyst(analyst, timezone)
-			title = title + ' ' + analyst.commonName
-			eventComponent.addProperty(attendee)
-		})
-
-		eventComponent.title = title
-
-		if (eventComponent.isDirty()) {
-			await shiftsCalendar.createVObject(eventComponent.root.toICS())
-		}
-	}))
 }
 
 const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, oldAnalyst, newAnalyst) => {
@@ -107,91 +88,6 @@ const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, o
 	}
 }
 
-const moveExistingCalendarObject = async(shiftsType, oldDate, newDate, oldAnalyst, newAnalyst) => {
-	const timezone = findCurrentTimezone()
-	const shiftsCalendar = await findShiftsCalendar('Leitstellen Schichtplan')
-
-	const [vObject, eventComponent] = await findEventComponent(shiftsCalendar, oldDate, shiftsType, timezone)
-	const attendeeIterator = eventComponent.getPropertyIterator('ATTENDEE')
-	const attendees = Array.from(attendeeIterator)
-	try {
-		const [newVObject, newEventComponent] = await findEventComponent(shiftsCalendar, newDate, shiftsType, timezone)
-
-		const attendee = createAttendeeFromAnalyst(newAnalyst, timezone)
-
-		newEventComponent.addProperty(attendee)
-		newEventComponent.title = newEventComponent.title + ' ' + newAnalyst.name
-
-		if (newEventComponent.isDirty()) {
-			newVObject.data = newEventComponent.root.toICS()
-			await newVObject.update()
-		}
-	} catch (e) {
-		console.log(e)
-		const newEventComponent = createEventComponent(
-			calcShiftDate(newDate, shiftsType.startTimestamp),
-			calcShiftDate(newDate, shiftsType.stopTimestamp),
-			timezone)
-
-		let title = shiftsType.name + ': '
-
-		newEventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
-
-		const attendee = createAttendeeFromAnalyst(newAnalyst, timezone)
-		title = title + ' ' + newAnalyst.name
-		newEventComponent.addProperty(attendee)
-
-		newEventComponent.title = title
-
-		if (newEventComponent.isDirty()) {
-			await shiftsCalendar.createVObject(newEventComponent.root.toICS())
-		}
-	}
-
-	if (attendees.length === 1) {
-		await vObject.delete()
-	} else {
-		const attendeeToBeRemoved = attendees.find((attendee) => {
-			return attendee.email === 'mailto:' + oldAnalyst.email
-		})
-		console.log(attendeeToBeRemoved)
-		eventComponent.removeAttendee(attendeeToBeRemoved)
-		eventComponent.title = eventComponent.title.replace(' ' + oldAnalyst.name, '')
-
-		if (eventComponent.isDirty()) {
-			vObject.data = eventComponent.root.toICS()
-			await vObject.update()
-		}
-	}
-}
-
-const deleteExistingCalendarObject = async(shiftsType, shift, analyst) => {
-	const timezone = findCurrentTimezone()
-	const shiftsCalendar = await findShiftsCalendar()
-
-	const [vObject, eventComponent] = await findEventComponent(shiftsCalendar, shift.date, shiftsType, timezone)
-
-	const attendeeIterator = eventComponent.getPropertyIterator('ATTENDEE')
-	const attendees = Array.from(attendeeIterator)
-
-	if (attendees.length === 1) {
-		await vObject.delete()
-	} else {
-		const attendeeToBeRemoved = attendees.find((attendee) => {
-			return attendee.email === 'mailto:' + analyst.email
-		})
-
-		eventComponent.removeAttendee(attendeeToBeRemoved)
-		eventComponent.title = eventComponent.title.replace(' ' + analyst.name, '')
-
-		if (eventComponent.isDirty()) {
-			vObject.data = eventComponent.root.toICS()
-			await vObject.update()
-		}
-	}
-
-}
-
 /**
  * synchronizes the calendar for a given ShiftsType and a list of
  *
@@ -200,6 +96,7 @@ const deleteExistingCalendarObject = async(shiftsType, shift, analyst) => {
  * @param {String} dateString Date of Shifts
  * @param {array} analysts list of participating analysts
  */
+// eslint-disable-next-line
 const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => {
 	try {
 		// eslint-disable-next-line
@@ -208,7 +105,6 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 		const attendees = Array.from(attendeeIterator)
 		for (const analyst of analysts) {
 			if (!attendees.some(attendee => attendee.email === 'mailto:' + analyst.email)) {
-
 				const attendee = createAttendeeFromAnalyst(analyst)
 
 				eventComponent.addProperty(attendee)
@@ -223,10 +119,15 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 				eventComponent.title = eventComponent.title.replace(attendee.commonName, '')
 			}
 		}
-
-		if (eventComponent.isDirty()) {
-			vObject.data = eventComponent.root.toICS()
-			await vObject.update()
+		const attendeeIteratorCheck = eventComponent.getPropertyIterator('ATTENDEE')
+		const attendeesCheck = Array.from(attendeeIteratorCheck)
+		if (attendeesCheck.length > 0) {
+			if (eventComponent.isDirty()) {
+				vObject.data = eventComponent.root.toICS()
+				await vObject.update()
+			}
+		} else if (attendeesCheck.length === 0) {
+			await vObject.delete()
 		}
 	} catch (e) {
 		if (e.message.includes('Could not find corresponding Event')) {
@@ -237,9 +138,7 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 			let title = shiftsType.name + ': '
 
 			eventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
-			console.log(analysts)
 			analysts.forEach((analyst) => {
-				console.log(analyst)
 				const attendee = createAttendeeFromAnalyst(analyst)
 				title = title + ' ' + analyst.name
 				eventComponent.addProperty(attendee)
@@ -359,7 +258,7 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
 
 	event.title = event.title.replace(removeAnalyst.name, addAnalyst.name)
 
-	const newAttendee = createAttendeeFromAnalyst(addAnalyst, timezone)
+	const newAttendee = createAttendeeFromAnalyst(addAnalyst)
 
 	event.addProperty(newAttendee)
 
@@ -425,9 +324,6 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 }
 
 export {
-	saveCalendarObjectFromNewShift,
 	updateExistingCalendarObjectFromShiftsChange,
-	moveExistingCalendarObject,
-	deleteExistingCalendarObject,
 	syncAllAssignedShifts,
 }

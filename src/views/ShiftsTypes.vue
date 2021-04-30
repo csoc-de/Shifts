@@ -20,6 +20,11 @@
 					<v-list-item-title v-text="item.name"></v-list-item-title>
 					<v-list-item-action>
 						<v-btn
+							color="red lighten-1"
+							@click="deleteShiftsType(item)">
+							{{ t('shifts', 'Enfernen') }}
+						</v-btn>
+						<v-btn
 							color="light-blue"
 							@click="openEditDialog(item)">
 							{{ t('shifts', 'Bearbeiten') }}
@@ -59,6 +64,9 @@ export default {
 		openEditDialog(shiftsType) {
 			this.dialogOpen = true
 			this.$store.dispatch('editExistingShiftsType', shiftsType)
+		},
+		deleteShiftsType(shiftsType) {
+			this.$store.dispatch('deleteShiftsType', shiftsType)
 		},
 		closeDialog() {
 			this.dialogOpen = false
