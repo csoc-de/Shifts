@@ -7,6 +7,7 @@ use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Service\ShiftService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IGroupManager;
 
@@ -182,6 +183,33 @@ class ShiftController extends Controller {
 	 */
 	public function getCurrentUserId() : DataResponse{
 		return new DataResponse($this->userId);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * Trigger for inserting unassigned shifts
+	 *
+	 * @return DataResponse
+	 */
+	public function triggerUnassignedShifts() : DataResponse {
+		$bool = $this->service->triggerUnassignedShifts();
+		return new DataResponse($bool);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * Fetches assigned shifts
+	 *
+	 * @return DataResponse
+	 */
+	public function getAssignedShifts() : DataResponse
+	{
+		return $this->handleNotFound(function (){
+			return $this->service->findAssignedShifts();
+		});
 	}
 }
 

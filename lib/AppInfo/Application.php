@@ -8,7 +8,7 @@ use OCP\IConfig;
 use OCP\Security\CSP\AddContentSecurityPolicyEvent;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
 
-class Application extends App {
+class Application extends App{
 	public const APP_ID = 'shifts';
 
 	public function __construct() {

@@ -2,7 +2,7 @@
   - View to display and add Requests
   -->
 <template>
-	<div class="requests_content">
+	<div class="tab_content">
 		<v-btn
 			v-if="isAnalyst || isAdmin"
 			color="light-blue"

@@ -43,7 +43,6 @@
 				class="padding_correction">
 				<v-select
 					class="calendar-format-select"
-					v-model="selectedCalendarFormat"
 					:items="calendarFormats"
 					outlined
 					attach
@@ -68,7 +67,9 @@ import { translate } from '@nextcloud/l10n'
 import { mapGetters } from 'vuex'
 import { generateUrl } from '@nextcloud/router'
 import axios from '@nextcloud/axios'
-import { moveExistingCalendarObject } from '../services/calendarService'
+import dayOfYear from 'dayjs/plugin/dayOfYear'
+import dayjs from 'dayjs'
+import 'dayjs/locale/de'
 
 let gstc, state
 
@@ -113,20 +114,17 @@ export default {
 	name: 'Calendar',
 	data() {
 		return {
-			currentShifts: [],
-			date: GSTC.api.date(),
 			typeToLabel: {
 				month: getMonthTranslated(),
 				week: getWeekTranslated(),
 			},
-			selectedCalendarFormat: 2,
 			calendarFormats: [
 				{
-					value: 1,
+					value: 'month',
 					text: getMonthTranslated(),
 				},
 				{
-					value: 2,
+					value: 'week',
 					text: getWeekTranslated(),
 				},
 			],
@@ -136,51 +134,28 @@ export default {
 		...mapGetters({
 			isAdmin: 'isAdmin',
 			analysts: 'allAnalysts',
-			shifts: 'allShifts',
+			shifts: 'displayedShifts',
+			shiftsTypes: 'allShiftsTypes',
+			date: 'currentDateDisplayed',
+			selectedCalendarFormat: 'currentDateDisplayFormat',
 		}),
 	},
 	watch: {
 		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
 			handler(newVal, oldVal) {
-				if (newVal.length > oldVal.length) {
-					const difference = newVal.slice(newVal.length - (newVal.length - oldVal.length))
-					difference.forEach((shift) => {
-						const start = GSTC.api.date(shift.date)
-						const id = GSTC.api.GSTCID(shift.id)
-						let rowId = GSTC.api.GSTCID(shift.userId)
-						rowId = rowId.replaceAll('.', '-')
-						const newItem = {
-							id,
-							label: this.generateItemLabel,
-							rowId,
-							time: {
-								start: start.valueOf(),
-								end: start.endOf('day').valueOf(),
-							},
-							style: {
-								background: shift.shiftsType.calendarColor,
-							},
-						}
-						state.update(`config.chart.items.${id}`, newItem)
-					})
-				} else if (newVal.length < oldVal.length) {
-					this.currentShifts = newVal
-					state.update('config.chart.items', () => {
-						return GSTC.api.fromArray(this.generateItems())
-					})
-				}
-				this.currentShifts = newVal
+				state.update('config', config => {
+					config.chart.items = GSTC.api.fromArray(this.generateItems())
+					return config
+				})
 			},
 			deep: true,
 		},
 	},
 	mounted() {
-		this.currentShifts = this.shifts.slice()
-		let today = GSTC.api.date()
-		if (today.day() === 0) {
-			today = today.add(-1, 'week')
-		}
+		dayjs.extend(dayOfYear)
+		dayjs.locale('de')
+		const today = dayjs()
 		const plugins = [TimeLinePointer()]
 		const store = this.$store
 		const movementPluginConfig = {
@@ -200,31 +175,23 @@ export default {
 					return items.initial.map((initialItem, index) => {
 						const afterItem = items.after[index]
 						const shiftsId = GSTC.api.sourceID(initialItem.id)
-						const oldAnalystId = GSTC.api.sourceID(initialItem.rowId)
 						const newAnalystId = GSTC.api.sourceID(afterItem.rowId)
 
-						const oldDate = GSTC.api.date(initialItem.time.start).format('YYYY-MM-DD')
 						const newDate = GSTC.api.date(afterItem.time.start).format('YYYY-MM-DD')
 
 						const oldShift = store.getters.getShiftById(shiftsId)
-
-						if (oldAnalystId !== newAnalystId || oldDate !== newDate) {
-							const newShift = {
-								id: shiftsId,
-								analystId: newAnalystId,
-								shiftTypeId: oldShift.shiftTypeId,
-								date: newDate,
-							}
-							const oldAnalyst = store.getters.getAnalystById(oldAnalystId)
-							const newAnalyst = store.getters.getAnalystById(newAnalystId)
-							const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
-							Promise.all([
-								moveExistingCalendarObject(shiftsType, oldDate, newDate, oldAnalyst, newAnalyst),
-								axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
-							]).then(values => {
-								console.log(values)
-							})
+						const newShift = {
+							id: shiftsId,
+							userId: newAnalystId,
+							shiftTypeId: oldShift.shiftTypeId,
+							date: newDate,
 						}
+						Promise.all([
+							axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
+						]).then(values => {
+							console.log(values)
+							store.dispatch('updateShifts')
+						})
 
 						return afterItem
 					})
@@ -266,8 +233,8 @@ export default {
 			chart: {
 				items: GSTC.api.fromArray(this.generateItems()),
 				time: {
-					from: today.startOf('week').add(1, 'day').valueOf(),
-					to: today.endOf('week').add(1, 'day').valueOf(),
+					from: today.startOf('week').valueOf(),
+					to: today.endOf('week').valueOf(),
 					calculatedZoomMode: true,
 				},
 			},
@@ -318,6 +285,10 @@ export default {
 		// generates and returns rows for each analyst
 		generateRows() {
 			const rows = []
+			rows.push({
+				id: '-1',
+				label: t('shifts', 'Offene Schichten'),
+			})
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
 				id = id.replaceAll('.', '-')
@@ -347,7 +318,7 @@ export default {
 					},
 					minWidth: 200,
 					style: {
-						background: shiftsType.calendarColor,
+						background: shiftsType.color,
 					},
 				})
 			})
@@ -368,118 +339,48 @@ export default {
 			this.$store.dispatch('deleteShift', GSTC.api.sourceID(item.id))
 		},
 		// changes the Calendar Timespan to Month or Week
-		updateCalendar() {
-			// due to Sunday being the start of the week in Date, the week must be corrected accordingly to display correctly
-			if (this.date.day() === 0) {
-				this.date = this.date.add(-1, 'week')
-			}
-			let startOf, endOf
-			switch (this.selectedCalendarFormat) {
-			// month
-			case 1:
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-				break
-			// week
-			case 2:
-				startOf = this.date.startOf('week').add(1, 'day').valueOf()
-				endOf = this.date.endOf('week').add(1, 'day').valueOf()
-				break
-			// defaults to month
-			default:
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-			}
+		async updateCalendar(format) {
+			await this.$store.commit('updateDisplayedDateFormat', format)
+			const date = this.date
 			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
-				time.from = startOf
-				time.to = endOf
+				time.from = date.startOf(format).valueOf()
+				time.to = date.endOf(format).valueOf()
 				return time
 			})
 		},
 		// changes the time of calendar to current timespan including today
-		setToday() {
-			const today = GSTC.api.date()
-			this.date = today
-			let startOf, endOf
-			switch (this.selectedCalendarFormat) {
-			// month
-			case 1:
-				startOf = today.startOf('month').valueOf()
-				endOf = today.endOf('month').valueOf()
-				break
-			// week
-			case 2:
-				startOf = today.startOf('week').add(1, 'day').valueOf()
-				endOf = today.endOf('week').add(1, 'day').valueOf()
-				break
-			// defaults to month
-			default:
-				startOf = today.startOf('month').valueOf()
-				endOf = today.endOf('month').valueOf()
-			}
+		async setToday() {
+			const today = dayjs()
+			await this.$store.commit('updateDisplayedDate', today)
 			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
-				time.from = startOf
-				time.to = endOf
+				time.from = today.startOf(this.selectedCalendarFormat).valueOf()
+				time.to = today.endOf(this.selectedCalendarFormat).valueOf()
 				return time
 			})
 		},
 		// move to previous timeinterval with given calendarformat
-		prev() {
-			let startOf, endOf
-			switch (this.selectedCalendarFormat) {
-			// month
-			case 1:
-				this.date = this.date.add(-1, 'month')
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-				break
-			// week
-			case 2:
-				this.date = this.date.add(-1, 'week')
-				startOf = this.date.startOf('week').add(1, 'day').valueOf()
-				endOf = this.date.endOf('week').add(1, 'day').valueOf()
-				break
-			// defaults to month
-			default:
-				this.date = this.date.add(-1, 'month')
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-			}
+		async prev() {
+			let date = this.date
 			// updating the state of the calendar
+			date = date.add(-1, this.selectedCalendarFormat)
+			await this.$store.commit('updateDisplayedDate', date)
 			state.update('config.chart.time', (time) => {
-				time.from = startOf
-				time.to = endOf
+				time.from = date.startOf(this.selectedCalendarFormat).valueOf()
+				time.to = date.endOf(this.selectedCalendarFormat).valueOf()
 				return time
 			})
 		},
 		// move to next timeinterval with given calendarformat
-		next() {
-			let startOf, endOf
-			switch (this.selectedCalendarFormat) {
-			// month
-			case 1:
-				this.date = this.date.add(1, 'month')
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-				break
-			// week
-			case 2:
-				this.date = this.date.add(1, 'week')
-				startOf = this.date.startOf('week').add(1, 'day').valueOf()
-				endOf = this.date.endOf('week').add(1, 'day').valueOf()
-				break
-			// defaults to month
-			default:
-				this.date = this.date.add(1, 'month')
-				startOf = this.date.startOf('month').valueOf()
-				endOf = this.date.endOf('month').valueOf()
-			}
+		async next() {
+			let date = this.date
+			date = date.add(1, this.selectedCalendarFormat)
 			// updating the state of the calendar
+			await this.$store.commit('updateDisplayedDate', date)
 			state.update('config.chart.time', (time) => {
-				time.from = startOf
-				time.to = endOf
+				time.from = date.startOf(this.selectedCalendarFormat).valueOf()
+				time.to = date.endOf(this.selectedCalendarFormat).valueOf()
 				return time
 			})
 		},

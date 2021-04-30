@@ -1,5 +1,4 @@
 import { showError, showWarning } from '@nextcloud/dialogs'
-import { saveCalendarObjectFromNewShift } from '../services/calendarService'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 
@@ -41,7 +40,6 @@ const actions = {
 		const newShiftInstance = state.newShiftInstance
 		if (newShiftInstance.analysts && newShiftInstance.dates && newShiftInstance.shiftsType) {
 			try {
-				await saveCalendarObjectFromNewShift(newShiftInstance)
 				await Promise.all(newShiftInstance.analysts.map(async(analyst) => {
 					const analystId = analyst.userId
 					const shiftTypeId = newShiftInstance.shiftsType.id

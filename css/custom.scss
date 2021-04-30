@@ -72,6 +72,7 @@
 
 .v-menu__content {
 	width: 10em;
+	background-color: white;
 }
 
 .layout {
@@ -148,11 +149,11 @@
 	max-width:70% !important;
 }
 
-.requests_content , .shifts_content{
+.tab_content , .shifts_content{
 	padding: 20px 30px
 }
 
-.requests_content h1 {
+.tab_content h1 {
 	font-size: xx-large;
 	font-weight: bold;
 	margin-bottom: 20px;
@@ -166,5 +167,21 @@
 .gstc-items {
 	width: 100%;
 }
+
+.v-btn--has-bg {
+	background-color: var(--color-primary-element)!important;
+}
+
+.v-picker__title {
+	background-color: var(--color-primary-element)!important;
+}
+
+.shifts-type-modal {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	min-height: 400px;
+	max-height: 600px;
+}
+
 
 

@@ -5,7 +5,7 @@
     <name>Schichtplan</name>
     <summary>App for organising Shifts</summary>
     <description><![CDATA[This is an app to organize Shifts or Shift-Work schedules]]></description>
-    <version>1.3.0</version>
+    <version>1.4.1</version>
     <licence>agpl</licence>
     <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
     <namespace>Shifts</namespace>
