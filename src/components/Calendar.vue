@@ -175,7 +175,9 @@ export default {
 					return items.initial.map((initialItem, index) => {
 						const afterItem = items.after[index]
 						const shiftsId = GSTC.api.sourceID(initialItem.id)
-						const newAnalystId = GSTC.api.sourceID(afterItem.rowId)
+						let newAnalystId = GSTC.api.sourceID(afterItem.rowId)
+
+						newAnalystId = newAnalystId.replaceAll('_', '.')
 
 						const newDate = GSTC.api.date(afterItem.time.start).format('YYYY-MM-DD')
 
@@ -189,7 +191,6 @@ export default {
 						Promise.all([
 							axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
 						]).then(values => {
-							console.log(values)
 							store.dispatch('updateShifts')
 						})
 
@@ -291,7 +292,7 @@ export default {
 			})
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
-				id = id.replaceAll('.', '-')
+				id = id.replaceAll('.', '_')
 				rows.push({
 					id,
 					label: analyst.name,
@@ -306,7 +307,7 @@ export default {
 				const start = GSTC.api.date(shift.date)
 				const id = shift.id
 				let rowId = shift.userId
-				rowId = rowId.replaceAll('.', '-')
+				rowId = rowId.replaceAll('.', '_')
 				const shiftsType = shift.shiftsType
 				items.push({
 					id,
@@ -336,7 +337,7 @@ export default {
 			}
 		},
 		onItemClick(item) {
-			this.$store.dispatch('deleteShift', GSTC.api.sourceID(item.id))
+			this.$store.dispatch('deleteAssignment', GSTC.api.sourceID(item.id))
 		},
 		// changes the Calendar Timespan to Month or Week
 		async updateCalendar(format) {

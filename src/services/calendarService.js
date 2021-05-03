@@ -30,14 +30,14 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 		array[item.date] = group
 		return array
 	}, {})
+	console.log(allAnalysts)
 	for (const group in groups) {
 		for (const shiftType of shiftTypes) {
 			const analysts = []
 			const shifts = groups[group].filter(item => item.shiftTypeId === shiftType.id.toString())
 			shifts.forEach(shift => {
 				const foundAnalyst = allAnalysts.find((analyst) => {
-					const email = analyst.email.replaceAll('.', '-')
-					return shift.userId === email
+					return shift.userId === analyst.email
 				})
 				if (foundAnalyst) {
 					analysts.push(foundAnalyst)

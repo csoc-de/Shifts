@@ -44,6 +44,30 @@ const mutations = {
 	updateDisplayedDateFormat(state, newFormat) {
 		state.currentDateDisplayFormat = newFormat
 	},
+	updateCurrentUser(state, currentUserId) {
+		state.currentUserId = currentUserId
+	},
+	updateUserStatus(state, status) {
+		state.isCurrentUserAdmin = status
+	},
+	updateAllShifts(state, allShifts) {
+		state.allShifts = allShifts
+	},
+	updateAllAssignedShifts(state, allAssignedShifts) {
+		state.assignedShifts = allAssignedShifts
+	},
+	updateAllShiftsTypes(state, allShiftsTypes) {
+		state.allShiftsTypes = allShiftsTypes
+	},
+	updateAllAnalysts(state, allAnalysts) {
+		state.allAnalysts = allAnalysts
+	},
+	updateAllShiftsChanges(state, allShiftsChanges) {
+		state.allShiftsChanges = allShiftsChanges
+	},
+	updateLoading(state, loading) {
+		state.loading = loading
+	},
 }
 
 const getters = {
@@ -109,7 +133,7 @@ const getters = {
 const actions = {
 	async setup({ state, dispatch, commit }) {
 		try {
-			state.loading = true
+			commit('updateLoading', true)
 			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
 			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
@@ -118,19 +142,23 @@ const actions = {
 			const currentUserResponse = await axios.get(generateUrl('/apps/shifts/getCurrentUserId'))
 			const assignedShiftsResponse = await axios.get(generateUrl('/apps/shifts/getAssignedShifts'))
 
-			state.currentUserId = currentUserResponse.data
-			state.isCurrentUserAdmin = isAdminResponse.data
-			state.allAnalysts = analystsResponse.data
-			state.allShiftsChanges = shiftsChangeResponse.data
-			state.allShiftsTypes = shiftTypeResponse.data
+			commit('updateCurrentUser', currentUserResponse.data)
+			commit('updateUserStatus', isAdminResponse.data)
+			commit('updateAllAnalysts', analystsResponse.data)
+			commit('updateAllShiftsChanges', shiftsChangeResponse.data)
+			commit('updateAllShiftsTypes', shiftTypeResponse.data)
+			const allShifts = []
 			shiftResponse.data.forEach(shift => {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				state.allShifts.push(shift)
+				allShifts.push(shift)
 			})
+			commit('updateAllShifts', allShifts)
+			const assignedShifts = []
 			assignedShiftsResponse.data.forEach(shift => {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				state.assignedShifts.push(shift)
+				assignedShifts.push(shift)
 			})
+			commit('updateAllAssignedShifts', assignedShifts)
 			if (state.isCurrentUserAdmin) {
 				axios.get(generateUrl('/apps/shifts/triggerUnassignedShifts')).then(() => dispatch('updateShifts'))
 			}
@@ -139,7 +167,7 @@ const actions = {
 			showError(t('shifts', 'Could not fetch data'))
 		}
 
-		state.loading = false
+		commit('updateLoading', false)
 	},
 	async updateShifts({ state, dispatch, commit }) {
 		try {
@@ -155,17 +183,18 @@ const actions = {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				newAssignedShifts.push(shift)
 			})
-			state.allShifts = newShifts
-			state.assignedShifts = newAssignedShifts
+			commit('updateAllShifts', newShifts)
+			commit('updateAllAssignedShifts', newAssignedShifts)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
 		}
+		console.log('done updating')
 	},
 	async updateShiftsTypes({ state, dispatch, commit }) {
 		try {
 			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
-			state.allShiftsTypes = shiftTypeResponse.data
+			commit('updateAllShiftsTypes', shiftTypeResponse.data)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts-types'))
@@ -174,17 +203,22 @@ const actions = {
 	async updateShiftsChanges({ commit, state, getters }) {
 		try {
 			const shiftsChangeResponse = await axios.get(generateUrl('/apps/shifts/shiftsChange'))
-			state.allShiftsChanges = shiftsChangeResponse.data
+			commit('updateAllShiftsChanges', shiftsChangeResponse.data)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts-changes'))
 		}
 	},
-	async deleteShift({ state, dispatch, getters }, shiftId) {
+	async deleteAssignment({ state, dispatch, getters }, shiftId) {
 		try {
 			const shift = getters.getShiftById(shiftId)
-			shift.userId = '-1'
-			await axios.put(generateUrl(`/apps/shifts/shifts/${shiftId}`), shift)
+			if (shift.userId === '-1') {
+				console.log(shift)
+				await axios.delete(generateUrl(`/apps/shifts/shifts/${shiftId}`))
+			} else {
+				shift.analystId = '-1'
+				await axios.put(generateUrl(`/apps/shifts/shifts/${shiftId}`), shift)
+			}
 			dispatch('updateShifts')
 		} catch (e) {
 			console.error(e)

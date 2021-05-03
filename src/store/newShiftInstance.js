@@ -41,6 +41,7 @@ const actions = {
 		if (newShiftInstance.analysts && newShiftInstance.dates && newShiftInstance.shiftsType) {
 			try {
 				await Promise.all(newShiftInstance.analysts.map(async(analyst) => {
+					console.log(analyst)
 					const analystId = analyst.userId
 					const shiftTypeId = newShiftInstance.shiftsType.id
 					const newShifts = newShiftInstance.dates.map((date) => {
