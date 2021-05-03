@@ -30,6 +30,8 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 		array[item.date] = group
 		return array
 	}, {})
+	console.log('groups', groups)
+	console.log('shifts', shiftsList)
 	for (const group in groups) {
 		for (const shiftType of shiftTypes) {
 			const analysts = []
