@@ -182,7 +182,7 @@ export default {
 						const oldShift = store.getters.getShiftById(shiftsId)
 						const newShift = {
 							id: shiftsId,
-							userId: newAnalystId,
+							analystId: newAnalystId,
 							shiftTypeId: oldShift.shiftTypeId,
 							date: newDate,
 						}
