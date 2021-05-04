@@ -9,7 +9,9 @@
             "email": "fabian.kirchesch@csoc.de"
         }
     ],
-    "require": {},
+    "require": {
+      "ext-json": "*"
+    },
     "require-dev": {
         "phpunit/phpunit": "^7.5",
         "nextcloud/coding-standard": "^0.5.0"

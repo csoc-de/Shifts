@@ -6,45 +6,56 @@ script('shifts', 'settings');
 ?>
 
 <div id="admin_settings">
-	<h2><?php p($l->t('Shifts')); ?></h2>
+	<h2><?php p($l->t('Shifts')); ?> <a class="icon-info svg" title href="https://gitlab.csoc.de/csoc/nextcloud/shifts" data-original-title="<?php p($l->t('Dokumentation')); ?>"></a></h2>
 
-	<p><?php p($l->t('Name of the Calendar to save Events to'))?></p>
+	<p><?php p($l->t('Name des Schichtkalenders'))?></p>
 	<p>
 		<input id="shiftsCalendarName" value="<?php p($_['calendarName']) ?>" placeholder="Calendar" type="text" />
 	</p>
 
-	<p><?php p($l->t('Name of the Shifts Organizer'))?></p>
+	<p><?php p($l->t('Name des Schichtorganisators'))?></p>
 	<p>
 		<input id="shiftsOrganizerName" value="<?php p($_['organizerName']) ?>" placeholder="admin" type="text" />
 	</p>
 
-	<p><?php p($l->t('Email of the Shifts Organizer'))?></p>
+	<p><?php p($l->t('Email des Schichtorganisators'))?></p>
 	<p>
 		<input id="shiftsOrganizerEmail" value="<?php p($_['organizerEmail']) ?>" placeholder="technik@csoc.de" type="text" />
 	</p>
 
-	<p><?php p($l->t('Shifts Admin Group Name'))?></p>
+	<p><?php p($l->t('Name der Schichtadmin-Gruppe'))?></p>
 	<p>
 		<input id="shiftsAdminGroup" value="<?php p($_['adminGroup']) ?>" placeholder="ShiftsAdmin" type="text" />
 	</p>
 
-	<p><?php p($l->t('Shifts Worker Group Name'))?></p>
+	<p><?php p($l->t('Name der Schichtmitarbeiter-Gruppe'))?></p>
 	<p>
 		<input id="shiftsWorkerGroup" value="<?php p($_['shiftWorkerGroup']) ?>" placeholder="Blueteam" type="text" />
 	</p>
 	<div id="shiftsWorkerCategoriesContainer">
-		<?php
-		foreach ($_['shiftsWorkerCategories'] as $category => $data) {
-			?>
-			<p><?php p($l->t($category))?></p>
-			<p>
-				<input class="shiftsWorkerCategories" value="<?php p($_['shiftsWorkerCategories']) ?>" placeholder="" type="text" />
-			</p>
-			<?php
-		}
-		?>
-	</div>
-	<button id="addNewCategory"><?php p($l->t('Add Category')); ?></button>
+		<p><?php p($l->t('Name der Mitarbeiter-Skill Gruppen'))?></p>
 
-	<button><?php p($l->t('Save')); ?></button>
+		<p id="categoriesList" style="visibility: hidden; width: 0; height: 0"><?php echo( json_decode($_['shiftWorkerCategories']))?></p>
+		<div id="shiftsWorkerCategories">
+			<?php
+			foreach ($_['shiftWorkerCategories'] as $category => $data) {
+				?>
+				<div style="display: flex">
+					<p>
+						<input class="shiftsWorkerCategoriesInput" value="<?php p($data) ?>" placeholder="" type="text" />
+					</p>
+					<div id="<?php p($category)?>" class="theme-remove-bg icon icon-delete deleteButton" data-toggle="tooltip" data-original-title="Löschen"></div>
+				</div>
+				<?php
+			}
+			?>
+		</div>
+		<button id="addNewCategory">
+			<?php p($l->t('Hinzufügen')); ?>
+		</button>
+	</div>
+
+
+
+	<button><?php p($l->t('Speichern')); ?></button>
 </div>

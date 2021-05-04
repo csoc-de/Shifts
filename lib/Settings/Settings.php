@@ -78,7 +78,7 @@ class Settings{
 		$this->config->setAppValue($this->appName,$this->_organizerEmail, 'technik@csoc.de');
 		$this->config->setAppValue($this->appName,$this->_adminGroup, 'ShiftsAdmin');
 		$this->config->setAppValue($this->appName,$this->_shiftWorkerGroup, 'Blueteam');
-		$this->config->setAppValue($this->appName,$this->_shiftWorkerCategories, '["CSOC Level 1", "CSOC Level 2", "CSOC Level 3"]');
+		$this->config->setAppValue($this->appName,$this->_shiftWorkerCategories, '[ {"id" : 0, "name": CSOC Level 1"}, {"id" : 1, "name": CSOC Level 2"}, {"id" : 2, "name": CSOC Level 3"} ]');
 	}
 
 	/**
