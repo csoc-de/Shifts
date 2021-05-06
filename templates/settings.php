@@ -35,20 +35,8 @@ script('shifts', 'settings');
 	<div id="shiftsWorkerCategoriesContainer">
 		<p><?php p($l->t('Name der Mitarbeiter-Skill Gruppen'))?></p>
 
-		<p id="categoriesList" style="visibility: hidden; width: 0; height: 0"><?php echo( json_decode($_['shiftWorkerCategories']))?></p>
+		<p id="categoriesList" style="visibility: hidden; width: 0; height: 0"><?php echo( json_encode($_['shiftWorkerCategories']))?></p>
 		<div id="shiftsWorkerCategories">
-			<?php
-			foreach ($_['shiftWorkerCategories'] as $category => $data) {
-				?>
-				<div style="display: flex">
-					<p>
-						<input class="shiftsWorkerCategoriesInput" value="<?php p($data) ?>" placeholder="" type="text" />
-					</p>
-					<div id="<?php p($category)?>" class="theme-remove-bg icon icon-delete deleteButton" data-toggle="tooltip" data-original-title="Löschen"></div>
-				</div>
-				<?php
-			}
-			?>
 		</div>
 		<button id="addNewCategory">
 			<?php p($l->t('Hinzufügen')); ?>
@@ -57,5 +45,5 @@ script('shifts', 'settings');
 
 
 
-	<button><?php p($l->t('Speichern')); ?></button>
+	<button id="saveButton"><?php p($l->t('Speichern')); ?></button>
 </div>

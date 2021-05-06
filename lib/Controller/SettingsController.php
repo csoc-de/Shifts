@@ -66,7 +66,12 @@ class SettingsController extends Controller {
 		$this->settings->setOrganizerEmail($organizerEmail);
 		$this->settings->setAdminGroup($adminGroup);
 		$this->settings->setShiftWorkerGroup($shiftWorkerGroup);
+
+		error_log(json_encode($this->settings->getShiftWorkerCategories()));
+
 		$this->settings->setShiftWorkerCategories($shiftWorkerCategories);
+
+		error_log(json_encode($this->settings->getShiftWorkerCategories()));
 	}
 
 	/**
