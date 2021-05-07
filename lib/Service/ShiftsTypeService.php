@@ -41,7 +41,7 @@ class ShiftsTypeService {
 	}
 
 	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId){
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
@@ -55,11 +55,12 @@ class ShiftsTypeService {
 		$shiftsType->setFrRule($frRule);
 		$shiftsType->setSaRule($saRule);
 		$shiftsType->setSoRule($soRule);
+		$shiftsType->setSkillGroupId($skillGroupId);
 		return $this->mapper->insert($shiftsType);
 	}
 
 	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId){
 		try{
 			$shiftsType = $this->mapper->find($id);
 			$shiftsType->setName($name);
@@ -74,6 +75,7 @@ class ShiftsTypeService {
 			$shiftsType->setFrRule($frRule);
 			$shiftsType->setSaRule($saRule);
 			$shiftsType->setSoRule($soRule);
+			$shiftsType->setSkillGroupId($skillGroupId);
 			return $this->mapper->update($shiftsType);
 		} catch(Exception $e){
 			$this->handleException($e);

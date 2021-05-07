@@ -1,5 +1,5 @@
 (function ($, OC) {
-	var categoryList = []
+	var skillGroupList = []
 	$(document).ready(function() {
 		OCA.Shifts = _.extend({}, OCA.Shifts)
 		if (!OCA.Shifts.AppName) {
@@ -7,28 +7,24 @@
 				AppName: 'shifts'
 			}
 		}
-		categoryList = jQuery.parseJSON($('#categoriesList').text())
+		skillGroupList = jQuery.parseJSON($('#skillGroupList').text())
 
-		for (const category of categoryList) {
-			$('#shiftsWorkerCategories').append(
-				'<div class="shiftsWorkerCategory" style="display: flex">' +
-				'<p>' +
-				`<input id="${category.id}" class="shiftsWorkerCategoriesInput" value="${category.name}" placeholder="" type="text" />` +
-				'</p>' +
-				`<div id="${category.id}" class="theme-remove-bg icon icon-delete deleteButton" data-toggle="tooltip" data-original-title="Löschen"></div>` +
+		for (const skillGroup of skillGroupList) {
+			$('#skillGroups').append(
+				'<div class="skillGroup" style="display: flex">' +
+				`<input id="${skillGroup.id}" class="skillGroupInput" value="${skillGroup.name}" placeholder="" type="text" />` +
+				`<div id="${skillGroup.id}" class="theme-remove-bg icon icon-delete deleteButton" data-toggle="tooltip" data-original-title="Löschen"></div>` +
 				'</div>'
 			)
 		}
 
 	})
 
-	$('#addNewCategory').click(function () {
-		const id = Math.max(...categoryList.map(category => category.id)) + 1
-		$('#shiftsWorkerCategories').append(
-			'<div class="shiftsWorkerCategory" style="display: flex">' +
-			'<p>' +
-			'<input id="${id}" class="shiftsWorkerCategoriesInput" value="" placeholder="" type="text" />' +
-			'</p>' +
+	$('#addNewSkillGroup').click(function () {
+		const id = Math.max(...skillGroupList.map(skillGroup => skillGroup.id)) + 1
+		$('#skillGroups').append(
+			'<div class="skillGroup" style="display: flex">' +
+			`<input id="${id}" class="skillGroupInput" value="" placeholder="" type="text" />` +
 			`<div id="${id}" class="theme-remove-bg icon icon-delete deleteButton" data-toggle="tooltip" data-original-title="Löschen"></div>` +
 			'</div>'
 		)
@@ -37,21 +33,18 @@
 	$('body').on('click', 'div.deleteButton', function() {
 		const id = $(this).attr('id')
 
-		$(`#${id}`).parents('.shiftsWorkerCategory').remove()
+		$(`#${id}`).parents('.skillGroup').remove()
 	})
 
 	$('#saveButton').click(function () {
-		console.log('save')
-
 		var shiftsCalendarName = ($("#shiftsCalendarName").val() || "").trim()
 		var shiftsOrganizerName = ($("#shiftsOrganizerName").val() || "").trim()
 		var shiftsOrganizerEmail = ($("#shiftsOrganizerEmail").val() || "").trim()
 		var shiftsAdminGroup = ($("#shiftsAdminGroup").val() || "").trim()
 		var shiftsWorkerGroup = ($("#shiftsWorkerGroup").val() || "").trim()
 
-		var shiftsCategories = $("input[class='shiftsWorkerCategoriesInput']")
+		var skillGroups = $("input[class='skillGroupInput']")
 								.map(function(){
-									console.log($(this).attr('id'))
 									return {
 										id: $(this).attr('id'),
 										name: $(this).val(),
@@ -64,7 +57,7 @@
 			organizerEmail: shiftsOrganizerEmail,
 			adminGroup: shiftsAdminGroup,
 			shiftWorkerGroup: shiftsWorkerGroup,
-			shiftWorkerCategories: shiftsCategories
+			skillGroups: skillGroups,
 		}
 
 		$.ajax({

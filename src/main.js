@@ -50,6 +50,7 @@ export default new Vue({
 	store,
 	created() {
 		this.$store.dispatch('setup')
+		this.$store.dispatch('fetchSettings')
 	},
 	render: h => h(App),
 })

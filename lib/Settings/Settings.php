@@ -62,7 +62,7 @@ class Settings{
 	 *
 	 * @var string
 	 */
-	private $_shiftWorkerCategories = "shiftWorkerCategories";
+	private $_skillGroups = "skillGroups";
 
 	/**
 	 * @param string $AppName
@@ -227,34 +227,37 @@ class Settings{
 
 
 	/**
-	 * Saves Shift Worker Categories Group Names
+	 * Saves Skill Group Names
 	 *
-	 * @param array $shiftWorkerCategories
+	 * @param array $skillGroups
 	 */
-	public function setShiftWorkerCategories(array $shiftWorkerCategories) {
-		if (!is_array($shiftWorkerCategories)) {
-			$shiftWorkerCategories = array();
+	public function setSkillGroups(array $skillGroups) {
+		if (!is_array($skillGroups)) {
+			$skillGroups = array();
 		}
-		$value = json_encode($shiftWorkerCategories);
-		$this->config->setAppValue($this->appName,$this->_shiftWorkerCategories, $value);
+		$value = json_encode($skillGroups);
+		error_log($value);
+		$this->config->setAppValue($this->appName,$this->_skillGroups, $value);
 	}
 
 	/**
-	 * Get Shift Worker Categories Group Names
+	 * Get Skill Group Names
 	 *
 	 * @return array
 	 */
-	public function getShiftWorkerCategories(): array {
-		$shiftWorkerCategories = $this->config->getAppValue($this->appName, $this->_shiftWorkerCategories, "");
-		if (empty($shiftWorkerCategories)) {
-			return array();
+	public function getSkillGroups(): array {
+		$skillGroups = $this->config->getAppValue($this->appName, $this->_skillGroups, "");
+		if (empty($skillGroups)) {
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
+			return json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
 		}
-		$groups = json_decode($shiftWorkerCategories, true);
+		$groups = json_decode($skillGroups, true);
 		if (!is_array($groups)) {
 			$groups = array();
 		}
+
 		if (empty($groups)) {
-			$this->setShiftWorkerCategories(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
 			$groups = json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
 		}
 		return $groups;

@@ -169,6 +169,15 @@ const actions = {
 
 		commit('updateLoading', false)
 	},
+	async updateShift({ state, dispatch, commit }, newShift) {
+		try {
+			await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
+			dispatch('updateShifts')
+		} catch (e) {
+			console.error(e)
+			showError(t('shifts', 'Could not fetch shifts'))
+		}
+	},
 	async updateShifts({ state, dispatch, commit }) {
 		try {
 			const newShifts = []
@@ -189,7 +198,6 @@ const actions = {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
 		}
-		console.log('done updating')
 	},
 	async updateShiftsTypes({ state, dispatch, commit }) {
 		try {

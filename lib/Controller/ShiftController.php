@@ -5,6 +5,7 @@ namespace OCA\Shifts\Controller;
 
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Service\ShiftService;
+use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -21,14 +22,18 @@ class ShiftController extends Controller {
 	/** @var IGroupManager */
 	private $groupManager;
 
+	/** @var Settings */
+	private $settings;
+
 	use Errors;
 
 
-	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, $userId){
+	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, Settings $settings, $userId){
 		parent::__construct(Application::APP_ID, $request);
 		$this->service = $service;
 		$this->userId = $userId;
 		$this->groupManager = $groupManager;
+		$this->settings = $settings;
 	}
 
 	/**
@@ -76,7 +81,6 @@ class ShiftController extends Controller {
 	 */
 	public function update(int $id, string $analystId, int $shiftTypeId, string $date): DataResponse
 	{
-		error_log($id);
 		return $this->handleNotFound(function() use ($id, $analystId, $shiftTypeId, $date){
 			return $this->service->update($id, $analystId, $shiftTypeId, $date);
 		});
@@ -102,7 +106,23 @@ class ShiftController extends Controller {
 	 */
 	public function getGroupStatus(): DataResponse
 	{
-		return new DataResponse($this->groupManager->isInGroup($this->userId,"ShiftsAdmin"));
+		$adminGroup = $this->settings->getAdminGroup();
+		return new DataResponse($this->groupManager->isInGroup($this->userId, $adminGroup));
+	}
+
+	private function getHighestSkillGroupByUserId(string $userId = '')
+	{
+		if (empty($userId)) {
+			$userId = $this->userId;
+		}
+		$skillGroups = $this->settings->getSkillGroups();
+
+		foreach (array_reverse($skillGroups) as $skillGroup) {
+			if ($this->groupManager->isInGroup($userId, $skillGroup['name'])){
+				return $skillGroup['id'];
+			}
+		}
+		return $skillGroups[0]['id'];
 	}
 
 	/**
@@ -112,7 +132,8 @@ class ShiftController extends Controller {
 	 */
 	public function getAllAnalysts(): DataResponse
 	{
-		$group = $this->groupManager->get('Analysten');
+		$groupName = $this->settings->getShiftWorkerGroup();
+		$group = $this->groupManager->get($groupName);
 		$users = [];
 		$result = $group->getUsers();
 		foreach( $result as $user) {
@@ -121,11 +142,14 @@ class ShiftController extends Controller {
 			$email = $user->getEMailAddress();
 			$photo = $user->getAvatarImage(16);
 
+			$skillGroup = $this->getHighestSkillGroupByUserId($id);
+
 			array_push($users, [
 				'uid' => $id,
 				'name' => $name,
 				'email' => $email,
 				'photo' => $photo,
+				'skillGroup' => $skillGroup,
 			]);
 		}
 		return new DataResponse($users);
@@ -138,7 +162,8 @@ class ShiftController extends Controller {
 	 */
 	public function getAnalystsExcludingCurrent(): DataResponse
 	{
-		$group = $this->groupManager->get('Analysten');
+		$groupName = $this->settings->getShiftWorkerGroup();
+		$group = $this->groupManager->get($groupName);
 		$users = [];
 		$result = $group->getUsers();
 		foreach( $result as $user) {
@@ -148,11 +173,14 @@ class ShiftController extends Controller {
 				$email = $user->getEMailAddress();
 				$photo = $user->getAvatarImage(16);
 
+				$skillGroup = $this->getHighestSkillGroupByUserId($id);
+
 				array_push($users, [
 					'uid' => $id,
 					'name' => $name,
 					'email' => $email,
 					'photo' => $photo,
+					'skillGroup' => $skillGroup,
 				]);
 			}
 		}

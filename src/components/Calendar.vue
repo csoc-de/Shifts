@@ -65,11 +65,10 @@ import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugi
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { translate } from '@nextcloud/l10n'
 import { mapGetters } from 'vuex'
-import { generateUrl } from '@nextcloud/router'
-import axios from '@nextcloud/axios'
 import dayOfYear from 'dayjs/plugin/dayOfYear'
 import dayjs from 'dayjs'
 import 'dayjs/locale/de'
+import { showWarning } from '@nextcloud/dialogs'
 
 let gstc, state
 
@@ -188,12 +187,13 @@ export default {
 							shiftTypeId: oldShift.shiftTypeId,
 							date: newDate,
 						}
-						Promise.all([
-							axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
-						]).then(values => {
-							store.dispatch('updateShifts')
-						})
 
+						const analyst = store.getters.getAnalystById(newAnalystId)
+						const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
+						if (analyst.skillGroup < shiftsType.skillGroupId) {
+							showWarning(t('shifts', 'Dieser Analyst entspricht nicht den Anforderungen'))
+						}
+						store.dispatch('updateShift', newShift)
 						return afterItem
 					})
 				},
@@ -210,7 +210,7 @@ export default {
 		}
 		// config for the GSTC Calendar
 		const config = {
-			licenseKey: '====BEGIN LICENSE KEY====\\nV8zWVvgA1wKSVy/+L0kuD3vf/2wHxj6aOSJiiHox7NEDrQn/ZkhX+umaZwWa+BZyeAsbBMS2D9QffCcouGoEjd6zZ6TKg1czvQGs9x+eQJvmZVttYDyNawEgVTVwRGV9K/Qcmc5fG6R9ZOpjHZVGLS1awi01kt6zu21IOyxCZKLXz4fnCfiLpplkjclMLJxBbFud0sa1fUpKwEtZpw1kW+UN3saFnesar4oepA2RMM/3FofbKRALa2qsMbOdAlEE6UEPYi0htImFUg01qISsGZfXmQ8i/4Na/S5aoUAfWKoI1NcOZ3xF1tnIMYIkJSXss6v24oeeu+MlIMydxMGnaw==||U2FsdGVkX1+qbfbvzH+haFNfV1T1S/m3Hv8UbDUTXL+KQxlOlSZ9bIGaMYnMw6pfP17wHzHvKSzflwCZS2S3OupgS8Vf+7HAEujkKjdh5Rw=\\nIPM1F53nZFXPaGSRHqUPk11mQ/KzcyDlcPYs9QgQ3JdG84twvjKNrirKZ+4N55aNZUrG0Wy4ffJr81XmPAgOMkSr4TX7lvhqQz0TkZ/C70BVevOxB+grlbTT1XaQMxvPK7ouQ4M/nToodmYLZCZ5z3tpZs0p2LjRx8CDvYBLvd2XnjU6ky1R8CXUm9F45j1HDody9dJ/dX/xpOqQ0VzeRO9zKGuZjDtTYYAyBLHnqTvZnJ3M78GkHaV/uNQeWqwmW3Kg2HQ0pFv95tLF3JL/5nvVZxevGWHQMYf+BJhez+mQSmqaTZPhHKuobb4SFE2tTXi+2gjjjx5jaTF6RNVYmQ==\\n====END LICENSE KEY====',
+			licenseKey: '====BEGIN LICENSE KEY====\\nFWGiWkTONW0cwfsmXJJCwmvM6vWExqcPLAOGhoiesS/QYY16Mya2A1iTihTIjdQ84ZREGGJUjUAviyUwmml6kqc7DTKo642baZxpjxRV8jQ2Ppn0d9qed17KtGA6+OFtARJ77BkkU/DhaHih2F6thaax5AIaQy0ypr/bwW1iQzhm3h7vx4PzEHdtp8U56gbX08Y7wg8ktR+M/OSqxzyfcwNMpihWvUPZrxM58ukI1U3In7DjMelzSUJqu3sKL0QUYaH1nzZS7W5x25XL6z0d9/Wm9/7uYHzYnNXrUUp/oPpRfxb7ClgptRoFWmDJUo40ONl/bukW84RpTJxqzGeFzw==||U2FsdGVkX19Cpkx5YpRNKpy+Gh8B5n/Hn9QqewaJuuDJBKYE2eCGHS88ETplsGefRZjmMwQLcGx6q1wKcaUBCUoyDzM+4dXymWNiG/oPS24=\\nDTJFTS9br/jNaxu7Wbg1ftEjT6pVYVPu+YOBTTvt3kLcRhi8sE42F9rn4s9pkONA5M5YpbHjy3FPiq0wSlkcI0Hvj2lf8lx7t2wo9kYxPHFAqKN4clvSdocyMtmCssIS1DJFAk3mLBoa4In6wJTW08Ze9Rkz5DrJ5oKCqngxiXWsUOMk2AsYGYKQOftHDDsQVk0mgrSuIs0GmLBnk8BqHGV2miX+PV5P1U96w3qu42vTqsEJVy9Hkmg9HgAEsrHg04/xOZ5C2o+YDUT4W8qwh09XVLuq5rPNYvBrgpJjnJTkEEVmiFvMfe4GPnB3lRolLTDyzzvHJNYqZO08kStmRQ==\\n====END LICENSE KEY====',
 			plugins,
 			innerHeight: 600,
 			list: {

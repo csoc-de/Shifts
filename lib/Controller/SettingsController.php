@@ -45,7 +45,7 @@ class SettingsController extends Controller {
 			'organizerEmail' => $this->settings->getOrganizerEmail(),
 			'adminGroup' => $this->settings->getAdminGroup(),
 			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
-			'shiftWorkerCategories' => $this->settings->getShiftWorkerCategories(),
+			'skillGroups' => $this->settings->getSkillGroups(),
 		];
 		return new TemplateResponse(Application::APP_ID, 'settings', $data, 'blank');
 	}
@@ -58,20 +58,15 @@ class SettingsController extends Controller {
 	 * @param string $organizerEmail
 	 * @param string $adminGroup
 	 * @param string $shiftWorkerGroup
-	 * @param array $shiftWorkerCategories
+	 * @param array $skillGroups
 	 */
-	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $shiftWorkerCategories) {
+	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $skillGroups) {
 		$this->settings->setCalendarName($calendarName);
 		$this->settings->setOrganizerName($organizerName);
 		$this->settings->setOrganizerEmail($organizerEmail);
 		$this->settings->setAdminGroup($adminGroup);
 		$this->settings->setShiftWorkerGroup($shiftWorkerGroup);
-
-		error_log(json_encode($this->settings->getShiftWorkerCategories()));
-
-		$this->settings->setShiftWorkerCategories($shiftWorkerCategories);
-
-		error_log(json_encode($this->settings->getShiftWorkerCategories()));
+		$this->settings->setSkillGroups($skillGroups);
 	}
 
 	/**
@@ -89,7 +84,7 @@ class SettingsController extends Controller {
 			'organizerEmail' => $this->settings->getOrganizerEmail(),
 			'adminGroup' => $this->settings->getAdminGroup(),
 			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
-			'shiftWorkerCategories' => $this->settings->getShiftWorkerCategories(),
+			'skillGroups' => $this->settings->getSkillGroups(),
 		];
 	}
 }
