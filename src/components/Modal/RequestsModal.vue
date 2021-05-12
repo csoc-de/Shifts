@@ -392,20 +392,24 @@ export default {
 		// returns list of shifts from selected old analyst
 		oldAnalystShifts() {
 			return this.shifts.filter((shift) => {
-				return shift.userId === this.selectedOldAnalyst.uid
+				return (shift.userId === this.selectedOldAnalyst.uid) && (this.selectedNewAnalyst ? this.selectedNewAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
 			})
 		},
 		// return list of shifts from selected new analyst
 		newAnalystShifts() {
 			return this.shifts.filter((shift) => {
-				return shift.userId === this.selectedNewAnalyst.uid
+				return (shift.userId === this.selectedNewAnalyst.uid) && (this.selectedOldAnalyst ? this.selectedOldAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
 			})
 		},
 		// returns list of analysts excluding already selected ones
 		excludeOldAnalystSelected() {
 			 if (this.selectedOldAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
-					return analyst.uid !== this.selectedOldAnalyst.uid
+					const reqSkillLevel = Math.max(...this.oldAnalystSelectedShifts.map((shiftId) => {
+						const shift = this.$store.getters.getShiftById(shiftId.toString())
+						return parseInt(shift.shiftsType.skillGroupId)
+					}))
+					return analyst.uid !== this.selectedOldAnalyst.uid && analyst.skillGroup >= reqSkillLevel
 				})
 			} else {
 				return this.mutableAnalysts
@@ -415,7 +419,11 @@ export default {
 		excludeNewAnalystSelected() {
 			if (this.selectedNewAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
-					return analyst.uid !== this.selectedNewAnalyst.uid
+					const reqSkillLevel = Math.max(...this.newAnalystSelectedShifts.map((shiftId) => {
+						const shift = this.$store.getters.getShiftById(shiftId.toString())
+						return parseInt(shift.shiftsType.skillGroupId)
+					}))
+					return analyst.uid !== this.selectedNewAnalyst.uid && analyst.skillGroup >= reqSkillLevel
 				})
 			} else {
 				return this.mutableAnalysts

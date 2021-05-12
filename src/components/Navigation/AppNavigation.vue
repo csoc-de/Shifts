@@ -10,7 +10,7 @@
 				to="/" />
 
 			<AppNavigationItem
-				:title="t('shifts', 'Schichtwechsel')"
+				:title="t('shifts', 'Schichttausch')"
 				icon="icon-category-organization"
 				to="/requests" />
 
