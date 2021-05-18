@@ -289,6 +289,7 @@ export default {
 			rows.push({
 				id: '-1',
 				label: t('shifts', 'Offene Schichten'),
+				style: { background: '#d3d7de' },
 			})
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
