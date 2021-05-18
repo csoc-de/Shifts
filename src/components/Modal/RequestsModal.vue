@@ -391,14 +391,27 @@ export default {
 	computed: {
 		// returns list of shifts from selected old analyst
 		oldAnalystShifts() {
+			const shiftsTypeId = Math.max(...this.newAnalystSelectedShifts.map((shiftId) => {
+				const shift = this.$store.getters.getShiftById(shiftId.toString())
+				return parseInt(shift.shiftsType.id)
+			}))
+			console.log(shiftsTypeId)
 			return this.shifts.filter((shift) => {
-				return (shift.userId === this.selectedOldAnalyst.uid) && (this.selectedNewAnalyst ? this.selectedNewAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+				return (shift.userId === this.selectedOldAnalyst.uid)
+					&& (this.selectedNewAnalyst ? this.selectedNewAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+					&& (isFinite(shiftsTypeId) ? shift.shiftsType.id === shiftsTypeId : true)
 			})
 		},
 		// return list of shifts from selected new analyst
 		newAnalystShifts() {
+			const shiftsTypeId = Math.max(...this.oldAnalystSelectedShifts.map((shiftId) => {
+				const shift = this.$store.getters.getShiftById(shiftId.toString())
+				return parseInt(shift.shiftsType.id)
+			}))
 			return this.shifts.filter((shift) => {
-				return (shift.userId === this.selectedNewAnalyst.uid) && (this.selectedOldAnalyst ? this.selectedOldAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+				return (shift.userId === this.selectedNewAnalyst.uid)
+					&& (this.selectedOldAnalyst ? this.selectedOldAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+					&& (isFinite(shiftsTypeId) ? shift.shiftsType.id === shiftsTypeId : true)
 			})
 		},
 		// returns list of analysts excluding already selected ones

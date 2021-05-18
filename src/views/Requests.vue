@@ -143,7 +143,7 @@
 
 <script>
 import RequestsModal from '../components/Modal/RequestsModal'
-import { showError } from '@nextcloud/dialogs'
+import { showError, showWarning } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { updateExistingCalendarObjectFromShiftsChange } from '../services/calendarService'
@@ -251,13 +251,13 @@ export default {
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
-					oldShift.userId = shiftsChange.newAnalystId
+					oldShift.analystId = shiftsChange.newAnalystId
 					await axios.put(generateUrl(`/apps/shifts/shifts/${oldShift.id}`), oldShift)
 					const newShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.newShiftsId)
 					})
 					if (newShift) {
-						newShift.userId = shiftsChange.oldAnalystId
+						newShift.analystId = shiftsChange.oldAnalystId
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
 					// fetches and updates shifts
@@ -268,8 +268,13 @@ export default {
 				await axios.put(generateUrl(`/apps/shifts/shiftsChange/${shiftsChange.id}`), shiftsChange)
 				await this.$store.dispatch('updateShiftsChanges')
 			} catch (e) {
-				console.error(e)
-				showError(t('shifts', 'Could not save shifts Changes'))
+				if (e.message.includes('Could not find corresponding Event')) {
+					console.warn(e)
+					showWarning(t('shifts'), 'Couldn\'t find corrensponding Calender-Entry')
+				} else {
+					console.error(e)
+					showError(t('shifts', 'Could not save shifts Changes'))
+				}
 			}
 		},
 		// returns string detailing the Shift by given Shiftid

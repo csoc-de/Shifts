@@ -6,7 +6,11 @@ script('shifts', 'settings');
 ?>
 
 <div id="admin_settings">
-	<h2><?php p($l->t('Shifts')); ?> <a class="icon-info svg" title href="https://gitlab.csoc.de/csoc/nextcloud/shifts" data-original-title="<?php p($l->t('Dokumentation')); ?>"></a></h2>
+	<h2><?php p($l->t('Shifts')); ?>
+		<a class="icon-info svg" title href="https://gitlab.csoc.de/csoc/nextcloud/shifts"
+		   data-original-title="<?php p($l->t('Dokumentation')); ?>">
+		</a>
+	</h2>
 	<div class="settings_container">
 		<label for="shiftsCalendarName"><?php p($l->t('Name des Schichtkalenders'))?></label>
 		<input id="shiftsCalendarName" value="<?php p($_['calendarName']) ?>" placeholder="Leitstellen Schichtplan" type="text" />
