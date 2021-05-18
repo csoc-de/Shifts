@@ -5,9 +5,7 @@ import { createEvent, getParserManager } from 'calendar-js'
 import { findAllCalendars } from './caldavService'
 import { calcShiftDate } from '../utils/date'
 import AttendeeProperty from 'calendar-js/src/properties/attendeeProperty'
-
-const organizerName = 'admin'
-const organizerEmail = 'technik@csoc.de'
+import store from '../store'
 
 /**
  * returns the calDav conform Timezone
@@ -30,19 +28,20 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 		array[item.date] = group
 		return array
 	}, {})
-	console.log(allAnalysts)
+
 	for (const group in groups) {
 		for (const shiftType of shiftTypes) {
 			const analysts = []
 			const shifts = groups[group].filter(item => item.shiftTypeId === shiftType.id.toString())
 			shifts.forEach(shift => {
 				const foundAnalyst = allAnalysts.find((analyst) => {
-					return shift.userId === analyst.email
+					return shift.userId === analyst.uid
 				})
 				if (foundAnalyst) {
 					analysts.push(foundAnalyst)
 				}
 			})
+
 			if (analysts.length > 0) {
 				await syncCalendarObject(shiftsCalendar, shiftType, group, analysts)
 			} else {
@@ -63,7 +62,7 @@ const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, o
 	const oldShiftsType = oldShift.shiftsType
 
 	const timezone = findCurrentTimezone()
-	const shiftsCalendar = await findShiftsCalendar('Leitstellen Schichtplan')
+	const shiftsCalendar = await findShiftsCalendar(getCalendarName())
 
 	let [oldVObject, oldEventComponent] = await findEventComponent(shiftsCalendar, oldShiftsDate, oldShiftsType, timezone)
 
@@ -137,7 +136,7 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 
 			let title = shiftsType.name + ': '
 
-			eventComponent.setOrganizerFromNameAndEMail(organizerName, organizerEmail)
+			eventComponent.setOrganizerFromNameAndEMail(getOrganizerName(), getOrganizerEmail())
 			analysts.forEach((analyst) => {
 				const attendee = createAttendeeFromAnalyst(analyst)
 				title = title + ' ' + analyst.name
@@ -156,16 +155,55 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 }
 
 /**
+ * returns the calendarName
+ *
+ * @returns {String}
+ */
+let calendarName
+const getCalendarName = () => {
+	if (!calendarName) {
+		calendarName = store.getters.getCalendarName
+	}
+	return calendarName
+}
+
+/**
+ * returns the organizerName
+ *
+ * @returns {String}
+ */
+let organizerName
+const getOrganizerName = () => {
+	if (!organizerName) {
+		organizerName = store.getters.getOrganizerName
+	}
+	return organizerName
+}
+
+/**
+ * returns the organizerEmail
+ *
+ * @returns {String}
+ */
+let organizerEmail
+const getOrganizerEmail = () => {
+	if (!organizerEmail) {
+		organizerEmail = store.getters.getOrganizerEmail
+	}
+	return organizerEmail
+}
+
+/**
  * returns the dedicated Shifts-Calendar based on the Organizers name
  *
  * @returns {Calendar}
  */
 let calendar
 const findShiftsCalendar = async() => {
-	if (!calendar || calendar.owner.includes(organizerName)) {
+	if (!calendar || calendar.owner.includes(getOrganizerName())) {
 		const calendars = await findAllCalendars()
 		calendar = calendars.find(calendar => {
-			return calendar.owner.includes(organizerName) && calendar.displayname.includes('Leitstellen')
+			return calendar.owner.includes(getOrganizerName()) && calendar.displayname.includes(getCalendarName())
 		})
 		return calendar
 	} else {

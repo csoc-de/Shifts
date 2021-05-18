@@ -62,7 +62,7 @@ class Settings{
 	 *
 	 * @var string
 	 */
-	private $_shiftWorkerCategories = "shiftWorkerCategories";
+	private $_skillGroups = "skillGroups";
 
 	/**
 	 * @param string $AppName
@@ -72,13 +72,6 @@ class Settings{
 		$this->appName = $AppName;
 
 		$this->config = \OC::$server->getConfig();
-
-		$this->config->setAppValue($this->appName,$this->_calendarName, 'Leitstellen Schichtplan');
-		$this->config->setAppValue($this->appName,$this->_organizerName, 'admin');
-		$this->config->setAppValue($this->appName,$this->_organizerEmail, 'technik@csoc.de');
-		$this->config->setAppValue($this->appName,$this->_adminGroup, 'ShiftsAdmin');
-		$this->config->setAppValue($this->appName,$this->_shiftWorkerGroup, 'Blueteam');
-		$this->config->setAppValue($this->appName,$this->_shiftWorkerCategories, '["CSOC Level 1", "CSOC Level 2", "CSOC Level 3"]');
 	}
 
 	/**
@@ -121,6 +114,10 @@ class Settings{
 		if (empty($calendarName)) {
 			$calendarName = $this->GetSystemValue($this->_calendarName);
 		}
+		if (empty($calendarName)) {
+			$this->setCalendarName('Leitstellen Schichtplan');
+			$calendarName = 'Leitstellen Schichtplan';
+		}
 		return $calendarName;
 	}
 
@@ -142,6 +139,10 @@ class Settings{
 		$organizerName = $this->config->getAppValue($this->appName, $this->_organizerName, "");
 		if (empty($organizerName)) {
 			$organizerName = $this->GetSystemValue($this->_organizerName);
+		}
+		if (empty($organizerName)) {
+			$this->setOrganizerName('admin');
+			$organizerName = 'admin';
 		}
 		return $organizerName;
 	}
@@ -165,6 +166,10 @@ class Settings{
 		if (empty($organizerEmail)) {
 			$organizerEmail = $this->GetSystemValue($this->_organizerEmail);
 		}
+		if (empty($organizerEmail)) {
+			$this->setOrganizerEmail('technik@csoc.de');
+			$organizerEmail = 'technik@csoc.de';
+		}
 		return $organizerEmail;
 	}
 
@@ -186,6 +191,10 @@ class Settings{
 		$adminGroup = $this->config->getAppValue($this->appName, $this->_adminGroup, "");
 		if (empty($adminGroup)) {
 			$adminGroup = $this->GetSystemValue($this->_adminGroup);
+		}
+		if (empty($adminGroup)) {
+			$this->setAdminGroup('ShiftsAdmin');
+			$adminGroup = 'ShiftsAdmin';
 		}
 		return $adminGroup;
 	}
@@ -209,37 +218,47 @@ class Settings{
 		if (empty($shiftWorkerGroup)) {
 			$shiftWorkerGroup = $this->GetSystemValue($this->_shiftWorkerGroup);
 		}
+		if (empty($shiftWorkerGroup)) {
+			$this->setShiftWorkerGroup('Blueteam');
+			$shiftWorkerGroup = 'Blueteam';
+		}
 		return $shiftWorkerGroup;
 	}
 
 
 	/**
-	 * Saves Shift Worker Categories Group Names
+	 * Saves Skill Group Names
 	 *
-	 * @param array $shiftWorkerCategories
+	 * @param array $skillGroups
 	 */
-	public function setShiftWorkerCategories(array $shiftWorkerCategories) {
-		if (!is_array($shiftWorkerCategories)) {
-			$shiftWorkerCategories = array();
+	public function setSkillGroups(array $skillGroups) {
+		if (!is_array($skillGroups)) {
+			$skillGroups = array();
 		}
-
-		$value = json_encode($shiftWorkerCategories);
-		$this->config->setAppValue($this->appName,$this->_shiftWorkerCategories, $value);
+		$value = json_encode($skillGroups);
+		error_log($value);
+		$this->config->setAppValue($this->appName,$this->_skillGroups, $value);
 	}
 
 	/**
-	 * Get Shift Worker Categories Group Names
+	 * Get Skill Group Names
 	 *
 	 * @return array
 	 */
-	public function getShiftWorkerCategories(): array {
-		$shiftWorkerCategories = $this->config->getAppValue($this->appName, $this->_shiftWorkerCategories, "");
-		if (empty($shiftWorkerCategories)) {
-			return array();
+	public function getSkillGroups(): array {
+		$skillGroups = $this->config->getAppValue($this->appName, $this->_skillGroups, "");
+		if (empty($skillGroups)) {
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
+			return json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
 		}
-		$groups = json_decode($shiftWorkerCategories, true);
+		$groups = json_decode($skillGroups, true);
 		if (!is_array($groups)) {
 			$groups = array();
+		}
+
+		if (empty($groups)) {
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
+			$groups = json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
 		}
 		return $groups;
 	}

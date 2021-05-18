@@ -21,6 +21,7 @@ class ShiftsType extends Entity implements JsonSerializable {
 	protected $frRule;
 	protected $saRule;
 	protected $soRule;
+	protected $skillGroupId;
 
 	public function __construct(){
 		$this->addType('id','integer');
@@ -41,6 +42,7 @@ class ShiftsType extends Entity implements JsonSerializable {
 			'frRule' => $this->frRule,
 			'saRule' => $this->saRule,
 			'soRule' => $this->soRule,
+			'skillGroupId' => $this->skillGroupId,
 		];
 	}
 

@@ -10,7 +10,7 @@
 				to="/" />
 
 			<AppNavigationItem
-				:title="t('shifts', 'Schichtwechsel')"
+				:title="t('shifts', 'Schichttausch')"
 				icon="icon-category-organization"
 				to="/requests" />
 
@@ -21,7 +21,7 @@
 				to="/shiftsTypes" />
 		</template>
 		<template #footer>
-			Version: 1.4.1
+			Version: 1.5.0r
 		</template>
 	</AppNavigationVue>
 </template>

@@ -8,6 +8,11 @@
 				:value="shiftsType.name"
 				@update:value="updateName" />
 			<!-- eslint-disable -->
+			<Multiselect :value="shiftsType.skillGroupId"
+				:options="skillGroups"
+				track-by="id"
+				label="name"
+				@change="updateSkillGroup" />
 			<v-menu
 				ref="startMenu"
 				v-model="startMenu"
@@ -216,12 +221,14 @@
 <script>
 import PropertyTitle from '../Editor/Properties/PropertyTitle'
 import Modal from '@nextcloud/vue/dist/Components/Modal'
+import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
 import { mapGetters } from 'vuex'
 export default {
 	name: 'ShiftsTypeModal',
 	components: {
 		PropertyTitle,
 		Modal,
+		Multiselect,
 	},
 	data() {
 		return {
@@ -234,6 +241,7 @@ export default {
 	computed: {
 		...mapGetters({
 			shiftsType: 'shiftsTypeInstance',
+			skillGroups: 'getSkillGroups',
 		}),
 	},
 	methods: {
@@ -257,6 +265,9 @@ export default {
 		saveColor() {
 			this.colorMenu = false
 			this.$store.commit('changeColor', this.color.hexa)
+		},
+		updateSkillGroup(skillGroup) {
+			this.$store.commit('changeSkillGroupId', skillGroup)
 		},
 		save() {
 			this.$store.dispatch('saveCurrentShiftsType')

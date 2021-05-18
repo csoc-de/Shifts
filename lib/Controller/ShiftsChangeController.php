@@ -61,10 +61,6 @@ class ShiftsChangeController extends Controller{
 	 * @return DataResponse
 	 */
 	public function create(string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse {
-		error_log('test' . $adminApproval);
-		error_log('test' . $adminApprovalDate);
-		error_log('test' . $analystApproval);
-		error_log('test' . $analystApprovalDate);
 		return new DataResponse($this->service->create($oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type));
 	}
 

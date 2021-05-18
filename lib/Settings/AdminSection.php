@@ -33,7 +33,7 @@ class AdminSection implements  IIconSection {
 	 * @return string
 	 */
 	public function getIcon(): string {
-		return $this->urlGenerator->imagePath("shifts", "app.svg");
+		return $this->urlGenerator->imagePath("shifts", "app-dark.svg");
 	}
 
 	/**

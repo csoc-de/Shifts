@@ -65,11 +65,10 @@ import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugi
 import 'gantt-schedule-timeline-calendar/dist/style.css'
 import { translate } from '@nextcloud/l10n'
 import { mapGetters } from 'vuex'
-import { generateUrl } from '@nextcloud/router'
-import axios from '@nextcloud/axios'
 import dayOfYear from 'dayjs/plugin/dayOfYear'
 import dayjs from 'dayjs'
 import 'dayjs/locale/de'
+import { showWarning } from '@nextcloud/dialogs'
 
 let gstc, state
 
@@ -188,12 +187,13 @@ export default {
 							shiftTypeId: oldShift.shiftTypeId,
 							date: newDate,
 						}
-						Promise.all([
-							axios.put(generateUrl(`/apps/shifts/shifts/${shiftsId}`), newShift),
-						]).then(values => {
-							store.dispatch('updateShifts')
-						})
 
+						const analyst = store.getters.getAnalystById(newAnalystId)
+						const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
+						if (analyst.skillGroup < shiftsType.skillGroupId) {
+							showWarning(t('shifts', 'Dieser Analyst entspricht nicht den Anforderungen'))
+						}
+						store.dispatch('updateShift', newShift)
 						return afterItem
 					})
 				},

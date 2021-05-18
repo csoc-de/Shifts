@@ -16,6 +16,7 @@ const state = {
 		frRule: 0,
 		saRule: 0,
 		soRule: 0,
+		skillGroupId: 0,
 	},
 }
 
@@ -60,6 +61,15 @@ const mutations = {
 			break
 		}
 	},
+	changeSkillGroupId(state, skillGroup) {
+		console.log(state.shiftsTypeInstance)
+		console.log(skillGroup)
+		if (skillGroup) {
+			state.shiftsTypeInstance.skillGroupId = skillGroup.id
+		} else {
+			state.shiftsTypeInstance.skillGroupId = '0'
+		}
+	},
 }
 
 const getters = {
@@ -83,6 +93,7 @@ const actions = {
 			frRule: 0,
 			saRule: 0,
 			soRule: 0,
+			skillGroupId: 0,
 		}
 		state.shiftsTypeInstance = newShiftsTypeInstance
 		return newShiftsTypeInstance
@@ -93,6 +104,7 @@ const actions = {
 	async saveCurrentShiftsType({ state, dispatch, commit }) {
 		try {
 			if (state.shiftsTypeInstance.id) {
+				console.log(state.shiftsTypeInstance)
 				await axios.put(generateUrl(`/apps/shifts/shiftsType/${state.shiftsTypeInstance.id}`), state.shiftsTypeInstance)
 			} else {
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), state.shiftsTypeInstance)

@@ -391,21 +391,38 @@ export default {
 	computed: {
 		// returns list of shifts from selected old analyst
 		oldAnalystShifts() {
+			const shiftsTypeId = Math.max(...this.newAnalystSelectedShifts.map((shiftId) => {
+				const shift = this.$store.getters.getShiftById(shiftId.toString())
+				return parseInt(shift.shiftsType.id)
+			}))
+			console.log(shiftsTypeId)
 			return this.shifts.filter((shift) => {
-				return shift.userId === this.selectedOldAnalyst.uid
+				return (shift.userId === this.selectedOldAnalyst.uid)
+					&& (this.selectedNewAnalyst ? this.selectedNewAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+					&& (isFinite(shiftsTypeId) ? shift.shiftsType.id === shiftsTypeId : true)
 			})
 		},
 		// return list of shifts from selected new analyst
 		newAnalystShifts() {
+			const shiftsTypeId = Math.max(...this.oldAnalystSelectedShifts.map((shiftId) => {
+				const shift = this.$store.getters.getShiftById(shiftId.toString())
+				return parseInt(shift.shiftsType.id)
+			}))
 			return this.shifts.filter((shift) => {
-				return shift.userId === this.selectedNewAnalyst.uid
+				return (shift.userId === this.selectedNewAnalyst.uid)
+					&& (this.selectedOldAnalyst ? this.selectedOldAnalyst.skillGroup >= shift.shiftsType.skillGroupId : true)
+					&& (isFinite(shiftsTypeId) ? shift.shiftsType.id === shiftsTypeId : true)
 			})
 		},
 		// returns list of analysts excluding already selected ones
 		excludeOldAnalystSelected() {
 			 if (this.selectedOldAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
-					return analyst.uid !== this.selectedOldAnalyst.uid
+					const reqSkillLevel = Math.max(...this.oldAnalystSelectedShifts.map((shiftId) => {
+						const shift = this.$store.getters.getShiftById(shiftId.toString())
+						return parseInt(shift.shiftsType.skillGroupId)
+					}))
+					return analyst.uid !== this.selectedOldAnalyst.uid && analyst.skillGroup >= reqSkillLevel
 				})
 			} else {
 				return this.mutableAnalysts
@@ -415,7 +432,11 @@ export default {
 		excludeNewAnalystSelected() {
 			if (this.selectedNewAnalyst) {
 				return this.mutableAnalysts.filter((analyst) => {
-					return analyst.uid !== this.selectedNewAnalyst.uid
+					const reqSkillLevel = Math.max(...this.newAnalystSelectedShifts.map((shiftId) => {
+						const shift = this.$store.getters.getShiftById(shiftId.toString())
+						return parseInt(shift.shiftsType.skillGroupId)
+					}))
+					return analyst.uid !== this.selectedNewAnalyst.uid && analyst.skillGroup >= reqSkillLevel
 				})
 			} else {
 				return this.mutableAnalysts
