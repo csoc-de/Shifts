@@ -27,6 +27,7 @@
 			</v-menu>
 			<v-btn
 				color="light-blue"
+				:disabled="disabled"
 				dark
 				@click="syncCalendar">
 				{{ t('shifts','Kalender synchronisieren') }}
@@ -50,6 +51,7 @@ export default {
 	data() {
 		return {
 			shiftOpen: false,
+			disabled: false,
 		}
 	},
 	computed: {
@@ -63,7 +65,9 @@ export default {
 			this.shiftOpen = false
 		},
 		async syncCalendar() {
+			this.disabled = true
 			await this.$store.dispatch('syncCalendar')
+			this.disabled = false
 		},
 	},
 }
