@@ -167,6 +167,10 @@ export default {
 							myItem.time = { ...beforeMovementItem.time }
 							myItem.rowId = beforeMovementItem.rowId
 						}
+						if (myItem.time.start !== beforeMovementItem.time.start && myItem.time.end !== beforeMovementItem.time.end) {
+							myItem.time = { ...beforeMovementItem.time }
+							myItem.rowId = beforeMovementItem.rowId
+						}
 						return myItem
 					})
 				},
