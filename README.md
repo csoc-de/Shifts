@@ -3,7 +3,7 @@
 A shiftsplaner app for Nextcloud.
 
 
-![](docs/Screenshot from 2021-03-24 09-14-51.png)
+![](docs/frontpage.png)
 
 
 ## Installation
