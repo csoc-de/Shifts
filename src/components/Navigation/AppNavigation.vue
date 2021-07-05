@@ -21,7 +21,7 @@
 				to="/shiftsTypes" />
 		</template>
 		<template #footer>
-			Version: 1.5.0r
+			Version: 1.5.1
 		</template>
 	</AppNavigationVue>
 </template>
