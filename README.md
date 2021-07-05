@@ -1,29 +1,40 @@
 # Nextcloud Shifts
 
-A shiftsplaner app for Nextcloud.
+A shiftsplaner app for [Nextcloud](https://nextcloud.com).
 
 
 ![](docs/frontpage.png)
 
 
-## Installation
+## Why is this so awesome?
 
-In your Nextcloud, simply navigate to »Apps«, choose the category »Organization«, find the shifts app and enable it. After installing the app onto your Nextcloud you need to setup different groups and settings explained below. one addition License to enable the integrated  [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) by generating a free License Key [here](https://gstc.neuronet.io/free-key/).
+* **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
+* **Manage and organize your Shifts System!** Customize your Shifts Model with different Shifttypes 
+* **Separation of Users by different Nextcloud user Groups!** Divide your Workforce with different Skill-Levels
+* **Integration of existing Open-Source Software!** Using the great [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) and many more libraries
 
-### Groups 
 
-| Group | Default | Purpose |
-|---|---|---|
-| Shiftworkers | Analyst | Group to identify all Shiftworkers that can take shifts |
-| Shiftadmin | Shiftadmin | Administrators to organize and plan the Shifts |
-| Skillgroups | Level 1-3 | Skill groups which can be assigned to new Shifttypes which can then only be taken over by Shiftworkers with an equal or higher Skillgroup |
+More to come:
+* Further maturing of the app
+* Individualisation
 
-### Additional Strings
 
-| String | Default | Purpose |
-|---|---|---|
-| CalendarOrganizer | admin | Account which acts as an organizer for the Nextcloud-Calendar events |
-| CalendarOrganizerEmail | admin@test.com | Email of the afformentionend Organizer |
-| GSTC-License | - | Free GSTC-License needed to display the Shifts in an appropriate format. | 
+If you experience any issues or have any suggestions for improvement, use the issue tracker.
 
-The free license for the integrated  [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) can be obtained [here](https://gstc.neuronet.io/free-key/).
+## Get on board
+For new contributors, please check out [ContributingToNextcloudIntroductoryWorkshop](https://github.com/sleepypioneer/ContributingToNextcloudIntroductoryWorkshop)
+
+
+## Development setup
+
+Just clone this repo into your apps directory ([Nextcloud server](https://github.com/nextcloud/server#running-master-checkouts) installation needed). Additionally, [npm](https://www.npmjs.com/) to fetch [Node.js](https://nodejs.org/en/download/package-manager/) is needed for installing JavaScript dependencies.
+
+Once npm and Node.js are installed, PHP and JavaScript dependencies can be installed by running:
+```bash
+make dev-setup
+```
+
+## Documentation
+
+
+* [Admin documentation](doc/admin.md) (installation, configuration, troubleshooting)
