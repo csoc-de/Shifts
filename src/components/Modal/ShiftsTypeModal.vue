@@ -4,10 +4,12 @@
 		:title="t('shifts', 'Neuer Schichttyp')"
 		@close="$emit('close')">
 		<div class="shifts-type-modal">
-			<PropertyTitle
-				:value="shiftsType.name"
-				@update:value="updateName" />
 			<!-- eslint-disable -->
+			<v-text-field
+				class="mb-1 p-1"
+				hide-details
+				:value="shiftsType.name"
+			></v-text-field>
 			<Multiselect :value="shiftsType.skillGroupId"
 				:options="skillGroups"
 				track-by="id"
@@ -219,14 +221,12 @@
 </template>
 
 <script>
-import PropertyTitle from '../Editor/Properties/PropertyTitle'
 import Modal from '@nextcloud/vue/dist/Components/Modal'
 import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
 import { mapGetters } from 'vuex'
 export default {
 	name: 'ShiftsTypeModal',
 	components: {
-		PropertyTitle,
 		Modal,
 		Multiselect,
 	},

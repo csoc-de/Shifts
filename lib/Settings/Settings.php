@@ -65,6 +65,13 @@ class Settings{
 	private $_skillGroups = "skillGroups";
 
 	/**
+	 * gstc license Key
+	 *
+	 * @var string
+	 */
+	private $_gstcLicense = "gstcLicense";
+
+	/**
 	 * @param string $AppName
 	 */
 	public function __construct(string $AppName) {
@@ -223,6 +230,32 @@ class Settings{
 			$shiftWorkerGroup = 'Blueteam';
 		}
 		return $shiftWorkerGroup;
+	}
+
+	/**
+	 * Saves gstc License
+	 *
+	 * @param string $gstcLicense
+	 */
+	public function setGstcLicense(string $gstcLicense) {
+		$this->config->setAppValue($this->appName,$this->_gstcLicense, $gstcLicense);
+	}
+
+	/**
+	 * Get gstc License
+	 *
+	 * @return string
+	 */
+	public function getGstcLicense(): string {
+		$gstcLicense = $this->config->getAppValue($this->appName, $this->_gstcLicense, "");
+		if (empty($gstcLicense)) {
+			$gstcLicense = $this->GetSystemValue($this->_gstcLicense);
+		}
+		if (empty($gstcLicense)) {
+			$this->setGstcLicense('====BEGIN LICENSE KEY====\nIig1stodoXy97NrZOMjxlzxh2BK5QXpT4RcLTLdhQ8PRzLcu3/Gt60s6mKIJvAa+o9/AgykS7vNHwRuZC9XhOx7DDuQbhm8Ss4IFFqf8jtuzl8T4RExjEbfC2q1wCTmO/DPcufKdYQOv8B3qJZkZHqTzeA0BLyfJCeO0yUCVxNOKOcJue5qoFkSil5aG5cg/dwCWwNDStjGQnURp9aBoR42GtBF25W1/lRdq3b8Md6dikj7kp2Cu75KaagCvGHDAWVwNrGRnOxM3B7UpBMrJPAAZUiJXNj/nVPyC8gfOicHxmZtk2s5cLiVFgwdOInE3JA+jLD/Nc/cEMcwC8MYEYw==||U2FsdGVkX1+sAozk01j6Wodp7+J9FjQGrI5h7l0YlbkwOR4O52g9XF+er33INp/WjncVn0/MttNY+7XrXpwoPwErLaVWg7WQC45tac+dIac=\nlzuB19dmRFUte0x22wqU3OjUJZFUEQLXBSG2j/xaQ0xycCfXydCGWbtI+BKiDZqE498wZ/luQcWcOUXFU8pRdP0KZBsONRaYHsKq41l216182uL+LFOguNG3apwS2TQ9rtO5wUFMMtyfB+6iqLhqJLc8FfvO5XZdxggXtzY4TTL8afvvRhRF9Poxt9mcZ2GEu3MnRtad7qaLIkkYx2lPGG03dSDs1uXNdfSYOg42NixMQWR4oEPc19LwDCsq1JIalEoYNoYNG/hT2hUk1+TgJMHPnX9SI4xYNNU2vAYRY/wa5OE+f5K022sDUMqEGpVw4gjEWisEdImc8n3VyXECiQ==\n====END LICENSE KEY====');
+			$gstcLicense = '====BEGIN LICENSE KEY====\nIig1stodoXy97NrZOMjxlzxh2BK5QXpT4RcLTLdhQ8PRzLcu3/Gt60s6mKIJvAa+o9/AgykS7vNHwRuZC9XhOx7DDuQbhm8Ss4IFFqf8jtuzl8T4RExjEbfC2q1wCTmO/DPcufKdYQOv8B3qJZkZHqTzeA0BLyfJCeO0yUCVxNOKOcJue5qoFkSil5aG5cg/dwCWwNDStjGQnURp9aBoR42GtBF25W1/lRdq3b8Md6dikj7kp2Cu75KaagCvGHDAWVwNrGRnOxM3B7UpBMrJPAAZUiJXNj/nVPyC8gfOicHxmZtk2s5cLiVFgwdOInE3JA+jLD/Nc/cEMcwC8MYEYw==||U2FsdGVkX1+sAozk01j6Wodp7+J9FjQGrI5h7l0YlbkwOR4O52g9XF+er33INp/WjncVn0/MttNY+7XrXpwoPwErLaVWg7WQC45tac+dIac=\nlzuB19dmRFUte0x22wqU3OjUJZFUEQLXBSG2j/xaQ0xycCfXydCGWbtI+BKiDZqE498wZ/luQcWcOUXFU8pRdP0KZBsONRaYHsKq41l216182uL+LFOguNG3apwS2TQ9rtO5wUFMMtyfB+6iqLhqJLc8FfvO5XZdxggXtzY4TTL8afvvRhRF9Poxt9mcZ2GEu3MnRtad7qaLIkkYx2lPGG03dSDs1uXNdfSYOg42NixMQWR4oEPc19LwDCsq1JIalEoYNoYNG/hT2hUk1+TgJMHPnX9SI4xYNNU2vAYRY/wa5OE+f5K022sDUMqEGpVw4gjEWisEdImc8n3VyXECiQ==\n====END LICENSE KEY====';
+		}
+		return $gstcLicense;
 	}
 
 

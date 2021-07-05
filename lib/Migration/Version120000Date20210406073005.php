@@ -33,7 +33,7 @@ class Version120000Date20210406073005 extends SimpleMigrationStep {
 
 		$table = $schema->getTable('shifts_type');
 
-		$table->addColumn('calendar_color', \OCP\DB\Types::STRING, [
+		$table->addColumn('calendar_color', 'string', [
 			'notnull' => true,
 			'length' => 64,
 		]);
