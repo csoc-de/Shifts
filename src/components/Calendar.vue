@@ -195,7 +195,7 @@ export default {
 
 						const analyst = store.getters.getAnalystById(newAnalystId)
 						const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
-						if (analyst.skillGroup < shiftsType.skillGroupId) {
+						if (analyst && analyst.skillGroup < shiftsType.skillGroupId) {
 							showWarning(t('shifts', 'Dieser Analyst entspricht nicht den Anforderungen'))
 						}
 						store.dispatch('updateShift', newShift)
