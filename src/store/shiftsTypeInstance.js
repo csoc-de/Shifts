@@ -38,25 +38,25 @@ const mutations = {
 	},
 	changeRule(state, rule, value) {
 		switch (rule) {
-		case 'moRule':
+		case 'mo':
 			state.shiftsTypeInstance.moRule = value
 			break
-		case 'tuRule':
+		case 'tu':
 			state.shiftsTypeInstance.tuRule = value
 			break
-		case 'weRule':
+		case 'we':
 			state.shiftsTypeInstance.weRule = value
 			break
-		case 'thRule':
+		case 'th':
 			state.shiftsTypeInstance.thRule = value
 			break
-		case 'frRule':
+		case 'fr':
 			state.shiftsTypeInstance.frRule = value
 			break
-		case 'saRule':
+		case 'sa':
 			state.shiftsTypeInstance.saRule = value
 			break
-		case 'soRule':
+		case 'so':
 			state.shiftsTypeInstance.soRule = value
 			break
 		}
@@ -104,9 +104,9 @@ const actions = {
 	async saveCurrentShiftsType({ state, dispatch, commit }) {
 		try {
 			if (state.shiftsTypeInstance.id) {
-				console.log(state.shiftsTypeInstance)
 				await axios.put(generateUrl(`/apps/shifts/shiftsType/${state.shiftsTypeInstance.id}`), state.shiftsTypeInstance)
 			} else {
+				console.log(state.shiftsTypeInstance)
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), state.shiftsTypeInstance)
 			}
 			dispatch('updateShiftsTypes')

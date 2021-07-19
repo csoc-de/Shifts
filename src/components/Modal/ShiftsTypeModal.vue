@@ -9,6 +9,7 @@
 				class="mb-1 p-1"
 				hide-details
 				:value="shiftsType.name"
+				@change="updateName"
 			></v-text-field>
 			<Multiselect :value="shiftsType.skillGroupId"
 				:options="skillGroups"
