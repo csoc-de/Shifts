@@ -7,10 +7,10 @@ return [
 		'shiftsChange' => ['url' => '/shiftsChange']
 	],
 	'routes' => [
-		['name' => 'page#index', 'url' => '/timeline', 'verb' => 'GET'],
-		['name' => 'page#index', 'url' => '/requests', 'verb' => 'GET'],
-		['name' => 'page#index', 'url' => '/shiftsTypes', 'verb' => 'GET'],
 		['name' => 'page#index', 'url' => '/archive', 'verb' => 'GET'],
+		['name' => 'page#index', 'url' => '/shiftsTypes', 'verb' => 'GET'],
+		['name' => 'page#index', 'url' => '/requests', 'verb' => 'GET'],
+		['name' => 'page#index', 'url' => '/timeline', 'verb' => 'GET'],
 		['name' => 'shift#getGroupStatus', 'url' => '/checkAdmin', 'verb' => 'GET'],
 		['name' => 'shift#getAllAnalysts', 'url' => '/getAllAnalysts', 'verb' => 'GET'],
 		['name' => 'shift#getAnalystsExcludingCurrent', 'url' => '/getAnalysts', 'verb' => 'GET'],
