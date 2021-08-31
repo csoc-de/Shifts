@@ -44,6 +44,7 @@
 .multiselect {
 	width: 100%;
 }
+
 .multiselect__tags {
 	margin-right: 3px !important;
 }
@@ -201,6 +202,14 @@
 
 .gstc__chart-calendar {
 	background: var(--color-main-background)!important;
+}
+
+.office-indicator {
+	height: 100%;
+	margin-left: -5px;
+	border-radius: 14px;
+	padding-left: 10px;
+	color: #fff;
 }
 
 

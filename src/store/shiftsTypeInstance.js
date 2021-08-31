@@ -17,6 +17,7 @@ const state = {
 		saRule: 0,
 		soRule: 0,
 		skillGroupId: 0,
+		isWeekly: false,
 	},
 }
 
@@ -36,39 +37,36 @@ const mutations = {
 	changeStop(state, stop) {
 		state.shiftsTypeInstance.stopTimestamp = stop
 	},
-	changeRule(state, rule, value) {
-		switch (rule) {
-		case 'mo':
-			state.shiftsTypeInstance.moRule = value
-			break
-		case 'tu':
-			state.shiftsTypeInstance.tuRule = value
-			break
-		case 'we':
-			state.shiftsTypeInstance.weRule = value
-			break
-		case 'th':
-			state.shiftsTypeInstance.thRule = value
-			break
-		case 'fr':
-			state.shiftsTypeInstance.frRule = value
-			break
-		case 'sa':
-			state.shiftsTypeInstance.saRule = value
-			break
-		case 'so':
-			state.shiftsTypeInstance.soRule = value
-			break
-		}
+	changeMoRule(state, value) {
+		state.shiftsTypeInstance.moRule = value
+	},
+	changeTuRule(state, value) {
+		state.shiftsTypeInstance.tuRule = value
+	},
+	changeWeRule(state, value) {
+		state.shiftsTypeInstance.weRule = value
+	},
+	changeThRule(state, value) {
+		state.shiftsTypeInstance.thRule = value
+	},
+	changeFrRule(state, value) {
+		state.shiftsTypeInstance.frRule = value
+	},
+	changeSaRule(state, value) {
+		state.shiftsTypeInstance.saRule = value
+	},
+	changeSoRule(state, value) {
+		state.shiftsTypeInstance.soRule = value
 	},
 	changeSkillGroupId(state, skillGroup) {
-		console.log(state.shiftsTypeInstance)
-		console.log(skillGroup)
 		if (skillGroup) {
 			state.shiftsTypeInstance.skillGroupId = skillGroup.id
 		} else {
 			state.shiftsTypeInstance.skillGroupId = '0'
 		}
+	},
+	changeIsWeekly(state, value) {
+		state.shiftsTypeInstance.isWeekly = value
 	},
 }
 
@@ -94,6 +92,7 @@ const actions = {
 			saRule: 0,
 			soRule: 0,
 			skillGroupId: 0,
+			isWeekly: false,
 		}
 		state.shiftsTypeInstance = newShiftsTypeInstance
 		return newShiftsTypeInstance
@@ -103,10 +102,10 @@ const actions = {
 	},
 	async saveCurrentShiftsType({ state, dispatch, commit }) {
 		try {
+			console.log(state.shiftsTypeInstance)
 			if (state.shiftsTypeInstance.id) {
 				await axios.put(generateUrl(`/apps/shifts/shiftsType/${state.shiftsTypeInstance.id}`), state.shiftsTypeInstance)
 			} else {
-				console.log(state.shiftsTypeInstance)
 				await axios.post(generateUrl('/apps/shifts/shiftsType'), state.shiftsTypeInstance)
 			}
 			dispatch('updateShiftsTypes')

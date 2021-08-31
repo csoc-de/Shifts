@@ -57,29 +57,17 @@ class ShiftMapper extends QBMapper {
 	}
 
 	/**
-	 * Fetches last Shift by Date
-	 * @return int
+	 * Fetches shifts by Datestring
+	 * @return array
 	 */
-	public function findLastDate(): ?int {
+	public function findByDateAndType($currentDate, $type): array {
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('date')
+		$qb->select('*')
 			->from('shifts')
-			->where($qb->expr()->eq('user_id', $qb->createNamedParameter('-1')));
-		$dates = $this->findEntities($qb);
-
-		$last = 0;
-		foreach($dates as $date){
-			$test = $date->slugify('date');
-			$curDate = strtotime($test);
-			if ($curDate > $last) {
-				$last = $curDate;
-			}
-		}
-		if ($last === 0){
-			return null;
-		}
-		return $last;
+			->where($qb->expr()->eq('date', $qb->createNamedParameter($currentDate)))
+			->andWhere($qb->expr()->eq('shift_type_id', $qb->createNamedParameter($type)));
+		return $this->findEntities($qb);
 	}
 
 	/**
@@ -96,5 +84,27 @@ class ShiftMapper extends QBMapper {
 			->andWhere($qb->expr()->gte('date', $qb->createNamedParameter($currentDate)))
 			->orderBy('date');
 		return $this->findEntities($qb);
+	}
+
+	/**
+	 * Fetches all shifts in timerange
+	 * @return array
+	 */
+	public function findByTimeRange(string $start, string $end) : array {
+		/* @var $qb IQueryBuilder */
+		$startDate = date('Y-m-d', strtotime($start));
+		$endDate = date('Y-m-d', strtotime($end));
+		error_log($startDate);
+		error_log($endDate);
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('user_id', 'shift_type_id', $qb->func()->count('*','num_shifts'))
+			->from('shifts')
+			->where($qb->expr()->neq('user_id', $qb->createNamedParameter('-1')))
+			->andWhere($qb->expr()->gte('date', $qb->createNamedParameter($startDate)))
+			->andWhere($qb->expr()->lt('date', $qb->createNamedParameter($endDate)))
+			->groupBy('user_id', 'shift_type_id')
+			->orderBy('user_id');
+		$result = $qb->execute();
+		return $result->fetchAll();
 	}
 }

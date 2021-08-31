@@ -15,6 +15,7 @@
 				:new-shift-instance="newShiftInstance" />
 		</div>
 		<!--eslint-disable-->
+
 		<v-menu
 			ref="dateMenu"
 			v-model="dateMenu"
@@ -38,6 +39,7 @@
 					multiple
 					no-title
 					scrollable
+				    :allowed-dates="allowedDates"
 					locale="de-DE"
 					first-day-of-week="1">
 				<v-spacer></v-spacer>
@@ -86,6 +88,13 @@ export default {
 		...mapState({
 			newShiftInstance: (state) => state.newShiftInstance.newShiftInstance,
 		}),
+		allowedDates() {
+			if (!this.newShiftInstance.shiftsType.isWeekly) {
+				return null
+			} else {
+				return val => new Date(val).getDay() === 1
+			}
+		},
 	},
 	mounted() {
 		this.isLoading = false

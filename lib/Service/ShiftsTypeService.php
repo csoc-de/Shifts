@@ -41,7 +41,7 @@ class ShiftsTypeService {
 	}
 
 	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly){
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
@@ -56,11 +56,12 @@ class ShiftsTypeService {
 		$shiftsType->setSaRule($saRule);
 		$shiftsType->setSoRule($soRule);
 		$shiftsType->setSkillGroupId($skillGroupId);
+		$shiftsType->setIsWeekly($isWeekly);
 		return $this->mapper->insert($shiftsType);
 	}
 
 	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly){
 		try{
 			$shiftsType = $this->mapper->find($id);
 			$shiftsType->setName($name);
@@ -76,6 +77,7 @@ class ShiftsTypeService {
 			$shiftsType->setSaRule($saRule);
 			$shiftsType->setSoRule($soRule);
 			$shiftsType->setSkillGroupId($skillGroupId);
+			$shiftsType->setIsWeekly($isWeekly);
 			return $this->mapper->update($shiftsType);
 		} catch(Exception $e){
 			$this->handleException($e);

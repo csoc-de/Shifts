@@ -60,13 +60,14 @@ class ShiftsTypeController extends Controller{
 	 * @param int $frRule
 	 * @param int $saRule
 	 * @param int $soRule
-	 * @param int skillGroupId
+	 * @param int $skillGroupId
+	 * @param boolean $isWeekly
 	 * @return DataResponse
 	 */
 	public function create(string $name, string $description, string $startTimestamp, string $stopTimestamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId): DataResponse {
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly): DataResponse {
 		return new DataResponse($this->service->create($name, $description, $startTimestamp, $stopTimestamp, $color,
-														$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId));
+														$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId, $isWeekly));
 	}
 
 	/**
@@ -86,15 +87,16 @@ class ShiftsTypeController extends Controller{
 	 * @param int $saRule
 	 * @param int $soRule
 	 * @param int skillGroupId
+	 * @param boolean isWeekly
 	 * @return DataResponse
 	 */
 	public function update(int $id, string $name, string $desc, string $startTimestamp, string $stopTimestamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId): DataResponse
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly): DataResponse
 	{
 		return $this->handleNotFound(function() use ($id, $name, $desc, $startTimestamp, $stopTimestamp, $color,
-			$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId){
+			$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId, $isWeekly){
 			return $this->service->update($id, $name, $desc, $startTimestamp, $stopTimestamp, $color,
-											$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId);
+											$moRule, $tuRule, $weRule, $thRule, $frRule, $saRule, $soRule, $skillGroupId, $isWeekly);
 		});
 	}
 

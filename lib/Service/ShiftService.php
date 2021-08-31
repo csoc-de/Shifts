@@ -1,6 +1,7 @@
 <?php
 namespace OCA\Shifts\Service;
 
+use DateTime;
 use DateInterval;
 use DatePeriod;
 use Exception;
@@ -43,6 +44,15 @@ class ShiftService {
 	{
 		try {
 			return $this->mapper->findAssignedShifts();
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
+	}
+
+	public function findByTimeRange(string $start, string $end) : array
+	{
+		try {
+			return $this->mapper->findByTimeRange($start, $end);
 		} catch(Exception $e) {
 			$this->handleException($e);
 		}
@@ -99,16 +109,11 @@ class ShiftService {
 
 	public function triggerUnassignedShifts(): bool {
 		try {
-			$start = date_create(date("Y-m-d"));
-			$lastDate = $this->mapper->findLastDate();
+			$start = new DateTime();
+			$start->modify('next monday');
 			$interval = DateInterval::createFromDateString('1day');
 			$rules = $this->typeMapper->findAllRules();
 
-			if ($lastDate) {
-				$start = date_create();
-				$start->setTimestamp($lastDate);
-				$start = date_add($start, date_interval_create_from_date_string('1 days'));
-			}
 			$end = date_create(date('Y-m-d'));
 			$end = date_add($end, date_interval_create_from_date_string('365 days'));
 			$period = new DatePeriod($start, $interval, $end);
@@ -116,6 +121,7 @@ class ShiftService {
 			foreach ($period as $dt) {
 				foreach ($rules as $rule) {
 					$shiftsType = $rule->jsonSerialize();
+					$shifts = $this->mapper->findByDateAndType($dt->format('Y-m-d'), $shiftsType['id']);
 					$dayOfWeek = date('w', $dt->getTimestamp());
 
 					switch ($dayOfWeek) {
@@ -140,15 +146,11 @@ class ShiftService {
 						case '6':
 							$ruleString = $shiftsType['saRule'];
 							break;
-					}
-					if ($ruleString === '0' || $ruleString === '1') {
-						$shift = new Shift();
-						$shift->setUserId('-1');
-						$shift->setShiftTypeId($shiftsType['id']);
-						$shift->setDate($dt->format('Y-m-d'));
-						$this->mapper->insert($shift);
-					} else if ($ruleString > 1) {
-						for ($x = 0; $x < $ruleString; $x++) {
+						default:
+							$ruleString = 1;
+					};
+					if (intval($ruleString) > intval(count($shifts))) {
+						for ($x = 0; $x < (intval($ruleString) - intval(count($shifts))); $x++) {
 							$shift = new Shift();
 							$shift->setUserId('-1');
 							$shift->setShiftTypeId($shiftsType['id']);

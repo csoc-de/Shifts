@@ -5,6 +5,7 @@ import newShiftInstance from './newShiftInstance'
 import shiftsTypeInstance from './shiftsTypeInstance'
 import database from './database'
 import settings from './settings'
+import archive from './archive'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ const store = new Vuex.Store({
 		shiftsTypeInstance,
 		database,
 		settings,
+		archive,
 	},
 })
 

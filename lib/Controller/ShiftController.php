@@ -239,5 +239,21 @@ class ShiftController extends Controller {
 			return $this->service->findAssignedShifts();
 		});
 	}
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * Fetches all shifts data by timerange given
+	 *
+	 * @param string $start
+	 * @param string $end
+	 * @return DataResponse
+	 */
+	public function getShiftsDataByTimeRange(string $start, string $end) : DataResponse
+	{
+		return $this->handleNotFound(function() use($start, $end) {
+			return $this->service->findByTimeRange($start, $end);
+		});
+	}
 }
 

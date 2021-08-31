@@ -4,9 +4,9 @@ import { getRootUrl, generateUrl } from '@nextcloud/router'
 
 import Shifts from './views/Shifts'
 
-import NewShift from './views/NewShift'
 import Requests from './views/Requests'
 import ShiftsTypes from './views/ShiftsTypes'
+import Archive from './views/Archive'
 
 Vue.use(Router)
 
@@ -20,19 +20,15 @@ const base = generateUrl('apps/shifts', {}, {
 const router = new Router({
 	mode: 'history',
 	base,
-	linkActiveClass: 'active',
 	routes: [
 		{
 			path: '/',
+			redirect: '/timeline',
+		},
+		{
+			path: '/timeline',
 			component: Shifts,
 			name: 'MainView',
-			children: [
-				{
-					path: 'newShift',
-					name: 'NewShiftPopoverView',
-					component: NewShift,
-				},
-			],
 		},
 		{
 			path: '/requests',
@@ -43,6 +39,11 @@ const router = new Router({
 			path: '/shiftsTypes',
 			component: ShiftsTypes,
 			name: 'ShiftsTypes',
+		},
+		{
+			path: '/archive',
+			component: Archive,
+			name: 'Archive',
 		},
 	],
 })

@@ -78,36 +78,6 @@ function getMonthTranslated() {
 function getWeekTranslated() {
 	return translate('shifts', 'Woche')
 }
-function isCollision(movedShift) {
-	const allItems = gstc.api.getAllItems()
-	for (const currentShiftId in allItems) {
-		if (currentShiftId === movedShift.id) continue
-		const currentShift = allItems[currentShiftId]
-		if (currentShift.rowId === movedShift.rowId) {
-			if (
-				movedShift.time.start >= currentShift.time.start && movedShift.time.start <= currentShift.time.end
-			) {
-				return true
-			}
-			if (
-				movedShift.time.end >= currentShift.time.start && movedShift.time.end <= currentShift.time.end
-			) {
-				return true
-			}
-			if (
-				movedShift.time.start <= currentShift.time.start && movedShift.time.end >= currentShift.time.end
-			) {
-				return true
-			}
-			if (
-				movedShift.time.start >= currentShift.time.start && movedShift.time.end <= currentShift.time.end
-			) {
-				return true
-			}
-		}
-	}
-	return false
-}
 
 export default {
 	name: 'Calendar',
@@ -146,6 +116,7 @@ export default {
 			handler(newVal, oldVal) {
 				state.update('config', config => {
 					config.chart.items = GSTC.api.fromArray(this.generateItems())
+					config.list.rows = GSTC.api.fromArray(this.generateRows())
 					return config
 				})
 			},
@@ -164,10 +135,6 @@ export default {
 					return items.before.map((beforeMovementItem, index) => {
 						const afterMovementItem = items.after[index]
 						const myItem = GSTC.api.merge({}, afterMovementItem)
-						if (isCollision(myItem)) {
-							myItem.time = { ...beforeMovementItem.time }
-							myItem.rowId = beforeMovementItem.rowId
-						}
 						if (myItem.time.start !== beforeMovementItem.time.start && myItem.time.end !== beforeMovementItem.time.end) {
 							myItem.time = { ...beforeMovementItem.time }
 							myItem.rowId = beforeMovementItem.rowId
@@ -203,11 +170,6 @@ export default {
 					})
 				},
 			},
-			snapToTime: {
-				start({ startTime, time }) {
-					return startTime.startOf('day')
-				},
-			},
 		}
 		if (this.isAdmin) {
 			plugins.push(Selection())
@@ -221,6 +183,22 @@ export default {
 			list: {
 				columns: {
 					data: {
+						[GSTC.api.GSTCID('office_service')]: {
+							id: GSTC.api.GSTCID('office_service'),
+							width: 100,
+							data: 'office_service',
+							header: {
+								content: t('shifts', 'Bürodienst'),
+							},
+						},
+						[GSTC.api.GSTCID('standby')]: {
+							id: GSTC.api.GSTCID('standby'),
+							width: 100,
+							data: 'standby',
+							header: {
+								content: t('shifts', 'Bereitschaft'),
+							},
+						},
 						[GSTC.api.GSTCID('id')]: {
 							id: GSTC.api.GSTCID('id'),
 							width: 100,
@@ -296,13 +274,30 @@ export default {
 				label: t('shifts', 'Offene Schichten'),
 				style: { background: '#d3d7de' },
 			})
+			const weekHasOfficeService = this.shifts.find(shift => {
+				return shift.shiftsType.name === 'Bürodienst'
+			})
+			const weekHasStandby = this.shifts.find(shift => {
+				return shift.shiftsType.name === 'Bereitschaft'
+			})
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
 				id = id.replaceAll('.', '_')
-				rows.push({
+				const row = {
 					id,
 					label: analyst.name,
-				})
+				}
+				if (weekHasOfficeService && weekHasOfficeService.userId === id) {
+					row.office_service = ({ row, vido }) => {
+						return vido.html`<div class="office-indicator" style="background-color: ${weekHasOfficeService.shiftsType.color}"> ${weekHasOfficeService.shiftsType.name} </div>`
+					}
+				}
+				if (weekHasStandby && weekHasStandby.userId === id) {
+					row.standby = ({ row, vido }) => {
+						return vido.html`<div class="office-indicator" style="background-color: ${weekHasStandby.shiftsType.color}"> ${weekHasStandby.shiftsType.name} </div>`
+					}
+				}
+				rows.push(row)
 			})
 			return rows
 		},
@@ -315,19 +310,21 @@ export default {
 				let rowId = shift.userId
 				rowId = rowId.replaceAll('.', '_')
 				const shiftsType = shift.shiftsType
-				items.push({
-					id,
-					label: this.generateItemLabel,
-					rowId,
-					time: {
-						start: start.valueOf(),
-						end: start.endOf('day').valueOf(),
-					},
-					minWidth: 200,
-					style: {
-						background: shiftsType.color,
-					},
-				})
+				if (shiftsType.isWeekly === '0') {
+					items.push({
+						id,
+						label: this.generateItemLabel,
+						rowId,
+						time: {
+							start: start.valueOf(),
+							end: start.endOf('day').valueOf(),
+						},
+						minWidth: 200,
+						style: {
+							background: shiftsType.color,
+						},
+					})
+				}
 			})
 			return items
 		},

@@ -7,7 +7,7 @@
 			<AppNavigationItem
 				:title="t('shifts', 'Schichtplan')"
 				icon="icon-calendar-dark"
-				to="/" />
+				to="/timeline" />
 
 			<AppNavigationItem
 				:title="t('shifts', 'Schichttausch')"
@@ -19,9 +19,15 @@
 				:title="t('shifts', 'Schichttypen')"
 				icon="icon-category-customization"
 				to="/shiftsTypes" />
+
+			<AppNavigationItem
+				v-if="isAdmin && !loading"
+				:title="t('shifts', 'Schichtdaten')"
+				icon="icon-category-files"
+				to="/archive" />
 		</template>
 		<template #footer>
-			Version: 1.5.1
+			Version: 1.6.0
 		</template>
 	</AppNavigationVue>
 </template>

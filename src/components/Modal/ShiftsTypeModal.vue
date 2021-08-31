@@ -22,6 +22,7 @@
 				:close-on-click="true"
 				:close-on-content-click="false"
 				:nudge-right="40"
+				v-if="showTimeSelector"
 				transition="scale-transition"
 				offset-y
 				attach
@@ -49,6 +50,7 @@
 				:close-on-content-click="false"
 				:close-on-click="true"
 				:nudge-right="40"
+				v-if="showTimeSelector"
 				transition="scale-transition"
 				offset-y
 				attach
@@ -70,6 +72,11 @@
 					@change="changeStop">
 				</v-time-picker>
 			</v-menu>
+			<v-checkbox
+				:value="shiftsType.isWeekly"
+				:label="t('shifts','Wöchentlich')"
+				@change="updateIsWeekly">
+			</v-checkbox>
 			<v-menu
 				ref="colorMenu"
 				v-model="colorMenu"
@@ -104,105 +111,74 @@
 				</v-btn>
 			</v-menu>
 			<v-expansion-panels
-				flat>
+				flat
+				v-if="showTimeSelector">
 				<v-expansion-panel>
 					<v-expansion-panel-header>{{ t('shifts', 'Regeln')}}</v-expansion-panel-header>
 					<v-expansion-panel-content>
-						<v-list>
-							<v-list-item-group>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Montag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.moRule"
-											@change="(value) => changeRule('mo', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Dienstag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.tuRule"
-											@change="(value) => changeRule('tu', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Mittwoch')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.weRule"
-											@change="(value) => changeRule('we', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Donnerstag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.thRule"
-											@change="(value) => changeRule('th', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Freitag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.frRule"
-											@change="(value) => changeRule('fr', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Samstag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.saRule"
-											@change="(value) => changeRule('sa', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-								<v-list-item>
-									<v-list-item-content>
-										<v-text-field
-											:label="t('shifts', 'Sonntag')"
-											type="number"
-											min="-1"
-											max="10"
-											hide-details
-											:value="shiftsType.soRule"
-											@change="(value) => changeRule('so', value)"
-										></v-text-field>
-									</v-list-item-content>
-								</v-list-item>
-							</v-list-item-group>
-						</v-list>
+						<v-text-field
+							:label="t('shifts', 'Montag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.moRule"
+							@change="changeMoRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Dienstag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.tuRule"
+							@change="changeTuRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Mittwoch')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.weRule"
+							@change="changeWeRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Donnerstag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.thRule"
+							@change="changeThRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Freitag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.frRule"
+							@change="changeFrRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Samstag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.saRule"
+							@change="changeSaRule"
+						></v-text-field>
+						<v-text-field
+							:label="t('shifts', 'Sonntag')"
+							type="number"
+							min="-1"
+							max="10"
+							hide-details
+							:value="shiftsType.soRule"
+							@change="changeSoRule"
+						></v-text-field>
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 			</v-expansion-panels>
@@ -237,6 +213,7 @@ export default {
 			stopMenu: false,
 			colorMenu: false,
 			color: '',
+			showTimeSelector: true,
 		}
 	},
 	computed: {
@@ -260,8 +237,26 @@ export default {
 		changeColor(color) {
 			this.color = color
 		},
-		changeRule(rule, value) {
-			this.$store.commit('changeRule', rule, value)
+		changeMoRule(value) {
+			this.$store.commit('changeMoRule', value)
+		},
+		changeTuRule(value) {
+			this.$store.commit('changeTuRule', value)
+		},
+		changeWeRule(value) {
+			this.$store.commit('changeWeRule', value)
+		},
+		changeThRule(value) {
+			this.$store.commit('changeThRule', value)
+		},
+		changeFrRule(value) {
+			this.$store.commit('changeFrRule', value)
+		},
+		changeSaRule(value) {
+			this.$store.commit('changeSaRule', value)
+		},
+		changeSoRule(value) {
+			this.$store.commit('changeSoRule', value)
 		},
 		saveColor() {
 			this.colorMenu = false
@@ -269,6 +264,10 @@ export default {
 		},
 		updateSkillGroup(skillGroup) {
 			this.$store.commit('changeSkillGroupId', skillGroup)
+		},
+		updateIsWeekly(value) {
+			this.$store.commit('changeIsWeekly', value)
+			this.showTimeSelector = !value
 		},
 		save() {
 			this.$store.dispatch('saveCurrentShiftsType')
