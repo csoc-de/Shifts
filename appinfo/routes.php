@@ -8,10 +8,10 @@ return [
 	],
 	'routes' => [
 		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'page#index', 'url' => '/archive', 'verb' => 'GET', 'postfix' => 'direct.archive'],
-		['name' => 'page#index', 'url' => '/shiftsTypes', 'verb' => 'GET', 'postfix' => 'direct.shiftsTypes'],
-		['name' => 'page#index', 'url' => '/requests', 'verb' => 'GET', 'postfix' => 'direct.requests'],
 		['name' => 'page#index', 'url' => '/timeline', 'verb' => 'GET', 'postfix' => 'direct.timeline'],
+		['name' => 'page#index', 'url' => '/requests', 'verb' => 'GET', 'postfix' => 'direct.requests'],
+		['name' => 'page#index', 'url' => '/shiftsTypes', 'verb' => 'GET', 'postfix' => 'direct.shiftsTypes'],
+		['name' => 'page#index', 'url' => '/archive', 'verb' => 'GET', 'postfix' => 'direct.archive'],
 		['name' => 'shift#getGroupStatus', 'url' => '/checkAdmin', 'verb' => 'GET'],
 		['name' => 'shift#getAllAnalysts', 'url' => '/getAllAnalysts', 'verb' => 'GET'],
 		['name' => 'shift#getAnalystsExcludingCurrent', 'url' => '/getAnalysts', 'verb' => 'GET'],
