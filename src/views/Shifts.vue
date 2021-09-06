@@ -21,7 +21,7 @@
 					</v-btn>
 				</template>
 				<v-layout class="popover-menu-layout">
-					<NewShift @close="closeNewShift">
+					<NewShift @close="closeNewShift()">
 					</NewShift>
 				</v-layout>
 			</v-menu>

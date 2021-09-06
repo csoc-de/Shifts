@@ -56,7 +56,7 @@ class ShiftsTypeService {
 		$shiftsType->setSaRule($saRule);
 		$shiftsType->setSoRule($soRule);
 		$shiftsType->setSkillGroupId($skillGroupId);
-		$shiftsType->setIsWeekly($isWeekly);
+		$shiftsType->setIsWeekly($isWeekly ?: '0');
 		return $this->mapper->insert($shiftsType);
 	}
 
@@ -77,7 +77,7 @@ class ShiftsTypeService {
 			$shiftsType->setSaRule($saRule);
 			$shiftsType->setSoRule($soRule);
 			$shiftsType->setSkillGroupId($skillGroupId);
-			$shiftsType->setIsWeekly($isWeekly);
+			$shiftsType->setIsWeekly($isWeekly ?: '0');
 			return $this->mapper->update($shiftsType);
 		} catch(Exception $e){
 			$this->handleException($e);

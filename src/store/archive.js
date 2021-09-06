@@ -60,7 +60,6 @@ const actions = {
 				}
 				currRow[shiftData.shift_type_id.toString()] = shiftData.num_shifts
 			})
-			console.log(rows)
 			this.items = rows
 			commit('updateShiftsData', rows)
 		} catch (e) {

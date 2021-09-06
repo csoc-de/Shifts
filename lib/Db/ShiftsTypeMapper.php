@@ -48,7 +48,7 @@ class ShiftsTypeMapper extends QBMapper {
 	public function findAllRules(): array {
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('id', 'mo_rule', 'tu_rule', 'we_rule', 'th_rule', 'fr_rule', 'sa_rule', 'so_rule')
+		$qb->select('id', 'mo_rule', 'tu_rule', 'we_rule', 'th_rule', 'fr_rule', 'sa_rule', 'so_rule', 'is_weekly')
 			->from('shifts_type');
 		return $this->findEntities($qb);
 	}

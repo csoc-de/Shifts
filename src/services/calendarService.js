@@ -28,7 +28,6 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 		array[item.date] = group
 		return array
 	}, {})
-
 	for (const group in groups) {
 		for (const shiftType of shiftTypes) {
 			const analysts = []
@@ -41,14 +40,16 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 					analysts.push(foundAnalyst)
 				}
 			})
-
 			if (analysts.length > 0) {
 				await syncCalendarObject(shiftsCalendar, shiftType, group, analysts)
 			} else {
 				try {
 					// eslint-disable-next-line
 					const [vObject, eventComponent] = await findEventComponent(calendar, group, shiftType, timezone)
-					await vObject.delete()
+					const date = new Date(group)
+					if (!(shiftType.isWeekly === '1' && date.getDay() !== 1)) {
+						await vObject.delete()
+					}
 				} catch (e) {
 					// do nothing when no Event is found
 				}
@@ -130,10 +131,11 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 		}
 	} catch (e) {
 		if (e.message.includes('Could not find corresponding Event')) {
+			const timestamps = getTimestamps(dateString, shiftsType)
 			const eventComponent = createEventComponent(
-				calcShiftDate(dateString, shiftsType.startTimestamp),
-				calcShiftDate(dateString, shiftsType.stopTimestamp))
-
+				timestamps[0],
+				timestamps[1],
+				shiftsType.isWeekly)
 			let title = shiftsType.name + ': '
 
 			eventComponent.setOrganizerFromNameAndEMail(getOrganizerName(), getOrganizerEmail())
@@ -144,7 +146,6 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 			})
 
 			eventComponent.title = title
-
 			if (eventComponent.isDirty()) {
 				await calendar.createVObject(eventComponent.root.toICS())
 			}
@@ -216,16 +217,22 @@ const findShiftsCalendar = async() => {
  *
  * @param {Date} startDate Date of start of new event
  * @param {Date} stopDate Date of stop of new event
+ * @param {boolean} isWeekly Determines if Event is is all Day and Weekly
  *
  * @returns {EventComponent}
  */
-const createEventComponent = (startDate, stopDate) => {
+const createEventComponent = (startDate, stopDate, isWeekly) => {
 	const startDateTime = DateTimeValue
 		.fromJSDate(startDate, true)
 		.getInTimezone(timezone)
 	const endDateTime = DateTimeValue
 		.fromJSDate(stopDate, true)
 		.getInTimezone(timezone)
+
+	if (isWeekly === '1') {
+		startDateTime.isDate = true
+		endDateTime.isDate = true
+	}
 
 	const calendarComponent = createEvent(startDateTime, endDateTime)
 	for (const vObject of calendarComponent.getVObjectIterator()) {
@@ -239,7 +246,7 @@ const createEventComponent = (startDate, stopDate) => {
 		throw new Error('Could not find Event')
 	}
 
-	return firstVObject.recurrenceManager.getOccurrenceAtExactly(startDateTime)
+	return firstVObject
 }
 
 /**
@@ -314,21 +321,19 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
  * @returns {[VObject,EventComponent]}
  */
 const findEventComponent = async(calendar, dateString, shiftsType, timezone) => {
-	const vObjects = await calendar.findByTypeInTimeRange('VEVENT',
-		calcShiftDate(dateString, shiftsType.startTimestamp),
-		calcShiftDate(dateString, shiftsType.stopTimestamp))
+	const timestamps = getTimestamps(dateString, shiftsType)
+	const vObjects = await calendar.findByTypeInTimeRange('VEVENT', timestamps[0], timestamps[1])
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}
-
+	const cleanDateString = dateString.replace('-', '')
 	let vObject
 	for (const obj of vObjects) {
-		if (obj.data.includes(`SUMMARY:${shiftsType.name}`)) {
+		if (obj.data.includes(`SUMMARY:${shiftsType.name}`) && obj.data.includes(`DTSTART;VALUE=DATE:${cleanDateString}`)) {
 			vObject = obj
 			break
 		}
 	}
-
 	if (!vObject) {
 		throw new Error('Could not find corresponding Event')
 	}
@@ -354,11 +359,29 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 		return
 	}
 
-	const startDateTime = DateTimeValue
-		.fromJSDate(calcShiftDate(dateString, shiftsType.startTimestamp), true)
-		.getInTimezone(timezone)
+	return [vObject, firstVObject]
+}
 
-	return [vObject, firstVObject.recurrenceManager.getOccurrenceAtExactly(startDateTime)]
+/**
+ * returns the corresponding timestamps
+ *
+ * @param {String} dateString start Date of Shift
+ * @param {object} shiftsType type of shift
+ *
+ * @returns{[Date, Date]}
+ */
+const getTimestamps = (dateString, shiftsType) => {
+	if (shiftsType.isWeekly === '1') {
+		const start = calcShiftDate(dateString, '00:00')
+		const end = calcShiftDate(dateString, '00:00')
+		end.setDate(end.getDate() + 7)
+		return [start, end]
+	} else {
+		return [
+			calcShiftDate(dateString, shiftsType.startTimestamp),
+			calcShiftDate(dateString, shiftsType.stopTimestamp),
+		]
+	}
 }
 
 export {

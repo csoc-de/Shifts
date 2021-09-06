@@ -27,12 +27,15 @@ const mutations = {
 		}
 	},
 	changeShiftsType(state, shiftsType) {
+		state.newShiftInstance.analysts = []
 		state.newShiftInstance.shiftsType = shiftsType
 	},
 }
 
 const getters = {
-
+	getCurrentShiftsType(state) {
+		return state.newShiftInstance.shiftsType
+	},
 }
 
 const actions = {

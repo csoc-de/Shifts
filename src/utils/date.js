@@ -135,7 +135,7 @@ export function modifyDate(date, { day = 0, week = 0, month = 0 }) {
  * combines day of Shift with Timestamp
  *
  * @param {String} date Date object of Day
- * @param {Timestamp} timestamp Timestamp to add
+ * @param {String} timestamp Timestamp to add
  *
  * @returns {Date}
  */

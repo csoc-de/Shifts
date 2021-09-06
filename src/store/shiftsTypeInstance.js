@@ -98,6 +98,7 @@ const actions = {
 		return newShiftsTypeInstance
 	},
 	editExistingShiftsType({ state, dispatch, commit }, shiftsType) {
+		shiftsType.isWeekly = shiftsType.isWeekly === '1'
 		state.shiftsTypeInstance = shiftsType
 	},
 	async saveCurrentShiftsType({ state, dispatch, commit }) {

@@ -43,7 +43,7 @@
 					locale="de-DE"
 					first-day-of-week="1">
 				<v-spacer></v-spacer>
-				<v-btn color="primary" @click="cancel()">
+				<v-btn color="primary" @click="dateMenu = false">
 					Cancel
 				</v-btn>
 				<v-btn color="primary" @click="$refs.dateMenu.save(newShiftInstance.dates)">
@@ -51,7 +51,7 @@
 				</v-btn>
 			</v-date-picker>
 		</v-menu>
-		<v-btn color="primary" @click="cancel">
+		<v-btn color="primary" @click="cancel()">
 			Cancel
 		</v-btn>
 		<v-btn color="primary" @click="save">
@@ -101,7 +101,7 @@ export default {
 	},
 	methods: {
 		closeEditor() {
-			this.$emit('cancel')
+			this.$emit('close')
 		},
 		async cancel() {
 			if (this.isLoading) {

@@ -73,10 +73,20 @@
 				</v-time-picker>
 			</v-menu>
 			<v-checkbox
-				:value="shiftsType.isWeekly"
+				v-model="shiftsType.isWeekly"
 				:label="t('shifts','Wöchentlich')"
 				@change="updateIsWeekly">
 			</v-checkbox>
+			<v-text-field
+				v-if="!showTimeSelector"
+				:label="t('shifts', 'Wöchtenliche Schichten')"
+				type="number"
+				min="-1"
+				max="10"
+				hide-details
+				:value="shiftsType.moRule"
+				@change="changeMoRule"
+			></v-text-field>
 			<v-menu
 				ref="colorMenu"
 				v-model="colorMenu"
@@ -213,7 +223,6 @@ export default {
 			stopMenu: false,
 			colorMenu: false,
 			color: '',
-			showTimeSelector: true,
 		}
 	},
 	computed: {
@@ -221,6 +230,9 @@ export default {
 			shiftsType: 'shiftsTypeInstance',
 			skillGroups: 'getSkillGroups',
 		}),
+		showTimeSelector() {
+			return !this.shiftsType.isWeekly
+		},
 	},
 	methods: {
 		updateName(name) {
@@ -267,7 +279,6 @@ export default {
 		},
 		updateIsWeekly(value) {
 			this.$store.commit('changeIsWeekly', value)
-			this.showTimeSelector = !value
 		},
 		save() {
 			this.$store.dispatch('saveCurrentShiftsType')

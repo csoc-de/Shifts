@@ -97,6 +97,7 @@ export default {
 					text: getWeekTranslated(),
 				},
 			],
+			dateChanged: true,
 		}
 	},
 	computed: {
@@ -114,11 +115,13 @@ export default {
 		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
 			handler(newVal, oldVal) {
-				state.update('config', config => {
-					config.chart.items = GSTC.api.fromArray(this.generateItems())
-					config.list.rows = GSTC.api.fromArray(this.generateRows())
-					return config
-				})
+				if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+					state.update('config', config => {
+						config.chart.items = GSTC.api.fromArray(this.generateItems())
+						config.list.rows = GSTC.api.fromArray(this.generateRows())
+						return config
+					})
+				}
 			},
 			deep: true,
 		},
@@ -176,38 +179,34 @@ export default {
 			plugins.push(MovementPlugin(movementPluginConfig))
 		}
 		// config for the GSTC Calendar
+		const data = {}
+		this.shiftsTypes.forEach((shiftsType) => {
+			if (shiftsType.isWeekly === '1') {
+				data[GSTC.api.GSTCID(shiftsType.name)] = {
+					id: GSTC.api.GSTCID(shiftsType.name),
+					width: 100,
+					data: shiftsType.name,
+					header: {
+						content: t('shifts', shiftsType.name),
+					},
+				}
+			}
+		})
+		data[[GSTC.api.GSTCID('id')]] = {
+			id: GSTC.api.GSTCID('id'),
+			width: 100,
+			data: 'label',
+			header: {
+				content: 'Analyst',
+			},
+		}
 		const config = {
 			licenseKey: this.gstcLicense,
 			plugins,
 			innerHeight: 600,
 			list: {
 				columns: {
-					data: {
-						[GSTC.api.GSTCID('office_service')]: {
-							id: GSTC.api.GSTCID('office_service'),
-							width: 100,
-							data: 'office_service',
-							header: {
-								content: t('shifts', 'Bürodienst'),
-							},
-						},
-						[GSTC.api.GSTCID('standby')]: {
-							id: GSTC.api.GSTCID('standby'),
-							width: 100,
-							data: 'standby',
-							header: {
-								content: t('shifts', 'Bereitschaft'),
-							},
-						},
-						[GSTC.api.GSTCID('id')]: {
-							id: GSTC.api.GSTCID('id'),
-							width: 100,
-							data: 'label',
-							header: {
-								content: 'Analyst',
-							},
-						},
-					},
+					data,
 				},
 				toggle: {
 					display: false,
@@ -269,34 +268,53 @@ export default {
 		// generates and returns rows for each analyst
 		generateRows() {
 			const rows = []
-			rows.push({
+			const openRow = {
 				id: '-1',
 				label: t('shifts', 'Offene Schichten'),
 				style: { background: '#d3d7de' },
-			})
-			const weekHasOfficeService = this.shifts.find(shift => {
-				return shift.shiftsType.name === 'Bürodienst'
-			})
-			const weekHasStandby = this.shifts.find(shift => {
-				return shift.shiftsType.name === 'Bereitschaft'
-			})
+			}
+			rows.push(openRow)
 			this.analysts.forEach((analyst) => {
 				let id = analyst.uid
 				id = id.replaceAll('.', '_')
+				const date = GSTC.api.date(this.date).startOf('week').add(1, 'days').format('YYYY-MM-DD')
 				const row = {
 					id,
 					label: analyst.name,
+					analyst,
+					date,
 				}
-				if (weekHasOfficeService && weekHasOfficeService.userId === id) {
-					row.office_service = ({ row, vido }) => {
-						return vido.html`<div class="office-indicator" style="background-color: ${weekHasOfficeService.shiftsType.color}"> ${weekHasOfficeService.shiftsType.name} </div>`
+				this.shiftsTypes.forEach((shiftsType) => {
+					if (shiftsType.isWeekly === '1') {
+						if (shiftsType.moRule === '0' || shiftsType.moRule === '1') {
+							const checked = this.shifts.find((shift) => {
+								return shift.shiftTypeId === shiftsType.id.toString() && shift.userId === analyst.uid
+							})
+							row[shiftsType.name] = ({ row, vido }) => {
+								// eslint-disable-next-line multiline-ternary
+								return vido.html`<div class="${checked ? 'weekly-indicator' : ''}" style="background-color: ${checked ? shiftsType.color : ''}"> ${this.isAdmin ? vido.html`<input type="radio" id="${shiftsType.id}" name="${shiftsType.name}" value="${id + shiftsType.id}"
+												@click="${() => { this.onRadioButtonClick(row, shiftsType, checked) }}"
+												.checked=${checked}></input>` : ''}</div>`
+							}
+						} else {
+							const checked = this.shifts.find((shift) => {
+								return shift.shiftTypeId === shiftsType.id.toString() && shift.userId === analyst.uid
+							})
+							if (!this[shiftsType.name] || this[shiftsType.name].length === 0 || this.dateChanged) {
+								this[shiftsType.name] = this.shifts.filter((shift) => {
+									return shift.shiftTypeId === shiftsType.id.toString() && shift.date === date
+								})
+								this.dateChanged = false
+							}
+							row[shiftsType.name] = ({ row, vido }) => {
+								// eslint-disable-next-line multiline-ternary
+								return vido.html`<div class="${checked ? 'weekly-indicator' : ''}" style="background-color: ${checked ? shiftsType.color : ''}"> ${this.isAdmin ? vido.html`<input type="checkbox" id="${shiftsType.id}" name="${shiftsType.name}" value="${id + shiftsType.id}"
+												@click="${() => { this.onCheckBoxButtonClick(row, shiftsType, checked) }}"
+												.checked=${checked}></input>` : ''}</div>`
+							}
+						}
 					}
-				}
-				if (weekHasStandby && weekHasStandby.userId === id) {
-					row.standby = ({ row, vido }) => {
-						return vido.html`<div class="office-indicator" style="background-color: ${weekHasStandby.shiftsType.color}"> ${weekHasStandby.shiftsType.name} </div>`
-					}
-				}
+				})
 				rows.push(row)
 			})
 			return rows
@@ -342,8 +360,42 @@ export default {
 		onItemClick(item) {
 			this.$store.dispatch('deleteAssignment', GSTC.api.sourceID(item.id))
 		},
+		onRadioButtonClick(row, shiftsType, checked) {
+			if (!checked) {
+				const oldShift = this.shifts.find((shift) => {
+					return shift.date === row.date && shift.shiftTypeId === shiftsType.id.toString()
+				})
+				const newShift = {
+					id: oldShift.id,
+					analystId: row.analyst.uid,
+					shiftTypeId: shiftsType.id,
+					date: row.date,
+				}
+				this.$store.dispatch('updateShift', newShift)
+			}
+		},
+		onCheckBoxButtonClick(row, shiftsType, checked) {
+			if (!checked) {
+				const currShift = this[shiftsType.name].shift()
+				const newShift = {
+					id: currShift.id,
+					userId: row.analyst.uid,
+					shiftTypeId: shiftsType.id,
+					date: row.date,
+				}
+				console.log(newShift)
+				this.$store.dispatch('updateShift', {
+					id: newShift.id,
+					analystId: newShift.userId,
+					shiftTypeId: newShift.shiftTypeId,
+					date: newShift.date,
+				})
+				this[shiftsType.name].push(newShift)
+			}
+		},
 		// changes the Calendar Timespan to Month or Week
 		async updateCalendar(format) {
+			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDateFormat', format)
 			const date = this.date
 			// updating the state of the calendar
@@ -356,6 +408,7 @@ export default {
 		// changes the time of calendar to current timespan including today
 		async setToday() {
 			const today = dayjs()
+			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', today)
 			// updating the state of the calendar
 			state.update('config.chart.time', (time) => {
@@ -369,6 +422,7 @@ export default {
 			let date = this.date
 			// updating the state of the calendar
 			date = date.add(-1, this.selectedCalendarFormat)
+			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', date)
 			state.update('config.chart.time', (time) => {
 				time.from = date.startOf(this.selectedCalendarFormat).valueOf()
@@ -380,6 +434,7 @@ export default {
 		async next() {
 			let date = this.date
 			date = date.add(1, this.selectedCalendarFormat)
+			this.dateChanged = true
 			// updating the state of the calendar
 			await this.$store.commit('updateDisplayedDate', date)
 			state.update('config.chart.time', (time) => {

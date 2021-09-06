@@ -67,9 +67,8 @@
 <script>
 import Avatar from '@nextcloud/vue/dist/Components/Avatar'
 import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
-import HttpClient from '@nextcloud/axios'
 import debounce from 'debounce'
-import { linkTo } from '@nextcloud/router'
+import { mapGetters } from 'vuex'
 export default {
 	name: 'AnalystsListSearch',
 	components: {
@@ -84,13 +83,16 @@ export default {
 	},
 	data() {
 		return {
-			allAnalysts: [],
 			isLoading: false,
 			inputGiven: false,
 			matches: [],
 		}
 	},
 	computed: {
+		...mapGetters({
+			currentShiftsType: 'getCurrentShiftsType',
+			allAnalysts: 'allAnalysts',
+		}),
 		// Placeholder String
 		placeholder() {
 			return this.$t('shifts', 'Search for Emails or Users')
@@ -110,18 +112,37 @@ export default {
 			this.matches.length = 0
 			this.matches.push(...result)
 		},
+		currentShiftsType(newVal, oldVal) {
+			this.matches.length = 0
+			this.allAnalysts.forEach((analyst) => {
+				let name
+				if (analyst.name) {
+					name = analyst.name
+				} else if (analyst.name && analyst.email) {
+					name = `${analyst.name} (${analyst.email})`
+				} else {
+					name = analyst.email
+				}
+				const a = {
+					calendarUserType: 'INDIVIDUAL',
+					commonName: analyst.name,
+					email: analyst.email,
+					isUser: true,
+					avatar: analyst.uid,
+					dropdownName: name,
+					userId: analyst.uid,
+				}
+				console.log(analyst)
+				console.log(this.currentShiftsType)
+				if (analyst.skillGroup >= this.currentShiftsType.skillGroupId) {
+					this.matches.push(a)
+				}
+			})
+		},
 	},
-	async beforeMount() {
-		let response
-		try {
-			// Fetches List of Analysts from API
-			response = await HttpClient.get(linkTo('shifts', 'index.php') + '/getAllAnalysts')
-		} catch (e) {
-			console.debug(e)
-			return []
-		}
+	beforeMount() {
 		// Matches incoming Data-Fields to Corresponding Fields
-		response.data.forEach((analyst) => {
+		this.allAnalysts.forEach((analyst) => {
 			let name
 			if (analyst.name) {
 				name = analyst.name
@@ -139,7 +160,6 @@ export default {
 				dropdownName: name,
 				userId: analyst.uid,
 			}
-			this.allAnalysts.push(a)
 			this.matches.push(a)
 		})
 	},
