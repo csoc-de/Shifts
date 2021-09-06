@@ -383,7 +383,6 @@ export default {
 					shiftTypeId: shiftsType.id,
 					date: row.date,
 				}
-				console.log(newShift)
 				this.$store.dispatch('updateShift', {
 					id: newShift.id,
 					analystId: newShift.userId,
