@@ -1,3 +1,9 @@
+/*
+ * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@outlook.de>
+ *
+ * @author Fabian Kirchesch <fabian.kirchesch@outlook.de>
+ */
+
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { showError } from '@nextcloud/dialogs'

@@ -2,6 +2,7 @@
  * @copyright Copyright (c) 2019 Georg Ehrke
  *
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @modified Fabian Kirchesch <fabian.kirchesch@outlook.de>
  *
  * @license GNU AGPL version 3 or any later version
  *

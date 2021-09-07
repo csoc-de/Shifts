@@ -1,4 +1,10 @@
 <?php
+/*
+ * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@outlook.de>
+ *
+ * @author Fabian Kirchesch <fabian.kirchesch@outlook.de>
+ */
+
 /** @var $l \OCP\IL10N */
 /** @var $_ array */
 style('shifts', 'settings');

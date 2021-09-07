@@ -1,4 +1,10 @@
 <!--
+  - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@outlook.de>
+  -
+  - @author Fabian Kirchesch <fabian.kirchesch@outlook.de>
+  -->
+
+<!--
   - View to display Shifts and add Shifts or Shiftstypes if admin is current user
   -->
 <template>

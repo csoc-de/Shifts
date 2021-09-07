@@ -1,4 +1,10 @@
 <!--
+  - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@outlook.de>
+  -
+  - @author Fabian Kirchesch <fabian.kirchesch@outlook.de>
+  -->
+
+<!--
   - Component to display and navigate the Shifts-Calendar
   - Implements the GSTC-Calendar by neuronetio
   - https://github.com/neuronetio/gantt-schedule-timeline-calendar
