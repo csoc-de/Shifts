@@ -13,13 +13,13 @@ script('shifts', 'settings');
 
 <div id="admin_settings">
 	<h2><?php p($l->t('Shifts')); ?>
-		<a class="icon-info svg" title href="https://gitlab.csoc.de/csoc/nextcloud/shifts"
+		<a class="icon-info svg" title href="https://github.com/CSOC-GmbH/Shifts"
 		   data-original-title="<?php p($l->t('Dokumentation')); ?>">
 		</a>
 	</h2>
 	<div class="settings_container">
 		<label for="shiftsCalendarName"><?php p($l->t('Name des Schichtkalenders'))?></label>
-		<input id="shiftsCalendarName" value="<?php p($_['calendarName']) ?>" placeholder="Leitstellen Schichtplan" type="text" />
+		<input id="shiftsCalendarName" value="<?php p($_['calendarName']) ?>" placeholder="ShiftsCalendar" type="text" />
 	</div>
 	<div class="settings_container">
 		<label for="shiftsOrganizerName"><?php p($l->t('Name des Schichtorganisators'))?></label>
@@ -27,7 +27,7 @@ script('shifts', 'settings');
 	</div>
 	<div class="settings_container">
 		<label for="shiftsOrganizerEmail"><?php p($l->t('Email des Schichtorganisators'))?></label>
-		<input id="shiftsOrganizerEmail" value="<?php p($_['organizerEmail']) ?>" placeholder="technik@csoc.de" type="text" />
+		<input id="shiftsOrganizerEmail" value="<?php p($_['organizerEmail']) ?>" placeholder="admin@test.com" type="text" />
 	</div>
 	<div class="settings_container">
 		<label for="shiftsAdminGroup"><?php p($l->t('Name der Schichtadmin-Gruppe'))?></label>
@@ -35,7 +35,7 @@ script('shifts', 'settings');
 	</div>
 	<div class="settings_container">
 		<label for="shiftsWorkerGroup"><?php p($l->t('Name der Schichtmitarbeiter-Gruppe'))?></label>
-		<input id="shiftsWorkerGroup" value="<?php p($_['shiftWorkerGroup']) ?>" placeholder="Blueteam" type="text" />
+		<input id="shiftsWorkerGroup" value="<?php p($_['shiftWorkerGroup']) ?>" placeholder="Analyst" type="text" />
 	</div>
 	<div class="settings_container">
 		<label for="gstcLicenseGroup"><?php p($l->t('GSTC-Lizenz'))?></label>

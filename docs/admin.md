@@ -10,8 +10,8 @@ In your Nextcloud, simply navigate to »Apps«, choose the category »Organizati
 | Group | Default | Purpose |
 |---|---|---|
 | Shiftworkers | Analyst | Group to identify all Shiftworkers that can take shifts |
-| Shiftadmin | Shiftadmin | Administrators to organize and plan the Shifts |
-| Skillgroups | Level 1-3 | Skill groups which can be assigned to new Shifttypes which can then only be taken over by Shiftworkers with an equal or higher Skillgroup |
+| Shiftadmin | Shiftsadmin | Administrators to organize and plan the Shifts |
+| Skillgroups | Level 1 | Skill groups which can be assigned to new Shifttypes which can then only be taken over by Shiftworkers with an equal or higher Skillgroup |
 
 ### Additional Strings
 
@@ -19,6 +19,7 @@ In your Nextcloud, simply navigate to »Apps«, choose the category »Organizati
 |---|---|---|
 | CalendarOrganizer | admin | Account which acts as an organizer for the Nextcloud-Calendar events |
 | CalendarOrganizerEmail | admin@test.com | Email of the afformentionend Organizer |
+| CalendarName | ShiftsCalendar | Name of the Calendar where the shifts are saved |
 | GSTC-License | - | Free GSTC-License needed to display the Shifts in an appropriate format. | 
 
 The free license for the integrated  [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) can be obtained [here](https://gstc.neuronet.io/free-key/).

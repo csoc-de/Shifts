@@ -126,8 +126,8 @@ class Settings{
 			$calendarName = $this->GetSystemValue($this->_calendarName);
 		}
 		if (empty($calendarName)) {
-			$this->setCalendarName('Leitstellen Schichtplan');
-			$calendarName = 'Leitstellen Schichtplan';
+			$this->setCalendarName('ShiftsCalendar');
+			$calendarName = 'ShiftsCalendar';
 		}
 		return $calendarName;
 	}
@@ -178,8 +178,8 @@ class Settings{
 			$organizerEmail = $this->GetSystemValue($this->_organizerEmail);
 		}
 		if (empty($organizerEmail)) {
-			$this->setOrganizerEmail('technik@csoc.de');
-			$organizerEmail = 'technik@csoc.de';
+			$this->setOrganizerEmail('admin@test.com');
+			$organizerEmail = 'admin@test.com';
 		}
 		return $organizerEmail;
 	}
@@ -230,8 +230,8 @@ class Settings{
 			$shiftWorkerGroup = $this->GetSystemValue($this->_shiftWorkerGroup);
 		}
 		if (empty($shiftWorkerGroup)) {
-			$this->setShiftWorkerGroup('Blueteam');
-			$shiftWorkerGroup = 'Blueteam';
+			$this->setShiftWorkerGroup('Analyst');
+			$shiftWorkerGroup = 'Analyst';
 		}
 		return $shiftWorkerGroup;
 	}
@@ -256,8 +256,8 @@ class Settings{
 			$gstcLicense = $this->GetSystemValue($this->_gstcLicense);
 		}
 		if (empty($gstcLicense)) {
-			$this->setGstcLicense('====BEGIN LICENSE KEY====\nIig1stodoXy97NrZOMjxlzxh2BK5QXpT4RcLTLdhQ8PRzLcu3/Gt60s6mKIJvAa+o9/AgykS7vNHwRuZC9XhOx7DDuQbhm8Ss4IFFqf8jtuzl8T4RExjEbfC2q1wCTmO/DPcufKdYQOv8B3qJZkZHqTzeA0BLyfJCeO0yUCVxNOKOcJue5qoFkSil5aG5cg/dwCWwNDStjGQnURp9aBoR42GtBF25W1/lRdq3b8Md6dikj7kp2Cu75KaagCvGHDAWVwNrGRnOxM3B7UpBMrJPAAZUiJXNj/nVPyC8gfOicHxmZtk2s5cLiVFgwdOInE3JA+jLD/Nc/cEMcwC8MYEYw==||U2FsdGVkX1+sAozk01j6Wodp7+J9FjQGrI5h7l0YlbkwOR4O52g9XF+er33INp/WjncVn0/MttNY+7XrXpwoPwErLaVWg7WQC45tac+dIac=\nlzuB19dmRFUte0x22wqU3OjUJZFUEQLXBSG2j/xaQ0xycCfXydCGWbtI+BKiDZqE498wZ/luQcWcOUXFU8pRdP0KZBsONRaYHsKq41l216182uL+LFOguNG3apwS2TQ9rtO5wUFMMtyfB+6iqLhqJLc8FfvO5XZdxggXtzY4TTL8afvvRhRF9Poxt9mcZ2GEu3MnRtad7qaLIkkYx2lPGG03dSDs1uXNdfSYOg42NixMQWR4oEPc19LwDCsq1JIalEoYNoYNG/hT2hUk1+TgJMHPnX9SI4xYNNU2vAYRY/wa5OE+f5K022sDUMqEGpVw4gjEWisEdImc8n3VyXECiQ==\n====END LICENSE KEY====');
-			$gstcLicense = '====BEGIN LICENSE KEY====\nIig1stodoXy97NrZOMjxlzxh2BK5QXpT4RcLTLdhQ8PRzLcu3/Gt60s6mKIJvAa+o9/AgykS7vNHwRuZC9XhOx7DDuQbhm8Ss4IFFqf8jtuzl8T4RExjEbfC2q1wCTmO/DPcufKdYQOv8B3qJZkZHqTzeA0BLyfJCeO0yUCVxNOKOcJue5qoFkSil5aG5cg/dwCWwNDStjGQnURp9aBoR42GtBF25W1/lRdq3b8Md6dikj7kp2Cu75KaagCvGHDAWVwNrGRnOxM3B7UpBMrJPAAZUiJXNj/nVPyC8gfOicHxmZtk2s5cLiVFgwdOInE3JA+jLD/Nc/cEMcwC8MYEYw==||U2FsdGVkX1+sAozk01j6Wodp7+J9FjQGrI5h7l0YlbkwOR4O52g9XF+er33INp/WjncVn0/MttNY+7XrXpwoPwErLaVWg7WQC45tac+dIac=\nlzuB19dmRFUte0x22wqU3OjUJZFUEQLXBSG2j/xaQ0xycCfXydCGWbtI+BKiDZqE498wZ/luQcWcOUXFU8pRdP0KZBsONRaYHsKq41l216182uL+LFOguNG3apwS2TQ9rtO5wUFMMtyfB+6iqLhqJLc8FfvO5XZdxggXtzY4TTL8afvvRhRF9Poxt9mcZ2GEu3MnRtad7qaLIkkYx2lPGG03dSDs1uXNdfSYOg42NixMQWR4oEPc19LwDCsq1JIalEoYNoYNG/hT2hUk1+TgJMHPnX9SI4xYNNU2vAYRY/wa5OE+f5K022sDUMqEGpVw4gjEWisEdImc8n3VyXECiQ==\n====END LICENSE KEY====';
+			$this->setGstcLicense('');
+			$gstcLicense = '';
 		}
 		return $gstcLicense;
 	}
@@ -285,8 +285,8 @@ class Settings{
 	public function getSkillGroups(): array {
 		$skillGroups = $this->config->getAppValue($this->appName, $this->_skillGroups, "");
 		if (empty($skillGroups)) {
-			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
-			return json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"Level 1"}]'));
+			return json_decode('[{"id":0,"name":"Level 1"}]');
 		}
 		$groups = json_decode($skillGroups, true);
 		if (!is_array($groups)) {
@@ -294,8 +294,8 @@ class Settings{
 		}
 
 		if (empty($groups)) {
-			$this->setSkillGroups(json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]'));
-			$groups = json_decode('[{"id":0,"name":"CSOC Level 1"},{"id":1,"name":"CSOC Level 2"},{"id":2,"name":"CSOC Level 3"}]');
+			$this->setSkillGroups(json_decode('[{"id":0,"name":"Level 1"}]'));
+			$groups = json_decode('[{"id":0,"name":"Level 1"}]');
 		}
 		return $groups;
 	}
