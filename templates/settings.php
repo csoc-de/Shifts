@@ -13,7 +13,7 @@ script('shifts', 'settings');
 
 <div id="admin_settings">
 	<h2><?php p($l->t('Shifts')); ?>
-		<a class="icon-info svg" title href="https://github.com/CSOC-GmbH/Shifts"
+		<a class="icon-info svg" title href="https://github.com/csoc-de/Shifts"
 		   data-original-title="<?php p($l->t('Dokumentation')); ?>">
 		</a>
 	</h2>

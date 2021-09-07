@@ -44,7 +44,7 @@ cd apps/
 
 Klonen des Git Repositories
 
-git clone https://git.csoc.de/csoc/nextcloud/shifts (Nur erreichbar mit Allgemeinem VPN)
+git clone https://github.com/csoc-de/shifts (Nur erreichbar mit Allgemeinem VPN)
 
 Navigiere in Shifts Ordner
 
