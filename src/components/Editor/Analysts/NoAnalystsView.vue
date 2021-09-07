@@ -2,7 +2,7 @@
   - @copyright Copyright (c) 2019 Georg Ehrke <oc.list@georgehrke.com>
   -
   - @author Georg Ehrke <oc.list@georgehrke.com>
-  - @modified Fabian Kirchesch <fabian.kirchesch@outlook.de>
+  - @modified Fabian Kirchesch <fabian.kirchesch@csoc.de>
   - @license GNU AGPL version 3 or any later version
   -
   - This program is free software: you can redistribute it and/or modify
