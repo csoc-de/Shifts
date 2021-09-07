@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  ~ @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  ~
+  ~ @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  -->
+
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>shifts</id>
+    <name>Schichtplan</name>
+    <summary>App for organising Shifts</summary>
+    <description><![CDATA[This is an app to organize Shifts or Shift-Work schedules]]></description>
+    <version>1.6.0</version>
+    <licence>agpl</licence>
+    <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
+    <namespace>Shifts</namespace>
+    <category>office</category>
+	<category>organization</category>
+	<website>https://github.com/csoc-de/Shifts</website>
+	<discussion>https://github.com/csoc-de/Shifts/-/issues</discussion>
+	<bugs>https://github.com/csoc-de/Shifts/-/issues</bugs>
+    <dependencies>
+        <nextcloud min-version="17" max-version="21"/>
+    </dependencies>
+	<settings>
+		<admin>OCA\Shifts\Settings\AdminSettings</admin>
+		<admin-section>OCA\Shifts\Settings\AdminSection</admin-section>
+	</settings>
+    <navigations>
+        <navigation>
+            <name>Schichtplan</name>
+            <route>shifts.page.index</route>
+        </navigation>
+    </navigations>
+</info>

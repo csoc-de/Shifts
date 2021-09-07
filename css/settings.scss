@@ -1,0 +1,30 @@
+/*!
+ * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ *
+ * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ */
+
+#admin_settings {
+	padding: 30px;
+}
+
+.settings_container {
+	display: flex;
+}
+
+.settings_container label {
+	width: 300px;
+}
+
+.settings_container input {
+	width: auto;
+}
+
+#skillGroupsContainer p {
+	width: 300px;
+}
+
+#addNewSkillGroup {
+	height: fit-content;
+	margin-left: 20px;
+}

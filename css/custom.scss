@@ -1,0 +1,222 @@
+/*!
+ * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ *
+ * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ */
+
+.mx-datepicker-popup{
+	z-index: 100001 !important;
+}
+
+.mx-table-date td {
+	text-align: center !important;
+}
+
+.divOpenDatepicker {
+	display: flex;
+	align-items: center;
+}
+
+.buttonOpenDatepicker {
+	padding: 0.3em;
+	color: rgba(49,130,206,1);
+	border-color: rgba(190,227,248,1);
+	background-color: rgba(235,248,255,1);
+	border-radius: 0.25rem 0 0 0.25rem !important;
+	margin: 0;
+}
+
+.svgOpenDatepicker {
+	width: 20px;
+	height: 20px;
+}
+
+.inputOpenDatepicker {
+	border-radius:0 0.25rem 0.25rem 0 !important;
+}
+
+.popover-menu-layout {
+	background: var(--color-main-background);
+	padding-top: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.v-select__selections input {
+	border: 0;
+	background-color: transparent;
+}
+
+.multiselect {
+	width: 100%;
+}
+
+.multiselect__tags {
+	margin-right: 3px !important;
+}
+
+.invitees-search-list-item {
+	display: flex;
+	font-size: 110%;
+}
+
+.invitees-search-list-item__label--single-email {
+	font-family: inherit;
+	padding: 5px;
+}
+
+.invitees-list-item {
+	padding: 10px;
+	display: flex;
+	font-size: 110%;
+	font-family: inherit;
+}
+
+.invitees-list-item__displayname {
+	padding: 5px;
+}
+
+.action-item {
+	height: 33px !important;
+}
+
+.v-menu__content {
+	width: 10em;
+	background-color: var(--color-main-background);
+}
+
+.layout {
+	display: block !important;
+}
+
+.property-title__input input {
+	width: 100%;
+}
+
+.v-text-field-box .v-input__slot, .v-text-field--outline .v-input__slot{
+	min-height: 30px!important;
+	display: flex!important;
+	align-items: center!important;
+}
+
+.v-select {
+	padding-top: 0!important;
+}
+
+.calendar-format-select {
+	margin-top: 25px !important;
+}
+
+.toolbar_title {
+	width: 15%;
+}
+
+.gstc-wrapper {
+	width: 100%;
+	background-color: var(--color-main-background);
+}
+
+.row {
+	margin: 0 !important;
+}
+
+.flex_div {
+	display: flex;
+}
+
+.modal-container {
+	min-width: 60%;
+	padding: 20px !important;
+}
+
+.modal-container h1 {
+	font-size: xx-large;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.float_right {
+	float: right;
+}
+
+.mdi-swap-horizontal {
+	background-image: url('../img/mdi-swap-horizontal.svg');
+}
+
+.v-list-group i {
+	width:32px;
+	height: 32px;
+}
+
+.v-list-item__content .row{
+	width:100% !important;
+}
+
+.display_name_col {
+	max-width:30% !important;
+}
+
+.shifts_details_col {
+	max-width:70% !important;
+}
+
+.tab_content , .shifts_content{
+	padding: 20px 30px
+}
+
+.tab_content h1 {
+	font-size: xx-large;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.list_items {
+	width: 100%;
+	padding-left: 30px;
+}
+
+.gstc-items {
+	width: 100%;
+}
+
+.v-btn--has-bg {
+	background-color: var(--color-primary-element)!important;
+}
+
+.v-picker__title {
+	background-color: var(--color-primary-element)!important;
+}
+
+.shifts-type-modal {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	min-height: 400px;
+	max-height: 600px;
+}
+
+.v-application--wrap {
+	background-color: var(--color-main-background);
+}
+
+.gstc {
+	background-color: var(--color-main-background)!important;
+}
+
+.gstc__list-column-header {
+	background: var(--color-main-background)!important;
+}
+
+.gstc__chart-calendar {
+	background: var(--color-main-background)!important;
+}
+
+.weekly-indicator {
+	height: 100%;
+	margin-left: -5px;
+	border-radius: 14px;
+	padding-left: 10px;
+	color: #fff;
+}
+
+
+
