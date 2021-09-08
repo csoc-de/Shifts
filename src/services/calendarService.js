@@ -332,10 +332,10 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}
-	const cleanDateString = dateString.replace('-', '')
+	const cleanDateString = dateString.replaceAll('-', '')
 	let vObject
 	for (const obj of vObjects) {
-		if (obj.data.includes(`SUMMARY:${shiftsType.name}`) && obj.data.includes(`DTSTART;VALUE=DATE:${cleanDateString}`)) {
+		if (obj.data.includes(`SUMMARY:${shiftsType.name}`) && (obj.data.includes(`DTSTART;VALUE=DATE:${cleanDateString}`) || shiftsType.isWeekly === '0')) {
 			vObject = obj
 			break
 		}
