@@ -16,7 +16,7 @@ jobs:
       matrix:
         php-versions: ['7.4']
         nextcloud: ['stable21']
-        database: ['mysql']
+        database: ['sqlite']
     steps:
       - name: Checkout
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
@@ -56,7 +56,7 @@ jobs:
         id: attach_to_release
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ../www/apps/${{ env.APP_NAME }}/build/artifacts/appstore/${{ env.APP_NAME }}.tar.gz
+          file: ../server/apps/${{ env.APP_NAME }}/build/artifacts/appstore/${{ env.APP_NAME }}.tar.gz
           asset_name: ${{ env.APP_NAME }}.tar.gz
           tag: ${{ github.ref }}
           overwrite: true
