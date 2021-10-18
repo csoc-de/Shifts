@@ -4,7 +4,6 @@ app_name=$(notdir $(CURDIR))
 build_tools_directory=$(CURDIR)/build/tools
 composer=$(shell which composer 2> /dev/null)
 
-<<<<<<< HEAD
 project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build/artifacts
 appstore_dir=$(build_dir)/appstore
@@ -14,8 +13,6 @@ package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 version+=master
 
-=======
->>>>>>> 0928112170d27f42058057155999c750792a1997
 all: dev-setup lint build-js-production test
 
 # Dev env management
@@ -78,7 +75,6 @@ clean-dev:
 test:
 	./vendor/phpunit/phpunit/phpunit -c phpunit.xml
 	./vendor/phpunit/phpunit/phpunit -c phpunit.integration.xml
-<<<<<<< HEAD
 
 appstore:
 	rm -rf $(build_dir)
@@ -130,5 +126,3 @@ appstore:
 		echo "Signing package…"; \
 		openssl dgst -sha512 -sign $(cert_dir)/$(app_name).key $(build_dir)/$(app_name)-$(version).tar.gz | openssl base64; \
 	fi
-=======
->>>>>>> 0928112170d27f42058057155999c750792a1997
