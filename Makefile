@@ -34,13 +34,14 @@ else
 	composer update --prefer-dist
 endif
 
-npm-init:
-	npm ci
+all: dev-setup build-js-production
 
-npm-update:
-	npm update
+dev-setup: clean-dev npm-init
 
-# Building
+dependabot: dev-setup npm-update build-js-production
+
+release: appstore create-tag
+
 build-js:
 	npm run dev
 
@@ -50,26 +51,31 @@ build-js-production:
 watch-js:
 	npm run watch
 
-# Linting
+test:
+	npm run test:unit
+
 lint:
 	npm run lint
 
 lint-fix:
 	npm run lint:fix
 
-# Style linting
-stylelint:
-	npm run stylelint
+npm-init:
+	npm ci
 
-stylelint-fix:
-	npm run stylelint:fix
+npm-update:
+	npm update
 
-# Cleaning
 clean:
 	rm -rf js/*
+	rm -rf $(build_dir)
 
-clean-dev:
+clean-dev: clean
 	rm -rf node_modules
+
+create-tag:
+	git tag -a v$(version) -m "Tagging the $(version) release."
+	git push origin v$(version)
 
 # Tests
 test:
