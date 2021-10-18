@@ -20,7 +20,11 @@
         "optimize-autoloader": true,
         "classmap-authoritative": true,
         "platform": {
+<<<<<<< HEAD
             "php": "7.4"
+=======
+            "php": "7.2"
+>>>>>>> 0928112170d27f42058057155999c750792a1997
         }
     },
     "scripts": {
