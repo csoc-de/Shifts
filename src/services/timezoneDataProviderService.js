@@ -4,7 +4,7 @@
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
  */
 import tzData from '../../timezones/zones.json'
-import { getTimezoneManager } from 'calendar-js'
+import { getTimezoneManager } from '@nextcloud/calendar-js'
 import logger from '../utils/logger.js'
 
 const timezoneManager = getTimezoneManager()

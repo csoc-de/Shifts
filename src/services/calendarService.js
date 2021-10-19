@@ -6,11 +6,9 @@
 
 import getTimezoneManager from './timezoneDataProviderService'
 import jstz from 'jstz'
-import DateTimeValue from 'calendar-js/src/values/dateTimeValue'
-import { createEvent, getParserManager } from 'calendar-js'
+import { DateTimeValue, AttendeeProperty, createEvent, getParserManager } from '@nextcloud/calendar-js'
 import { findAllCalendars } from './caldavService'
 import { calcShiftDate } from '../utils/date'
-import AttendeeProperty from 'calendar-js/src/properties/attendeeProperty'
 import store from '../store'
 
 /**
