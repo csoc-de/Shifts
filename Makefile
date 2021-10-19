@@ -11,7 +11,7 @@ source_dir=$(build_dir)/source
 sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
-version+=master
+version = 1.7.0
 
 all: dev-setup lint build-js-production test
 
@@ -86,8 +86,6 @@ appstore:
 	rm -rf $(build_dir)
 	mkdir -p $(sign_dir)
 	mkdir -p $(cert_dir)
-	php ./bin/tools/file_from_env.php "app_private_key" "$(cert_dir)/$(app_name).key"
-	php ./bin/tools/file_from_env.php "app_public_crt" "$(cert_dir)/$(app_name).crt"
 	rsync -a \
 	--exclude=babel.config.js \
 	--exclude=/build \

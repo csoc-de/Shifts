@@ -5,5 +5,14 @@
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
  */
 
+if (!defined('PHPUNIT_RUN')) {
+	define('PHPUNIT_RUN', 1);
+}
 
-require_once __DIR__ . '/../../../tests/bootstrap.php';
+\OC_App::loadApp('shifts');
+
+if(!class_exists('PHPUnit_Framework_TestCase')) {
+	require_once('PHPUnit/Autoload.php');
+}
+
+OC_Hook::clear();
