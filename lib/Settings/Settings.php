@@ -273,7 +273,6 @@ class Settings{
 			$skillGroups = array();
 		}
 		$value = json_encode($skillGroups);
-		error_log($value);
 		$this->config->setAppValue($this->appName,$this->_skillGroups, $value);
 	}
 
