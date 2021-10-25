@@ -31,6 +31,10 @@
 	height: 20px;
 }
 
+h1, h2, h3 {
+	color: var(--color-main-text);
+}
+
 .inputOpenDatepicker {
 	border-radius:0 0.25rem 0.25rem 0 !important;
 }
@@ -216,6 +220,36 @@
 	border-radius: 14px;
 	padding-left: 10px;
 	color: #fff;
+}
+
+.v-list {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-list-item__title, .v-list-item__subtitle, .v-tab, .v-window input, .v-window label, .v-text-field__details,
+.v-input__icon, .v-input, .v-input__control input, .v-input__control label, .v-data-table span, .v-data-table td,
+.v-data-footer, .v-select__selections input, .v-select__selections, .v-icon svg,.v-expansion-panel button{
+	color: var(--color-main-text)!important;
+}
+
+.v-btn{
+	color: var(--color-main-background)!important;
+}
+
+.modal__content {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-item-group {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-data-table, .v-expansion-panel {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-data-table td ,.v-data-table tr {
+	border-bottom: thin solid var(--color-main-text)!important;
 }
 
 
