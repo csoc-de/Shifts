@@ -11,7 +11,7 @@ A shiftsplaner app for [Nextcloud](https://nextcloud.com).
 * **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
 * **Manage and organize your Shifts System!** Customize your Shifts Model with different Shifttypes 
 * **Separation of Users by different Nextcloud user Groups!** Divide your Workforce with different Skill-Levels
-* **Integration of existing Open-Source Software!** Using the great [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) and many more libraries
+
 
 
 More to come:
@@ -33,6 +33,12 @@ Once npm and Node.js are installed, PHP and JavaScript dependencies can be insta
 ```bash
 make dev-setup
 ```
+
+## Calendar
+
+Currently uses the non-open-source Library [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) for displaying the shifts in a clean way. 
+
+Due to recent information we are open to any alternatives to replace the current calendar.
 
 ## Documentation
 
