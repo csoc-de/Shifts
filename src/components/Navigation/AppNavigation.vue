@@ -33,7 +33,7 @@
 				to="/archive" />
 		</template>
 		<template #footer>
-			Version: 1.7.0
+			Version: 1.7.1
 		</template>
 	</AppNavigationVue>
 </template>
