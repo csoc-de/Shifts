@@ -237,33 +237,6 @@ class Settings{
 	}
 
 	/**
-	 * Saves gstc License
-	 *
-	 * @param string $gstcLicense
-	 */
-	public function setGstcLicense(string $gstcLicense) {
-		$this->config->setAppValue($this->appName,$this->_gstcLicense, $gstcLicense);
-	}
-
-	/**
-	 * Get gstc License
-	 *
-	 * @return string
-	 */
-	public function getGstcLicense(): string {
-		$gstcLicense = $this->config->getAppValue($this->appName, $this->_gstcLicense, "");
-		if (empty($gstcLicense)) {
-			$gstcLicense = $this->GetSystemValue($this->_gstcLicense);
-		}
-		if (empty($gstcLicense)) {
-			$this->setGstcLicense('');
-			$gstcLicense = '';
-		}
-		return $gstcLicense;
-	}
-
-
-	/**
 	 * Saves Skill Group Names
 	 *
 	 * @param array $skillGroups

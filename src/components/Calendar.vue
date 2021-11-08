@@ -56,54 +56,82 @@
 				</v-select>
 			</v-col>
 		</v-row>
-		<!-- eslint-enable-->
-		<div class="gstc-wrapper">
-			<div ref="gstc" />
+		<div id="calendar-wrapper">
+			<v-simple-table style="max-width:100%">
+				<template v-slot:default>
+					<thead>
+					<tr>
+						<th class="table-header__main" style="padding: 0 0; width: 8%;">
+							{{ t('shifts','Analyst') }}
+						</th>
+						<th class="table-header__weekly" v-for="shiftType in weeklyShiftTypes" style="padding: 0 0; width: 5%;">
+							{{ shiftType.name }}
+						</th>
+						<th class="table-header" v-for="day in timespanHeader" :style="cellStyle">
+							{{ day.label }}
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr v-for="row in rows">
+							<td>
+								{{ row.label }}
+							</td>
+							<td v-for="shiftType in weeklyShiftTypes">
+								<div class="drop-zone"
+									@drop="onWeeklyDrop($event, shiftType, row)"
+									@dragover.prevent
+									@dragenter.prevent>
+									<div v-for="shift in weeklyShift(shiftType, row)"
+										 :key='shift.id'
+										 :style="cellBackground(shiftType)"
+										 draggable
+										 @dragstart="startWeeklyDrag($event, shift)"
+										 class="weekly-indicator">
+									</div>
+								</div>
+							</td>
+							<td v-for="day in timespanHeader">
+								<div class="drop-zone"
+									@drop="onDailyDrop($event, day, row)"
+									@dragover.prevent
+									@dragenter.prevent>
+									<div v-for="shift in dailyShifts(day, row)"
+										 :key='shift.id'
+										 :style="cellBackground(shift.shiftsType)"
+										 draggable
+										 @dragstart="startDailyDrag($event, shift)"
+										 class="weekly-indicator">
+										{{ shift.shiftsType.name }}
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</template>
+			</v-simple-table>
 		</div>
+		<!-- eslint-enable-->
 	</div>
 </template>
 
 <script>
-import GSTC from 'gantt-schedule-timeline-calendar'
-import { Plugin as TimeLinePointer } from 'gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js'
-import { Plugin as MovementPlugin } from 'gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js'
-import { Plugin as Selection } from 'gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js'
-import 'gantt-schedule-timeline-calendar/dist/style.css'
-import { translate } from '@nextcloud/l10n'
 import { mapGetters } from 'vuex'
-import dayOfYear from 'dayjs/plugin/dayOfYear'
 import dayjs from 'dayjs'
-import 'dayjs/locale/de'
-import { showWarning } from '@nextcloud/dialogs'
-
-let gstc, state
-
-function getMonthTranslated() {
-	return translate('shifts', 'Monat')
-}
-function getWeekTranslated() {
-	return translate('shifts', 'Woche')
-}
-
 export default {
 	name: 'Calendar',
 	data() {
 		return {
-			typeToLabel: {
-				month: getMonthTranslated(),
-				week: getWeekTranslated(),
-			},
 			calendarFormats: [
 				{
 					value: 'month',
-					text: getMonthTranslated(),
+					text: t('shifts', 'Monat'),
 				},
 				{
 					value: 'week',
-					text: getWeekTranslated(),
+					text: t('shifts', 'Woche'),
 				},
 			],
-			dateChanged: true,
 		}
 	},
 	computed: {
@@ -114,326 +142,142 @@ export default {
 			shiftsTypes: 'allShiftsTypes',
 			date: 'currentDateDisplayed',
 			selectedCalendarFormat: 'currentDateDisplayFormat',
-			gstcLicense: 'getGstcLicense',
 		}),
+		dateStart() {
+			return dayjs().startOf('week').format('YYYY-MM-DD HH:mm')
+		},
+		dateEnd() {
+			return dayjs().endOf('week').format('YYYY-MM-DD HH:mm')
+		},
+		rows() {
+			const result = [
+				{
+					uid: '-1',
+					label: t('shifts', 'Offene Schichten'),
+				},
+			]
+			result.push(...this.analysts.map((analyst) => {
+				return {
+					uid: analyst.uid,
+					label: analyst.name,
+				}
+			}))
+			return result
+		},
+		weeklyShiftTypes() {
+			return this.shiftsTypes.filter((element) => element.isWeekly === '1')
+		},
+		timespanHeader() {
+			const date = this.date
+			const start = date.startOf(this.selectedCalendarFormat)
+			const end = date.endOf(this.selectedCalendarFormat)
+			const format = this.selectedCalendarFormat === 'week' ? 'dddd DD.' : 'DD.'
+			const dateFormat = 'YYYY-MM-DD'
+			const result = []
+			for (let i = 0; i <= end.date() - start.date(); i++) {
+				const curr = start.add(i, 'day')
+				result.push({
+					label: curr.format(format),
+					date: curr.format(dateFormat),
+				})
+			}
+			return result
+		},
+		cellStyle() {
+			let width = 5
+			if (this.selectedCalendarFormat === 'week') {
+				width = (92 - (this.weeklyShiftTypes.length * 5)) / 7
+			} else if (this.selectedCalendarFormat === 'month') {
+				width = (92 - (this.weeklyShiftTypes.length * 5)) / this.date.daysInMonth()
+			}
+			return {
+				padding: '0 0',
+				width: `${width}%`,
+			}
+		},
 	},
 	watch: {
 		// watches or changes in the shifts Array to update the Calendar
 		shifts: {
 			handler(newVal, oldVal) {
 				if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-					state.update('config', config => {
-						config.chart.items = GSTC.api.fromArray(this.generateItems())
-						config.list.rows = GSTC.api.fromArray(this.generateRows())
-						return config
-					})
+					// TODO Shifts change
 				}
 			},
 			deep: true,
 		},
 	},
 	mounted() {
-		dayjs.extend(dayOfYear)
-		dayjs.locale('de')
-		const today = dayjs()
-		const plugins = [TimeLinePointer()]
-		const store = this.$store
-		const movementPluginConfig = {
-			events: {
-				onMove({ items }) {
-					return items.before.map((beforeMovementItem, index) => {
-						const afterMovementItem = items.after[index]
-						const myItem = GSTC.api.merge({}, afterMovementItem)
-						if (myItem.time.start !== beforeMovementItem.time.start && myItem.time.end !== beforeMovementItem.time.end) {
-							myItem.time = { ...beforeMovementItem.time }
-							myItem.rowId = beforeMovementItem.rowId
-						}
-						return myItem
-					})
-				},
-				onEnd({ items }) {
-					return items.initial.map((initialItem, index) => {
-						const afterItem = items.after[index]
-						const shiftsId = GSTC.api.sourceID(initialItem.id)
-						let newAnalystId = GSTC.api.sourceID(afterItem.rowId)
-
-						newAnalystId = newAnalystId.replaceAll('_', '.')
-
-						const newDate = GSTC.api.date(afterItem.time.start).format('YYYY-MM-DD')
-
-						const oldShift = store.getters.getShiftById(shiftsId)
-						const newShift = {
-							id: shiftsId,
-							analystId: newAnalystId,
-							shiftTypeId: oldShift.shiftTypeId,
-							date: newDate,
-						}
-
-						const analyst = store.getters.getAnalystById(newAnalystId)
-						const shiftsType = store.getters.getShiftsTypeById(oldShift.shiftTypeId)
-						if (analyst && analyst.skillGroup < shiftsType.skillGroupId) {
-							showWarning(t('shifts', 'Dieser Analyst entspricht nicht den Anforderungen'))
-						}
-						store.dispatch('updateShift', newShift)
-						return afterItem
-					})
-				},
-			},
-		}
-		if (this.isAdmin) {
-			plugins.push(Selection())
-			plugins.push(MovementPlugin(movementPluginConfig))
-		}
-		// config for the GSTC Calendar
-		const data = {}
-		this.shiftsTypes.forEach((shiftsType) => {
-			if (shiftsType.isWeekly === '1') {
-				data[GSTC.api.GSTCID(shiftsType.name)] = {
-					id: GSTC.api.GSTCID(shiftsType.name),
-					width: 100,
-					data: shiftsType.name,
-					header: {
-						content: t('shifts', shiftsType.name),
-					},
-				}
-			}
-		})
-		data[[GSTC.api.GSTCID('id')]] = {
-			id: GSTC.api.GSTCID('id'),
-			width: 100,
-			data: 'label',
-			header: {
-				content: 'Analyst',
-			},
-		}
-		const config = {
-			licenseKey: this.gstcLicense,
-			plugins,
-			innerHeight: 600,
-			list: {
-				columns: {
-					data,
-				},
-				toggle: {
-					display: false,
-				},
-				rows: GSTC.api.fromArray(this.generateRows()),
-			},
-			chart: {
-				items: GSTC.api.fromArray(this.generateItems()),
-				time: {
-					from: today.startOf('week').valueOf(),
-					to: today.endOf('week').valueOf(),
-					calculatedZoomMode: true,
-				},
-			},
-			locale: {
-				name: 'de',
-				weekdays: 'Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag'.split('_'),
-				weekdaysShort: 'So._Mo._Di._Mi._Do._Fr._Sa.'.split('_'),
-				weekdaysMin: 'So_Mo_Di_Mi_Do_Fr_Sa'.split('_'),
-				months: 'Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember'.split('_'),
-				monthsShort: 'Jan_Feb_März_Apr_Mai_Juni_Juli_Aug_Sept_Okt_Nov_Dez'.split('_'),
-				weekStart: 1,
-				yearStart: 4,
-				formats: {
-					LTS: 'HH:mm:ss',
-					LT: 'HH:mm',
-					L: 'DD.MM.YYYY',
-					LL: 'D. MMMM YYYY',
-					LLL: 'D. MMMM YYYY HH:mm',
-					LLLL: 'dddd, D. MMMM YYYY HH:mm',
-				},
-				relativeTime: {
-					future: 'in %s',
-					past: 'vor %s',
-					s: 'ein paar Sekunden',
-					m: ['eine Minute', 'einer Minute'],
-					mm: '%d Minuten',
-					h: ['eine Stunde', 'einer Stunde'],
-					hh: '%d Stunden',
-					d: ['ein Tag', 'einem Tag'],
-					dd: ['%d Tage', '%d Tagen'],
-					M: ['ein Monat', 'einem Monat'],
-					MM: ['%d Monate', '%d Monaten'],
-					y: ['ein Jahr', 'einem Jahr'],
-					yy: ['%d Jahre', '%d Jahren'],
-				},
-			},
-		}
-		state = GSTC.api.stateFromConfig(config)
-		gstc = GSTC({
-			element: this.$refs.gstc,
-			state,
-		})
-	},
-	beforeUnmount() {
-		if (gstc) gstc.destroy()
 	},
 	methods: {
-		// generates and returns rows for each analyst
-		generateRows() {
-			const rows = []
-			const openRow = {
-				id: '-1',
-				label: t('shifts', 'Offene Schichten'),
-				style: { background: '#d3d7de' },
+		cellBackground(shiftsType) {
+			return {
+				'background-color': `${shiftsType.color}`,
 			}
-			rows.push(openRow)
-			this.analysts.forEach((analyst) => {
-				let id = analyst.uid
-				id = id.replaceAll('.', '_')
-				const date = GSTC.api.date(this.date).startOf('week').add(1, 'days').format('YYYY-MM-DD')
-				const row = {
-					id,
-					label: analyst.name,
-					analyst,
-					date,
-				}
-				this.shiftsTypes.forEach((shiftsType) => {
-					if (shiftsType.isWeekly === '1') {
-						if (shiftsType.moRule === '0' || shiftsType.moRule === '1') {
-							const checked = this.shifts.find((shift) => {
-								return shift.shiftTypeId === shiftsType.id.toString() && shift.userId === analyst.uid
-							})
-							row[shiftsType.name] = ({ row, vido }) => {
-								// eslint-disable-next-line multiline-ternary
-								return vido.html`<div class="${checked ? 'weekly-indicator' : ''}" style="background-color: ${checked ? shiftsType.color : ''}"> ${this.isAdmin ? vido.html`<input type="radio" id="${shiftsType.id}" name="${shiftsType.name}" value="${id + shiftsType.id}"
-												@click="${() => { this.onRadioButtonClick(row, shiftsType, checked) }}"
-												.checked=${checked}></input>` : ''}</div>`
-							}
-						} else {
-							const checked = this.shifts.find((shift) => {
-								return shift.shiftTypeId === shiftsType.id.toString() && shift.userId === analyst.uid
-							})
-							if (!this[shiftsType.name] || this[shiftsType.name].length === 0 || this.dateChanged) {
-								this[shiftsType.name] = this.shifts.filter((shift) => {
-									return shift.shiftTypeId === shiftsType.id.toString() && shift.date === date
-								})
-								this.dateChanged = false
-							}
-							row[shiftsType.name] = ({ row, vido }) => {
-								// eslint-disable-next-line multiline-ternary
-								return vido.html`<div class="${checked ? 'weekly-indicator' : ''}" style="background-color: ${checked ? shiftsType.color : ''}"> ${this.isAdmin ? vido.html`<input type="checkbox" id="${shiftsType.id}" name="${shiftsType.name}" value="${id + shiftsType.id}"
-												@click="${() => { this.onCheckBoxButtonClick(row, shiftsType, checked) }}"
-												.checked=${checked}></input>` : ''}</div>`
-							}
-						}
-					}
-				})
-				rows.push(row)
+		},
+		weeklyShift(weeklyShift, analyst) {
+			const weeklyShifts = this.shifts.filter((shift) => {
+				return shift.shiftTypeId === weeklyShift.id.toString()
 			})
-			return rows
-		},
-		// generates and returns item for each shift
-		generateItems() {
-			const items = []
-			this.shifts.forEach((shift, index) => {
-				const start = GSTC.api.date(shift.date)
-				const id = shift.id
-				let rowId = shift.userId
-				rowId = rowId.replaceAll('.', '_')
-				const shiftsType = shift.shiftsType
-				if (shiftsType.isWeekly === '0') {
-					items.push({
-						id,
-						label: this.generateItemLabel,
-						rowId,
-						time: {
-							start: start.valueOf(),
-							end: start.endOf('day').valueOf(),
-						},
-						minWidth: 200,
-						style: {
-							background: shiftsType.color,
-						},
-					})
-				}
+			return weeklyShifts.filter((shift) => {
+				return shift.userId === analyst.uid
 			})
-			return items
 		},
-		generateItemLabel({ item, vido }) {
-			const shiftId = GSTC.api.sourceID(item.id)
-			const shift = this.$store.getters.getShiftById(shiftId)
-			const shiftsType = this.$store.getters.getShiftsTypeById(shift.shiftTypeId)
-			if (this.isAdmin) {
-				return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}
-				<i class="v-icon icon icon-delete" @click="${() => this.onItemClick(item)}"></i></div>`
-			} else {
-				return vido.html`<div class="gstc_items" style="cursor:pointer;">${shiftsType.name}</div>`
-			}
+		dailyShifts(day, analyst) {
+			const dayShifts = this.shifts.filter((shift) => {
+				return day.date === shift.date
+			})
+			return dayShifts.filter((shift) => {
+				return shift.userId === analyst.uid && shift.shiftsType.isWeekly === '0'
+			})
 		},
-		onItemClick(item) {
-			this.$store.dispatch('deleteAssignment', GSTC.api.sourceID(item.id))
+		onDailyDrop(event, day, analyst) {
+			const shiftId = event.dataTransfer.getData('shiftId')
+			const shiftTypeId = event.dataTransfer.getData('shiftTypeId')
+			this.$store.dispatch('updateShift', {
+				id: shiftId,
+				analystId: analyst.uid,
+				shiftTypeId,
+				date: day.date,
+			})
 		},
-		onRadioButtonClick(row, shiftsType, checked) {
-			if (!checked) {
-				const oldShift = this.shifts.find((shift) => {
-					return shift.date === row.date && shift.shiftTypeId === shiftsType.id.toString()
-				})
-				const newShift = {
-					id: oldShift.id,
-					analystId: row.analyst.uid,
-					shiftTypeId: shiftsType.id,
-					date: row.date,
-				}
-				this.$store.dispatch('updateShift', newShift)
-			}
+		onWeeklyDrop(event, shiftType, analyst) {
+			const shiftId = event.dataTransfer.getData('shiftId')
+			this.$store.dispatch('updateShift', {
+				id: shiftId,
+				analystId: analyst.uid,
+				shiftTypeId: shiftType.id,
+				date: this.date.startOf('week').format('YYYY-MM-DD'),
+			})
 		},
-		onCheckBoxButtonClick(row, shiftsType, checked) {
-			if (!checked) {
-				const currShift = this[shiftsType.name].shift()
-				const newShift = {
-					id: currShift.id,
-					userId: row.analyst.uid,
-					shiftTypeId: shiftsType.id,
-					date: row.date,
-				}
-				this.$store.dispatch('updateShift', {
-					id: newShift.id,
-					analystId: newShift.userId,
-					shiftTypeId: newShift.shiftTypeId,
-					date: newShift.date,
-				})
-				this[shiftsType.name].push(newShift)
-			}
+		startDailyDrag(evt, shift) {
+			evt.dataTransfer.dropEffect = 'move'
+			evt.dataTransfer.effectAllowed = 'move'
+			evt.dataTransfer.setData('shiftId', shift.id)
+			evt.dataTransfer.setData('shiftTypeId', shift.shiftTypeId)
+		},
+		startWeeklyDrag(evt, shift) {
+			evt.dataTransfer.dropEffect = 'move'
+			evt.dataTransfer.effectAllowed = 'move'
+			evt.dataTransfer.setData('shiftId', shift.id)
 		},
 		// changes the Calendar Timespan to Month or Week
 		async updateCalendar(format) {
 			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDateFormat', format)
-			const date = this.date
-			// updating the state of the calendar
-			state.update('config.chart.time', (time) => {
-				time.from = date.startOf(format).valueOf()
-				time.to = date.endOf(format).valueOf()
-				return time
-			})
 		},
 		// changes the time of calendar to current timespan including today
 		async setToday() {
 			const today = dayjs()
 			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', today)
-			// updating the state of the calendar
-			state.update('config.chart.time', (time) => {
-				time.from = today.startOf(this.selectedCalendarFormat).valueOf()
-				time.to = today.endOf(this.selectedCalendarFormat).valueOf()
-				return time
-			})
 		},
 		// move to previous timeinterval with given calendarformat
 		async prev() {
 			let date = this.date
-			// updating the state of the calendar
 			date = date.add(-1, this.selectedCalendarFormat)
 			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', date)
-			state.update('config.chart.time', (time) => {
-				time.from = date.startOf(this.selectedCalendarFormat).valueOf()
-				time.to = date.endOf(this.selectedCalendarFormat).valueOf()
-				return time
-			})
 		},
 		// move to next timeinterval with given calendarformat
 		async next() {
@@ -442,21 +286,12 @@ export default {
 			this.dateChanged = true
 			// updating the state of the calendar
 			await this.$store.commit('updateDisplayedDate', date)
-			state.update('config.chart.time', (time) => {
-				time.from = date.startOf(this.selectedCalendarFormat).valueOf()
-				time.to = date.endOf(this.selectedCalendarFormat).valueOf()
-				return time
-			})
 		},
 	},
 }
 </script>
 
 <style>
-.gstc-component {
-	margin: 0;
-	padding: 0;
-}
 
 .toolbox {
 	padding: 10px;

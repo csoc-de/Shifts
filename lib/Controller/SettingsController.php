@@ -8,6 +8,7 @@
 namespace OCA\Shifts\Controller;
 
 
+use JetBrains\PhpStorm\ArrayShape;
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
@@ -22,14 +23,14 @@ class SettingsController extends Controller {
 	 *
 	 * @var Settings
 	 */
-	private $settings;
+	private Settings $settings;
 
 	/**
 	 * Url generator service
 	 *
 	 * @var IURLGenerator
 	 */
-	private $urlGenerator;
+	private IURLGenerator $urlGenerator;
 
 	public function __construct(IRequest $request, IURLGenerator $urlGenerator, Settings $settings) {
 		parent::__construct(Application::APP_ID, $request);
@@ -50,7 +51,6 @@ class SettingsController extends Controller {
 			'adminGroup' => $this->settings->getAdminGroup(),
 			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
 			'skillGroups' => $this->settings->getSkillGroups(),
-			'gstcLicense' => $this->settings->getGstcLicense(),
 		];
 		return new TemplateResponse(Application::APP_ID, 'settings', $data, 'blank');
 	}
@@ -64,16 +64,14 @@ class SettingsController extends Controller {
 	 * @param string $adminGroup
 	 * @param string $shiftWorkerGroup
 	 * @param array $skillGroups
-	 * @param string $gstcLicense
 	 */
-	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $skillGroups, string $gstcLicense) {
+	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $skillGroups) {
 		$this->settings->setCalendarName($calendarName);
 		$this->settings->setOrganizerName($organizerName);
 		$this->settings->setOrganizerEmail($organizerEmail);
 		$this->settings->setAdminGroup($adminGroup);
 		$this->settings->setShiftWorkerGroup($shiftWorkerGroup);
 		$this->settings->setSkillGroups($skillGroups);
-		$this->settings->setGstcLicense($gstcLicense);
 	}
 
 	/**
@@ -84,6 +82,7 @@ class SettingsController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 */
+	#[ArrayShape(['calendarName' => "string", 'organizerName' => "string", 'organizerEmail' => "string", 'adminGroup' => "string", 'shiftWorkerGroup' => "string", 'skillGroups' => "array"])]
 	public function getSettings(): array {
 		return [
 			'calendarName' => $this->settings->getCalendarName(),
@@ -92,7 +91,6 @@ class SettingsController extends Controller {
 			'adminGroup' => $this->settings->getAdminGroup(),
 			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
 			'skillGroups' => $this->settings->getSkillGroups(),
-			'gstcLicense' => $this->settings->getGstcLicense(),
 		];
 	}
 }

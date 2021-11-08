@@ -202,24 +202,12 @@ h1, h2, h3 {
 	background-color: var(--color-main-background);
 }
 
-.gstc {
-	background-color: var(--color-main-background)!important;
-}
-
-.gstc__list-column-header {
-	background: var(--color-main-background)!important;
-}
-
-.gstc__chart-calendar {
-	background: var(--color-main-background)!important;
-}
-
 .weekly-indicator {
-	height: 100%;
-	margin-left: -5px;
+	height: 40px;
 	border-radius: 14px;
-	padding-left: 10px;
-	color: #fff;
+	padding-top: 9px;
+	color: var(--color-main-background);
+	margin: 2px 0;
 }
 
 .v-list {
@@ -250,6 +238,23 @@ h1, h2, h3 {
 
 .v-data-table td ,.v-data-table tr {
 	border-bottom: thin solid var(--color-main-text)!important;
+}
+
+#calendar-wrapper table td + td { border-left: thin solid rgba(0,0,0,.12)}
+
+#calendar-wrapper table th + th { border-left: thin solid rgba(0,0,0,.12)}
+
+#calendar-wrapper td, #calendar-wrapper th, {
+	text-align: center;
+}
+
+#calendar-wrapper tbody td {
+	padding: 0;
+}
+
+.drop-zone {
+	padding-top: 2px;
+	height: 100%;
 }
 
 

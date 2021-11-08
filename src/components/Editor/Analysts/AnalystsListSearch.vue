@@ -132,8 +132,6 @@ export default {
 					dropdownName: name,
 					userId: analyst.uid,
 				}
-				console.log(analyst)
-				console.log(this.currentShiftsType)
 				if (analyst.skillGroup >= this.currentShiftsType.skillGroupId) {
 					this.matches.push(a)
 				}
@@ -208,7 +206,6 @@ export default {
 				const lname = analyst.commonName.toLowerCase()
 				return lemail.includes(query) || lname.includes(query)
 			})
-			console.log(data)
 			return data.filter((analyst) => {
 				return !this.alreadyInvitedEmails.includes(analyst.email)
 			})
