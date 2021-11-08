@@ -13,8 +13,6 @@
     <description><![CDATA[* **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
 * **Manage and organize your Shifts System!** Customize your Shifts Model with different Shifttypes
 * **Separation of Users by different Nextcloud user Groups!** Divide your Workforce with different Skill-Levels
-* **Integration of existing Open-Source Software!** Using the great [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) and many more libraries
-
 
 More to come:
 * Further maturing of the app
@@ -23,7 +21,7 @@ More to come:
 
 If you experience any issues or have any suggestions for improvement, use the issue tracker.
 ]]></description>
-    <version>1.7.1</version>
+    <version>1.8.0</version>
     <licence>agpl</licence>
     <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
     <namespace>Shifts</namespace>

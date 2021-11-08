@@ -34,12 +34,6 @@ Once npm and Node.js are installed, PHP and JavaScript dependencies can be insta
 make dev-setup
 ```
 
-## Calendar
-
-Currently uses the non-open-source Library [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) for displaying the shifts in a clean way. 
-
-Due to recent information we are open to any alternatives to replace the current calendar.
-
 ## Documentation
 
 

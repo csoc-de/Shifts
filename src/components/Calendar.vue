@@ -174,14 +174,11 @@ export default {
 			const date = this.date
 			const start = date.startOf(this.selectedCalendarFormat)
 			const end = date.endOf(this.selectedCalendarFormat)
-			console.log(start.toDate())
-			console.log(end.toDate())
 			const format = this.selectedCalendarFormat === 'week' ? 'dddd DD.' : 'DD.'
 			const dateFormat = 'YYYY-MM-DD'
 			const result = []
-			for (let i = 0; i <= end.dayOfYear() - start.dayOfYear(); i++) {
+			for (let i = 0; i <= end.diff(start, 'day'); i++) {
 				const curr = start.add(i, 'day')
-				console.log(curr.toDate())
 				result.push({
 					label: curr.format(format),
 					date: curr.format(dateFormat),
