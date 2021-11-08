@@ -56,6 +56,9 @@
 				</v-select>
 			</v-col>
 		</v-row>
+		<div style="margin-left: 10px;">
+			{{ this.date.format('MMMM YYYY')}}
+		</div>
 		<div id="calendar-wrapper">
 			<v-simple-table style="max-width:100%">
 				<template v-slot:default>
@@ -102,7 +105,7 @@
 										 draggable
 										 @dragstart="startDailyDrag($event, shift)"
 										 class="weekly-indicator">
-										{{ shift.shiftsType.name }}
+										{{ selectedCalendarFormat === 'week' ? shift.shiftsType.name : shift.shiftsType.name.substring(0, 2)}}
 									</div>
 								</div>
 							</td>
@@ -171,11 +174,14 @@ export default {
 			const date = this.date
 			const start = date.startOf(this.selectedCalendarFormat)
 			const end = date.endOf(this.selectedCalendarFormat)
+			console.log(start.toDate())
+			console.log(end.toDate())
 			const format = this.selectedCalendarFormat === 'week' ? 'dddd DD.' : 'DD.'
 			const dateFormat = 'YYYY-MM-DD'
 			const result = []
-			for (let i = 0; i <= end.date() - start.date(); i++) {
+			for (let i = 0; i <= end.dayOfYear() - start.dayOfYear(); i++) {
 				const curr = start.add(i, 'day')
+				console.log(curr.toDate())
 				result.push({
 					label: curr.format(format),
 					date: curr.format(dateFormat),
@@ -269,21 +275,18 @@ export default {
 		// changes the time of calendar to current timespan including today
 		async setToday() {
 			const today = dayjs()
-			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', today)
 		},
 		// move to previous timeinterval with given calendarformat
 		async prev() {
 			let date = this.date
 			date = date.add(-1, this.selectedCalendarFormat)
-			this.dateChanged = true
 			await this.$store.commit('updateDisplayedDate', date)
 		},
 		// move to next timeinterval with given calendarformat
 		async next() {
 			let date = this.date
 			date = date.add(1, this.selectedCalendarFormat)
-			this.dateChanged = true
 			// updating the state of the calendar
 			await this.$store.commit('updateDisplayedDate', date)
 		},
