@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -82,15 +83,14 @@ class SettingsController extends Controller {
 	 * @NoAdminRequired
 	 * @PublicPage
 	 */
-	#[ArrayShape(['calendarName' => "string", 'organizerName' => "string", 'organizerEmail' => "string", 'adminGroup' => "string", 'shiftWorkerGroup' => "string", 'skillGroups' => "array"])]
-	public function getSettings(): array {
-		return [
+	public function getSettings(): DataResponse{
+		return new DataResponse([
 			'calendarName' => $this->settings->getCalendarName(),
 			'organizerName' => $this->settings->getOrganizerName(),
 			'organizerEmail' => $this->settings->getOrganizerEmail(),
 			'adminGroup' => $this->settings->getAdminGroup(),
 			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
 			'skillGroups' => $this->settings->getSkillGroups(),
-		];
+	]);
 	}
 }

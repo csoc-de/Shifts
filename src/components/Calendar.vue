@@ -6,8 +6,6 @@
 
 <!--
   - Component to display and navigate the Shifts-Calendar
-  - Implements the GSTC-Calendar by neuronetio
-  - https://github.com/neuronetio/gantt-schedule-timeline-calendar
   -->
 <!--suppress JSUnfilteredForInLoop -->
 <template>
@@ -88,7 +86,7 @@
 									<div v-for="shift in weeklyShift(shiftType, row)"
 										 :key='shift.id'
 										 :style="cellBackground(shiftType)"
-										 draggable
+										 :draggable="isAdmin"
 										 @dragstart="startWeeklyDrag($event, shift)"
 										 class="weekly-indicator">
 									</div>
@@ -102,7 +100,7 @@
 									<div v-for="shift in dailyShifts(day, row)"
 										 :key='shift.id'
 										 :style="cellBackground(shift.shiftsType)"
-										 draggable
+										 :draggable="isAdmin"
 										 @dragstart="startDailyDrag($event, shift)"
 										 class="weekly-indicator">
 										{{ selectedCalendarFormat === 'week' ? shift.shiftsType.name : shift.shiftsType.name.substring(0, 2)}}
@@ -209,8 +207,6 @@ export default {
 			},
 			deep: true,
 		},
-	},
-	mounted() {
 	},
 	methods: {
 		cellBackground(shiftsType) {

@@ -17,63 +17,56 @@ class Settings{
 	 *
 	 * @var string
 	 */
-	private $appName;
+	private string $appName;
 
 	/**
 	 * Config service
 	 *
 	 * @var IConfig
 	 */
-	private $config;
+	private IConfig $config;
 
 	/**
 	 * Calendar Name Key
 	 *
 	 * @var string
 	 */
-	private $_calendarName = "calendarName";
+	private string $_calendarName = "calendarName";
 
 	/**
 	 * Calendar Organizer Name Key
 	 *
 	 * @var string
 	 */
-	private $_organizerName = "organizerName";
+	private string $_organizerName = "organizerName";
 
 	/**
 	 * Calendar Organizer Email Key
 	 *
 	 * @var string
 	 */
-	private $_organizerEmail = "organizerEmail";
+	private string $_organizerEmail = "organizerEmail";
 
 	/**
 	 * Admin Group Name Key
 	 *
 	 * @var string
 	 */
-	private $_adminGroup = "adminGroup";
+	private string $_adminGroup = "adminGroup";
 
 	/**
 	 * Shift Worker Group Name Key
 	 *
 	 * @var string
 	 */
-	private $_shiftWorkerGroup = "shiftWorkerGroup";
+	private string $_shiftWorkerGroup = "shiftWorkerGroup";
 
 	/**
 	 * Shift Worker Categories Group Name Key
 	 *
 	 * @var string
 	 */
-	private $_skillGroups = "skillGroups";
-
-	/**
-	 * gstc license Key
-	 *
-	 * @var string
-	 */
-	private $_gstcLicense = "gstcLicense";
+	private string $_skillGroups = "skillGroups";
 
 	/**
 	 * @param string $AppName

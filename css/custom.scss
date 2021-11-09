@@ -115,11 +115,6 @@ h1, h2, h3 {
 	width: 15%;
 }
 
-.gstc-wrapper {
-	width: 100%;
-	background-color: var(--color-main-background);
-}
-
 .row {
 	margin: 0 !important;
 }
@@ -179,10 +174,6 @@ h1, h2, h3 {
 	padding-left: 30px;
 }
 
-.gstc-items {
-	width: 100%;
-}
-
 .v-btn--has-bg {
 	background-color: var(--color-primary-element)!important;
 }
@@ -240,21 +231,30 @@ h1, h2, h3 {
 	border-bottom: thin solid var(--color-main-text)!important;
 }
 
-#calendar-wrapper table td + td { border-left: thin solid rgba(0,0,0,.12)}
+#calendar-wrapper table td + td { border-left: thin solid var(--color-main-text)}
 
-#calendar-wrapper table th + th { border-left: thin solid rgba(0,0,0,.12)}
+#calendar-wrapper table th + th { border-left: thin solid var(--color-main-text)}
 
 #calendar-wrapper td, #calendar-wrapper th, {
 	text-align: center;
+	border-bottom: thin solid var(--color-main-text);
 }
 
 #calendar-wrapper tbody td {
 	padding: 0;
 }
 
+#calendar-wrapper thead th {
+	color: var(--color-main-text);
+}
+
 .drop-zone {
 	padding-top: 2px;
 	height: 100%;
+}
+
+.shifts_content {
+	color: var(--color-main-text);
 }
 
 

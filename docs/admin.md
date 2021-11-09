@@ -2,8 +2,7 @@
 
 ## Installation
 
-In your Nextcloud, simply navigate to »Apps«, choose the category »Organization«, find the shifts app and enable it. After installing the app onto your Nextcloud you need to setup different groups and settings explained below. one addition License to enable the integrated  [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) by generating a free License Key [here](https://gstc.neuronet.io/free-key/).
-
+In your Nextcloud, simply navigate to »Apps«, choose the category »Organization«, find the shifts app and enable it. After installing the app onto your Nextcloud you need to setup different groups and settings explained below.
 ## Configuration
 ### Groups
 
@@ -20,6 +19,3 @@ In your Nextcloud, simply navigate to »Apps«, choose the category »Organizati
 | CalendarOrganizer | admin | Account which acts as an organizer for the Nextcloud-Calendar events |
 | CalendarOrganizerEmail | admin@test.com | Email of the afformentionend Organizer |
 | CalendarName | ShiftsCalendar | Name of the Calendar where the shifts are saved |
-| GSTC-License | - | Free GSTC-License needed to display the Shifts in an appropriate format. | 
-
-The free license for the integrated  [Gantt-schedule-timeline-calendar](https://github.com/neuronetio/gantt-schedule-timeline-calendar) can be obtained [here](https://gstc.neuronet.io/free-key/).
