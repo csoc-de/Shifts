@@ -14,7 +14,7 @@ import router from './router'
 import { sync } from 'vuex-router-sync'
 import ClickOutside from 'vue-click-outside'
 import VueClipboard from 'vue-clipboard2'
-import VTooltip from 'v-tooltip'
+import { VTooltip, VPopover } from 'v-tooltip'
 import VueShortKey from 'vue-shortkey'
 import { translate, translatePlural } from '@nextcloud/l10n'
 import vuetify from './plugins/vuetify'
@@ -25,7 +25,7 @@ import dayOfYear from 'dayjs/plugin/dayOfYear'
 Vue.directive('ClickOutside', ClickOutside)
 
 // adds v-popover Component to allow usage in App
-Vue.component('v-popover', VTooltip.VPopover)
+Vue.component('VPopover', VPopover)
 
 // changes appearence of VTooltip
 Vue.use(VTooltip, {

@@ -27,13 +27,13 @@
 		<AnalystsListSearch
 			v-if="!isReadOnly"
 			:already-invited-emails="alreadyInvitedEmails"
-			@addAnalyst="addAnalyst" />
+			@add-analyst="addAnalyst" />
 		<AnalystsListItem
 			v-for="analyst in analysts"
 			:key="analyst.email"
 			:attendee="analyst"
 			:is-read-only="isReadOnly"
-			@removeAttendee="removeAnalyst" />
+			@remove-attendee="removeAnalyst" />
 		<NoAnalystsView
 			v-if="isReadOnly && isListEmpty" />
 		<NoAnalystsView

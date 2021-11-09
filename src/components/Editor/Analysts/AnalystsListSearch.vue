@@ -116,7 +116,7 @@ export default {
 			this.matches.length = 0
 			this.allAnalysts.forEach((analyst) => {
 				let name
-				if (analyst.name) {
+				if (analyst.name && analyst.email === undefined) {
 					name = analyst.name
 				} else if (analyst.name && analyst.email) {
 					name = `${analyst.name} (${analyst.email})`
@@ -142,7 +142,7 @@ export default {
 		// Matches incoming Data-Fields to Corresponding Fields
 		this.allAnalysts.forEach((analyst) => {
 			let name
-			if (analyst.name) {
+			if (analyst.name && analyst.email === undefined) {
 				name = analyst.name
 			} else if (analyst.name && analyst.email) {
 				name = `${analyst.name} (${analyst.email})`
@@ -197,7 +197,7 @@ export default {
 			this.matches = matches
 		}, 500),
 		addAnalyst(selectedValue) {
-			this.$emit('addAnalyst', selectedValue)
+			this.$emit('add-analyst', selectedValue)
 		},
 		findAnalystsFromAPI(query) {
 			const data = this.allAnalysts.filter((analyst) => {

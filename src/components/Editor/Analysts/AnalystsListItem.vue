@@ -73,7 +73,7 @@ export default {
 	},
 	methods: {
 		removeAttendee() {
-			this.$emit('removeAttendee', this.attendee)
+			this.$emit('remove-attendee', this.attendee)
 			this.isOpen = false
 		},
 	},
