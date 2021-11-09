@@ -7,8 +7,6 @@
 
 namespace OCA\Shifts\Controller;
 
-
-use JetBrains\PhpStorm\ArrayShape;
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
@@ -23,7 +21,7 @@ class SettingsController extends Controller {
 	 *
 	 * @var Settings
 	 */
-	private Settings $settings;
+	private $settings;
 
 	/**
 	 * Url generator service
