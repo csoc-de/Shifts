@@ -45,7 +45,8 @@ const getters = {
 }
 
 const actions = {
-	async saveNewShift({ state, dispatch, commit }) {
+	async saveNewShift({ state, dispatch, commit, rootState }) {
+		const allShifts = rootState.database.allShifts
 		const newShiftInstance = state.newShiftInstance
 		if (newShiftInstance.analysts && newShiftInstance.dates && newShiftInstance.shiftsType) {
 			try {
@@ -60,9 +61,19 @@ const actions = {
 						}
 					})
 					await Promise.all(newShifts.map(async(newShift) => {
-						const response = await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
-						if (response.data && response.data.date !== newShift.date) {
-							await axios.put(generateUrl(`/apps/shifts/shifts/${response.data.id}`), newShift)
+						const exists = allShifts.find((shift) => {
+							return shift.userId === '-1'
+								&& newShift.date === shift.date
+								&& newShift.shiftTypeId.toString() === shift.shiftTypeId
+						})
+						if (exists === undefined) {
+							const response = await axios.post(generateUrl('/apps/shifts/shifts'), newShift)
+							if (response.data && response.data.date !== newShift.date) {
+								await axios.put(generateUrl(`/apps/shifts/shifts/${response.data.id}`), newShift)
+							}
+						} else {
+							newShift.id = exists.id
+							await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 						}
 					}))
 				}))
@@ -76,6 +87,7 @@ const actions = {
 			console.log('No Name for ShiftType')
 			showWarning(t('shifts', 'No Analysts or Dates for Shift given'))
 		}
+
 	},
 }
 

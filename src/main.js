@@ -18,6 +18,8 @@ import VTooltip from 'v-tooltip'
 import VueShortKey from 'vue-shortkey'
 import { translate, translatePlural } from '@nextcloud/l10n'
 import vuetify from './plugins/vuetify'
+import dayjs from 'dayjs'
+import dayOfYear from 'dayjs/plugin/dayOfYear'
 
 // to allow clicking autoside of popover
 Vue.directive('ClickOutside', ClickOutside)
@@ -48,6 +50,9 @@ Vue.prototype.$n = translatePlural
 // Translation
 Vue.prototype.t = translate
 Vue.prototype.n = translatePlural
+
+dayjs.locale('de')
+dayjs.extend(dayOfYear)
 
 export default new Vue({
 	el: '#content',

@@ -37,10 +37,6 @@ script('shifts', 'settings');
 		<label for="shiftsWorkerGroup"><?php p($l->t('Name der Schichtmitarbeiter-Gruppe'))?></label>
 		<input id="shiftsWorkerGroup" value="<?php p($_['shiftWorkerGroup']) ?>" placeholder="Analyst" type="text" />
 	</div>
-	<div class="settings_container">
-		<label for="gstcLicenseGroup"><?php p($l->t('GSTC-Lizenz'))?></label>
-		<input id="gstcLicenseGroup" value="<?php p($_['gstcLicense']) ?>" placeholder="" type="text" />
-	</div>
 	<div id="skillGroupsContainer" class="settings_container">
 		<p><?php p($l->t('Name der Mitarbeiter-Skill Gruppen'))?></p>
 

@@ -49,7 +49,6 @@
 		const shiftsOrganizerEmail = ($('#shiftsOrganizerEmail').val() || '').trim()
 		const shiftsAdminGroup = ($('#shiftsAdminGroup').val() || '').trim()
 		const shiftsWorkerGroup = ($('#shiftsWorkerGroup').val() || '').trim()
-		const gstcLicense = ($('#gstcLicenseGroup').val() || '').trim()
 
 		const skillGroups = $("input[class='skillGroupInput']")
 			.map(function() {
@@ -66,7 +65,6 @@
 			adminGroup: shiftsAdminGroup,
 			shiftWorkerGroup: shiftsWorkerGroup,
 			skillGroups,
-			gstcLicense,
 		}
 		$.ajax({
 			method: 'PUT',

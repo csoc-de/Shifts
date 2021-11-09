@@ -21,25 +21,8 @@ class Application extends App{
 
 		$container = $this->getContainer();
 
-		//edited CSP
-		$dispatcher = $container->query(IEventDispatcher::class);
-		$dispatcher->addListener(AddContentSecurityPolicyEvent::class, function (AddContentSecurityPolicyEvent $event){
-			$event->addPolicy($this->createCsp());
-		});
-
 		$container->registerService('URLGenerator', function($c) {
 			return $c->query('ServerContainer')->getURLGenerator();
 		});
-	}
-
-	/**
-	 * To allow GSTC Calendar CSP
-	 *
-	 * @return ContentSecurityPolicy
-	 */
-	private function createCsp(): ContentSecurityPolicy {
-		$csp = new ContentSecurityPolicy();
-		$csp->addAllowedConnectDomain('https://gstc.neuronet.io/');
-		return $csp;
 	}
 }

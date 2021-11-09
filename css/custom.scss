@@ -31,6 +31,10 @@
 	height: 20px;
 }
 
+h1, h2, h3 {
+	color: var(--color-main-text);
+}
+
 .inputOpenDatepicker {
 	border-radius:0 0.25rem 0.25rem 0 !important;
 }
@@ -111,11 +115,6 @@
 	width: 15%;
 }
 
-.gstc-wrapper {
-	width: 100%;
-	background-color: var(--color-main-background);
-}
-
 .row {
 	margin: 0 !important;
 }
@@ -175,10 +174,6 @@
 	padding-left: 30px;
 }
 
-.gstc-items {
-	width: 100%;
-}
-
 .v-btn--has-bg {
 	background-color: var(--color-primary-element)!important;
 }
@@ -198,24 +193,68 @@
 	background-color: var(--color-main-background);
 }
 
-.gstc {
+.weekly-indicator {
+	height: 40px;
+	border-radius: 14px;
+	padding-top: 9px;
+	color: var(--color-main-background);
+	margin: 2px 0;
+}
+
+.v-list {
 	background-color: var(--color-main-background)!important;
 }
 
-.gstc__list-column-header {
-	background: var(--color-main-background)!important;
+.v-list-item__title, .v-list-item__subtitle, .v-tab, .v-window input, .v-window label, .v-text-field__details,
+.v-input__icon, .v-input, .v-input__control input, .v-input__control label, .v-data-table span, .v-data-table td,
+.v-data-footer, .v-select__selections input, .v-select__selections, .v-icon svg,.v-expansion-panel button{
+	color: var(--color-main-text)!important;
 }
 
-.gstc__chart-calendar {
-	background: var(--color-main-background)!important;
+.v-btn{
+	color: var(--color-main-background)!important;
 }
 
-.weekly-indicator {
+.modal__content {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-item-group {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-data-table, .v-expansion-panel {
+	background-color: var(--color-main-background)!important;
+}
+
+.v-data-table td ,.v-data-table tr {
+	border-bottom: thin solid var(--color-main-text)!important;
+}
+
+#calendar-wrapper table td + td { border-left: thin solid var(--color-main-text)}
+
+#calendar-wrapper table th + th { border-left: thin solid var(--color-main-text)}
+
+#calendar-wrapper td, #calendar-wrapper th, {
+	text-align: center;
+	border-bottom: thin solid var(--color-main-text);
+}
+
+#calendar-wrapper tbody td {
+	padding: 0;
+}
+
+#calendar-wrapper thead th {
+	color: var(--color-main-text);
+}
+
+.drop-zone {
+	padding-top: 2px;
 	height: 100%;
-	margin-left: -5px;
-	border-radius: 14px;
-	padding-left: 10px;
-	color: #fff;
+}
+
+.shifts_content {
+	color: var(--color-main-text);
 }
 
 

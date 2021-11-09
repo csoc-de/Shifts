@@ -13,7 +13,6 @@ const state = {
 	organizerName: '',
 	organizerEmail: '',
 	skillGroups: '',
-	gstcLicense: '',
 }
 
 const mutations = {
@@ -28,9 +27,6 @@ const mutations = {
 	},
 	updateSkillGroups(state, skillGroups) {
 		state.skillGroups = skillGroups
-	},
-	updateGstcLicense(state, license) {
-		state.gstcLicense = license
 	},
 }
 
@@ -47,9 +43,6 @@ const getters = {
 	getSkillGroups(state) {
 		return state.skillGroups
 	},
-	getGstcLicense(state) {
-		return state.gstcLicense
-	},
 }
 
 const actions = {
@@ -62,7 +55,6 @@ const actions = {
 			commit('updateOrganizerName', settings.organizerName)
 			commit('updateOrganizerEmail', settings.organizerEmail)
 			commit('updateSkillGroups', settings.skillGroups)
-			commit('updateGstcLicense', settings.gstcLicense)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch data'))

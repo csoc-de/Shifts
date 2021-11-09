@@ -69,13 +69,6 @@ class Settings{
 	private $_skillGroups = "skillGroups";
 
 	/**
-	 * gstc license Key
-	 *
-	 * @var string
-	 */
-	private $_gstcLicense = "gstcLicense";
-
-	/**
 	 * @param string $AppName
 	 */
 	public function __construct(string $AppName) {
@@ -235,33 +228,6 @@ class Settings{
 		}
 		return $shiftWorkerGroup;
 	}
-
-	/**
-	 * Saves gstc License
-	 *
-	 * @param string $gstcLicense
-	 */
-	public function setGstcLicense(string $gstcLicense) {
-		$this->config->setAppValue($this->appName,$this->_gstcLicense, $gstcLicense);
-	}
-
-	/**
-	 * Get gstc License
-	 *
-	 * @return string
-	 */
-	public function getGstcLicense(): string {
-		$gstcLicense = $this->config->getAppValue($this->appName, $this->_gstcLicense, "");
-		if (empty($gstcLicense)) {
-			$gstcLicense = $this->GetSystemValue($this->_gstcLicense);
-		}
-		if (empty($gstcLicense)) {
-			$this->setGstcLicense('');
-			$gstcLicense = '';
-		}
-		return $gstcLicense;
-	}
-
 
 	/**
 	 * Saves Skill Group Names
