@@ -513,7 +513,7 @@ export default {
 				const type = this.tab
 				const newShiftsChanges = []
 				// necessary for allowing multiple Shifts to be changed
-				await Promise.all(this.oldAnalystSelectedShifts.map(async(shiftId, index) => {
+				await Promise.all(this.oldAnalystSelectedShifts.map(async (shiftId, index) => {
 					const oldShiftsId = shiftId
 					const newShiftsId = type === 0 ? this.newAnalystSelectedShifts[index] : -1
 					const newShiftsChange = {

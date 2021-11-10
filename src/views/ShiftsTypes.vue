@@ -25,11 +25,33 @@
 					:key="item.id">
 					<v-list-item-title v-text="item.name"></v-list-item-title>
 					<v-list-item-action>
-						<v-btn
-							color="red lighten-1"
-							@click="deleteShiftsType(item)">
-							{{ t('shifts', 'Enfernen') }}
-						</v-btn>
+						<v-dialog
+							v-model="removeShiftsTypeDialogs[item.id]"
+							width="500">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn
+									color="red lighten-1"
+									dark
+									v-bind="attrs"
+									v-on="on">
+									{{ t('shifts', 'Enfernen') }}
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-text>
+									{{ t('shifts', 'Möchten sie wirklich den Schichttypen und alle dazugehörigen Schichten löschen?') }}
+								</v-card-text>
+								<v-card-actions>
+									<v-spacer></v-spacer>
+									<v-btn
+										color="red lighten-1"
+										dark
+										@click="deleteShiftsType(item)">
+										{{ t('shifts', 'Enfernen') }}
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
 						<v-btn
 							color="light-blue"
 							@click="openEditDialog(item)">
@@ -54,6 +76,7 @@ export default {
 	},
 	data() {
 		return {
+			removeShiftsTypeDialogs: {},
 			dialogOpen: false,
 		}
 	},
@@ -72,6 +95,7 @@ export default {
 			this.$store.dispatch('editExistingShiftsType', shiftsType)
 		},
 		deleteShiftsType(shiftsType) {
+			this.removeShiftsTypeDialogs[shiftsType.id] = false
 			this.$store.dispatch('deleteShiftsType', shiftsType)
 		},
 		closeDialog() {

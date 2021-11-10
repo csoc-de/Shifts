@@ -127,7 +127,7 @@
 				</v-btn>
 			</v-menu>
 			<v-expansion-panels
-				flat
+				:flat="true"
 				v-if="showTimeSelector">
 				<v-expansion-panel>
 					<v-expansion-panel-header>{{ t('shifts', 'Regeln')}}</v-expansion-panel-header>

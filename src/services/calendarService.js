@@ -14,7 +14,7 @@ import store from '../store'
 /**
  * returns the calDav conform Timezone
  *
- * @returns {Timezone}
+ * @return {Timezone}
  */
 const findCurrentTimezone = () => {
 	const timezoneManager = getTimezoneManager()
@@ -24,7 +24,7 @@ const findCurrentTimezone = () => {
 
 const timezone = findCurrentTimezone()
 
-const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
+const syncAllAssignedShifts = async (shiftsList, shiftTypes, allAnalysts) => {
 	const shiftsCalendar = await findShiftsCalendar()
 	const groups = shiftsList.reduce((array, item) => {
 		const group = (array[item.date] || [])
@@ -62,7 +62,7 @@ const syncAllAssignedShifts = async(shiftsList, shiftTypes, allAnalysts) => {
 	}
 }
 
-const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, oldAnalyst, newAnalyst) => {
+const updateExistingCalendarObjectFromShiftsChange = async (oldShift, newShift, oldAnalyst, newAnalyst) => {
 	const oldShiftsDate = oldShift.date
 	const oldShiftsType = oldShift.shiftsType
 
@@ -94,11 +94,10 @@ const updateExistingCalendarObjectFromShiftsChange = async(oldShift, newShift, o
 
 /**
  * synchronizes the calendar for a given ShiftsType and a list of
- *
  * @param {Calendar} calendar Shifts-Calendar
- * @param {Object} shiftsType ShiftsType of the Shift
- * @param {String} dateString Date of Shifts
- * @param {array} analysts list of participating analysts
+ * @param {object} shiftsType ShiftsType of the Shift
+ * @param {string} dateString Date of Shifts
+ * @param {Array} analysts list of participating analysts
  */
 // eslint-disable-next-line
 const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => {
@@ -162,7 +161,7 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 /**
  * returns the calendarName
  *
- * @returns {String}
+ * @return {string}
  */
 let calendarName
 const getCalendarName = () => {
@@ -175,7 +174,7 @@ const getCalendarName = () => {
 /**
  * returns the organizerName
  *
- * @returns {String}
+ * @return {string}
  */
 let organizerName
 const getOrganizerName = () => {
@@ -188,7 +187,7 @@ const getOrganizerName = () => {
 /**
  * returns the organizerEmail
  *
- * @returns {String}
+ * @return {string}
  */
 let organizerEmail
 const getOrganizerEmail = () => {
@@ -201,10 +200,10 @@ const getOrganizerEmail = () => {
 /**
  * returns the dedicated Shifts-Calendar based on the Organizers name
  *
- * @returns {Calendar}
+ * @return {Calendar}
  */
 let calendar
-const findShiftsCalendar = async() => {
+const findShiftsCalendar = async () => {
 	if (!calendar || calendar.owner.includes(getOrganizerName())) {
 		const calendars = await findAllCalendars()
 		calendar = calendars.find(calendar => {
@@ -221,9 +220,8 @@ const findShiftsCalendar = async() => {
  *
  * @param {Date} startDate Date of start of new event
  * @param {Date} stopDate Date of stop of new event
- * @param {boolean} isWeekly Determines if Event is is all Day and Weekly
- *
- * @returns {EventComponent}
+ * @param {boolean} isWeekly Determines if Event is is all Day and Weekly*
+ * @return {EventComponent}
  */
 const createEventComponent = (startDate, stopDate, isWeekly) => {
 	const startDateTime = DateTimeValue
@@ -256,9 +254,8 @@ const createEventComponent = (startDate, stopDate, isWeekly) => {
 /**
  * returns AttendeeProperty from Analyst
  *
- * @param {Object} analyst Analyst-Object of attendee to be created
- *
- * @returns {AttendeeProperty}
+ * @param {object} analyst Analyst-Object of attendee to be created
+ * @return {AttendeeProperty}
  */
 const createAttendeeFromAnalyst = (analyst) => {
 	let name = ''
@@ -282,11 +279,10 @@ const createAttendeeFromAnalyst = (analyst) => {
  * edit EventComponent
  *
  * @param {EventComponent} event Event to be edited
- * @param {Object} removeAnalyst Old Analyst Object to be removed from EventComponent
- * @param {Object} addAnalyst New Analyst Object to be added to EventComponent
+ * @param {object} removeAnalyst Old Analyst Object to be removed from EventComponent
+ * @param {object} addAnalyst New Analyst Object to be added to EventComponent
  * @param {Timezone} timezone Timezone of the current instance
- *
- * @returns {EventComponent}
+ * @return {EventComponent}
  */
 
 const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
@@ -318,13 +314,12 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
  * find EventComponent by Date
  *
  * @param {Calendar} calendar Shifts-Calendar to find Events in
- * @param {String} dateString Date-String of the Shift
- * @param {Object} shiftsType ShiftsType of the Shift
+ * @param {string} dateString Date-String of the Shift
+ * @param {object} shiftsType ShiftsType of the Shift
  * @param {Timezone} timezone Timezone of the current instance
- *
- * @returns {[VObject,EventComponent]}
+ * @return {[VObject,EventComponent]}
  */
-const findEventComponent = async(calendar, dateString, shiftsType, timezone) => {
+const findEventComponent = async (calendar, dateString, shiftsType, timezone) => {
 	const timestamps = getTimestamps(dateString, shiftsType)
 	const vObjects = await calendar.findByTypeInTimeRange('VEVENT', timestamps[0], timestamps[1])
 	if (vObjects.length <= 0) {
@@ -369,10 +364,9 @@ const findEventComponent = async(calendar, dateString, shiftsType, timezone) => 
 /**
  * returns the corresponding timestamps
  *
- * @param {String} dateString start Date of Shift
+ * @param {string} dateString start Date of Shift
  * @param {object} shiftsType type of shift
- *
- * @returns{[Date, Date]}
+ * @return {[Date, Date]}
  */
 const getTimestamps = (dateString, shiftsType) => {
 	if (shiftsType.isWeekly === '1') {

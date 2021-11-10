@@ -50,7 +50,7 @@ const actions = {
 		const newShiftInstance = state.newShiftInstance
 		if (newShiftInstance.analysts && newShiftInstance.dates && newShiftInstance.shiftsType) {
 			try {
-				await Promise.all(newShiftInstance.analysts.map(async(analyst) => {
+				await Promise.all(newShiftInstance.analysts.map(async (analyst) => {
 					const analystId = analyst.userId
 					const shiftTypeId = newShiftInstance.shiftsType.id
 					const newShifts = newShiftInstance.dates.map((date) => {
@@ -60,7 +60,7 @@ const actions = {
 							date,
 						}
 					})
-					await Promise.all(newShifts.map(async(newShift) => {
+					await Promise.all(newShifts.map(async (newShift) => {
 						const exists = allShifts.find((shift) => {
 							return shift.userId === '-1'
 								&& newShift.date === shift.date
