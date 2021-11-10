@@ -6,9 +6,9 @@
 	"license": "agpl",
 	"private": true,
 	"scripts": {
-		"build": "NODE_ENV=production webpack --progress --hide-modules --config webpack.js",
-		"dev": "NODE_ENV=development webpack --progress --config webpack.js",
-		"watch": "NODE_ENV=development webpack --progress --watch --config webpack.js",
+		"build": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production webpack --progress --hide-modules --config webpack.js",
+		"dev": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack --progress --config webpack.js",
+		"watch": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development webpack --progress --watch --config webpack.js",
 		"lint": "eslint --ext .js,.vue  --ignore-path .gitignoresrc",
 		"lint:fix": "eslint --ext .js,.vue --ignore-path .gitignore src --fix",
 		"stylelint": "stylelint css/*.css css/*.scss src/**/*.scss src/**/*.vue",

@@ -14,14 +14,20 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 use OCA\Shifts\Db\ShiftsType;
 use OCA\Shifts\Db\ShiftsTypeMapper;
+use OCA\Shifts\Db\Shift;
+use OCA\Shifts\Db\ShiftMapper;
 
 class ShiftsTypeService {
 
 	/** @var ShiftsTypeMapper */
 	private $mapper;
 
-	public function __construct(ShiftsTypeMapper $mapper){
+	/** @var ShiftMapper */
+	private $shiftMapper;
+
+	public function __construct(ShiftsTypeMapper $mapper, ShiftMapper $shiftMapper){
 		$this->mapper = $mapper;
+		$this->shiftMapper = $shiftMapper;
 	}
 
 	public function findAll(): array
@@ -95,6 +101,10 @@ class ShiftsTypeService {
 		try{
 			$shiftsType = $this->mapper->find($id);
 			$this->mapper->delete($shiftsType);
+			$shifts = $this->shiftMapper->findByShiftsTypeId($id);
+			foreach ( $shifts as $shift) {
+				$this->shiftMapper->delete($shift);
+			}
 			return $shiftsType;
 		} catch(Exception $e){
 			$this->handleException($e);
