@@ -7,6 +7,9 @@
 
 namespace OCA\Shifts\Service;
 
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use Exception;
 
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -72,6 +75,26 @@ class ShiftsTypeService {
 		return $this->mapper->insert($shiftsType);
 	}
 
+	private function deleteShifts(int $shiftsTypeId, int $countToDelete, string $modifier) {
+		if($countToDelete > 0) {
+			$start = new DateTime();
+			$start->modify($modifier);
+			$interval = DateInterval::createFromDateString('7 day');
+
+			$end = date_create(date('Y-m-d'));
+			$end = date_add($end, date_interval_create_from_date_string('365 days'));
+			$period = new DatePeriod($start, $interval, $end);
+			foreach ($period as $dt) {
+				$shifts = $this->shiftMapper->findByDateTypeandAssignment($dt->format('Y-m-d'),$shiftsTypeId);
+				if (count($shifts) >= $countToDelete) {
+					for($i = 0; $i < $countToDelete; $i++) {
+						$this->shiftMapper->delete($shifts[$i]);
+					}
+				}
+			}
+		}
+	}
+
 	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
 						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly){
 		try{
@@ -81,13 +104,49 @@ class ShiftsTypeService {
 			$shiftsType->setStartTimeStamp($startTimeStamp);
 			$shiftsType->setStopTimeStamp($stopTimeStamp);
 			$shiftsType->setCalendarColor($color);
-			$shiftsType->setMoRule($moRule);
-			$shiftsType->setTuRule($tuRule);
-			$shiftsType->setWeRule($weRule);
-			$shiftsType->setThRule($thRule);
-			$shiftsType->setFrRule($frRule);
-			$shiftsType->setSaRule($saRule);
-			$shiftsType->setSoRule($soRule);
+			if($shiftsType->getMoRule() != $moRule) {
+				$countToDelete = $shiftsType->getMoRule() - $moRule;
+				$modifier = 'this monday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setMoRule($moRule);
+
+			}
+			if($shiftsType->getTuRule() != $tuRule) {
+				$countToDelete = $shiftsType->getTuRule() - $tuRule;
+				$modifier = 'this tuesday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setTuRule($tuRule);
+			}
+			if($shiftsType->getWeRule() != $weRule) {
+				$countToDelete = $shiftsType->getWeRule() - $weRule;
+				$modifier = 'this wednesday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setWeRule($weRule);
+			}
+			if($shiftsType->getThRule() != $thRule) {
+				$countToDelete = $shiftsType->getThRule() - $thRule;
+				$modifier = 'this thursday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setThRule($thRule);
+			}
+			if($shiftsType->getFrRule() != $frRule) {
+				$countToDelete = $shiftsType->getFrRule() - $frRule;
+				$modifier = 'this friday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setFrRule($frRule);
+			}
+			if($shiftsType->getSaRule() != $saRule) {
+				$countToDelete = $shiftsType->getSaRule() - $saRule;
+				$modifier = 'this saturday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setSaRule($saRule);
+			}
+			if($shiftsType->getSoRule() != $soRule) {
+				$countToDelete = $shiftsType->getSoRule() - $soRule;
+				$modifier = 'this sunday';
+				$this->deleteShifts($id, $countToDelete, $modifier);
+				$shiftsType->setSoRule($soRule);
+			}
 			$shiftsType->setSkillGroupId($skillGroupId);
 			$shiftsType->setIsWeekly($isWeekly ?: '0');
 			return $this->mapper->update($shiftsType);

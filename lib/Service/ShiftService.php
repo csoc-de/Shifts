@@ -116,7 +116,7 @@ class ShiftService {
 	public function triggerUnassignedShifts(): bool {
 		try {
 			$start = new DateTime();
-			$start->modify('next monday');
+			$start->modify('this monday');
 			$interval = DateInterval::createFromDateString('1day');
 			$rules = $this->typeMapper->findAllRules();
 

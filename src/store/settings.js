@@ -6,13 +6,14 @@
 
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
-import { showError } from '@nextcloud/dialogs'
+import { showError, showWarning } from '@nextcloud/dialogs'
 
 const state = {
-	calendarName: '',
-	organizerName: '',
-	organizerEmail: '',
-	skillGroups: '',
+	calendarName: null,
+	organizerName: null,
+	organizerEmail: null,
+	skillGroups: null,
+	settingsFetched: false,
 }
 
 const mutations = {
@@ -27,6 +28,9 @@ const mutations = {
 	},
 	updateSkillGroups(state, skillGroups) {
 		state.skillGroups = skillGroups
+	},
+	updateSettingsFetched(state, fetched) {
+		state.settingsFetched = fetched
 	},
 }
 
@@ -43,6 +47,9 @@ const getters = {
 	getSkillGroups(state) {
 		return state.skillGroups
 	},
+	getSettingsFetched(state) {
+		return state.settingsFetched
+	},
 }
 
 const actions = {
@@ -55,9 +62,27 @@ const actions = {
 			commit('updateOrganizerName', settings.organizerName)
 			commit('updateOrganizerEmail', settings.organizerEmail)
 			commit('updateSkillGroups', settings.skillGroups)
+			commit('updateSettingsFetched', true)
+
 		} catch (e) {
 			console.error(e)
-			showError(t('shifts', 'Could not fetch data'))
+			showError(t('shifts', 'Could not fetch Settings'))
+		}
+		if (state.calendarName === '') {
+			showWarning(t('shifts', 'Please set a Calendarname in the App-Settings'))
+			commit('updateSettingsFetched', false)
+		}
+		if (state.organizerName === '') {
+			showWarning(t('shifts', 'Please set an Organizername in the App-Settings'))
+			commit('updateSettingsFetched', false)
+		}
+		if (state.organizerEmail === '') {
+			showWarning(t('shifts', 'Please set an Organizeremail in the App-Settings'))
+			commit('updateSettingsFetched', false)
+		}
+		if (state.skillGroups !== null && state.skillGroups.length === 0) {
+			showWarning(t('shifts', 'Please set at least one Skillgroup in the App-Settings'))
+			commit('updateSettingsFetched', false)
 		}
 	},
 }

@@ -109,7 +109,6 @@ const actions = {
 	},
 	async saveCurrentShiftsType({ state, dispatch, commit }) {
 		try {
-			console.log(state.shiftsTypeInstance)
 			if (state.shiftsTypeInstance.id) {
 				await axios.put(generateUrl(`/apps/shifts/shiftsType/${state.shiftsTypeInstance.id}`), state.shiftsTypeInstance)
 			} else {
@@ -118,7 +117,7 @@ const actions = {
 			dispatch('updateShiftsTypes')
 		} catch (e) {
 			console.error(e)
-			showError(t('shifts', 'Could not create the shiftType'))
+			showError(t('shifts', 'Could not save the shiftType'))
 		}
 	},
 }

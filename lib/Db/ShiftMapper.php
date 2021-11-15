@@ -23,9 +23,7 @@ class ShiftMapper extends QBMapper {
 	/**
 	 * Finds Shift by Shiftid
 	 * @param int $id
-	 * @return Entity|Shift
-	 * @throws MultipleObjectsReturnedException
-	 * @throws DoesNotExistException
+	 * @return Shift
 	 */
 	public function find(int $id): Shift {
 		/* @var $qb IQueryBuilder */
@@ -76,6 +74,8 @@ class ShiftMapper extends QBMapper {
 
 	/**
 	 * Fetches shifts by Datestring
+	 * @param $currentDate
+	 * @param $type
 	 * @return array
 	 */
 	public function findByDateAndType($currentDate, $type): array {
@@ -85,6 +85,21 @@ class ShiftMapper extends QBMapper {
 			->from('shifts')
 			->where($qb->expr()->eq('date', $qb->createNamedParameter($currentDate)))
 			->andWhere($qb->expr()->eq('shift_type_id', $qb->createNamedParameter($type)));
+		return $this->findEntities($qb);
+	}
+
+	/**
+	 * Fetches shifts by date, type and assignmentstatus
+	 *
+	 */
+	public function findByDateTypeandAssignment($currentDate, $type): array {
+		/* @var $qb IQueryBuilder */
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('*')
+			->from('shifts')
+			->where($qb->expr()->eq('date', $qb->createNamedParameter($currentDate)))
+			->andWhere($qb->expr()->eq('shift_type_id', $qb->createNamedParameter($type)))
+			->andWhere($qb->expr()->eq('user_id', $qb->createNamedParameter('-1')));
 		return $this->findEntities($qb);
 	}
 
@@ -106,14 +121,16 @@ class ShiftMapper extends QBMapper {
 
 	/**
 	 * Fetches all shifts in timerange
+	 * @param string $start
+	 * @param string $end
 	 * @return array
 	 */
 	public function findByTimeRange(string $start, string $end) : array {
-		/* @var $qb IQueryBuilder */
 		$startDate = date('Y-m-d', strtotime($start));
 		$endDate = date('Y-m-d', strtotime($end));
 		error_log($startDate);
 		error_log($endDate);
+		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('user_id', 'shift_type_id', $qb->func()->count('*','num_shifts'))
 			->from('shifts')

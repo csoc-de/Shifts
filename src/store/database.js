@@ -223,15 +223,13 @@ const actions = {
 			showError(t('shifts', 'Could not fetch shifts-changes'))
 		}
 	},
-	async deleteAssignment({ state, dispatch, getters }, shiftId) {
+	async deleteAssignment({ state, dispatch, getters }, shift) {
 		try {
-			const shift = getters.getShiftById(shiftId)
 			if (shift.userId === '-1') {
-				console.log(shift)
-				await axios.delete(generateUrl(`/apps/shifts/shifts/${shiftId}`))
+				await axios.delete(generateUrl(`/apps/shifts/shifts/${shift.id}`))
 			} else {
 				shift.analystId = '-1'
-				await axios.put(generateUrl(`/apps/shifts/shifts/${shiftId}`), shift)
+				await axios.put(generateUrl(`/apps/shifts/shifts/${shift.id}`), shift)
 			}
 			dispatch('updateShifts')
 		} catch (e) {
