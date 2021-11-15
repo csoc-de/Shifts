@@ -33,7 +33,7 @@
 			</v-menu>
 			<v-btn
 				color="light-blue"
-				:disabled="disabled"
+				:disabled="disabled || !settingsFetched"
 				dark
 				@click="syncCalendar">
 				{{ t('shifts','Kalender synchronisieren') }}
@@ -64,6 +64,7 @@ export default {
 		...mapGetters({
 			isAdmin: 'isAdmin',
 			loading: 'loading',
+			settingsFetched: 'getSettingsFetched',
 		}),
 	},
 	methods: {

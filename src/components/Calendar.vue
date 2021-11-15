@@ -62,10 +62,10 @@
 				<template v-slot:default>
 					<thead>
 					<tr>
-						<th class="table-header__main" style="padding: 0 0; width: 8%;">
+						<th class="table-header__main" style="padding: 0 0; width: 5%;">
 							{{ t('shifts','Analyst') }}
 						</th>
-						<th class="table-header__weekly" v-for="shiftType in weeklyShiftTypes" style="padding: 0 0; width: 5%;">
+						<th class="table-header__weekly" v-for="shiftType in weeklyShiftTypes" style="padding: 0 0; width: 3%;">
 							{{ shiftType.name }}
 						</th>
 						<th class="table-header" v-for="day in timespanHeader" :style="cellStyle">
@@ -89,6 +89,12 @@
 										 :draggable="isAdmin"
 										 @dragstart="startWeeklyDrag($event, shift)"
 										 class="weekly-indicator">
+										<v-icon v-if="isAdmin"
+												x-small
+												@click="deleteShift(shift)"
+												class="shifts_delete">
+											icon-delete
+										</v-icon>
 									</div>
 								</div>
 							</td>
@@ -103,6 +109,12 @@
 										 :draggable="isAdmin"
 										 @dragstart="startDailyDrag($event, shift)"
 										 class="weekly-indicator">
+										<v-icon v-if="isAdmin"
+												x-small
+												@click="deleteShift(shift)"
+												class="shifts_delete">
+											icon-delete
+										</v-icon>
 										{{ selectedCalendarFormat === 'week' ? shift.shiftsType.name : shift.shiftsType.name.substring(0, 2)}}
 									</div>
 								</div>
@@ -239,6 +251,9 @@ export default {
 				shiftTypeId,
 				date: day.date,
 			})
+		},
+		deleteShift(shift) {
+			this.$store.dispatch('deleteAssignment', shift)
 		},
 		onWeeklyDrop(event, shiftType, analyst) {
 			const shiftId = event.dataTransfer.getData('shiftId')

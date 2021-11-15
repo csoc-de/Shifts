@@ -28,7 +28,7 @@ class SettingsController extends Controller {
 	 *
 	 * @var IURLGenerator
 	 */
-	private IURLGenerator $urlGenerator;
+	private $urlGenerator;
 
 	public function __construct(IRequest $request, IURLGenerator $urlGenerator, Settings $settings) {
 		parent::__construct(Application::APP_ID, $request);
