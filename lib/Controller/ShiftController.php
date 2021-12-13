@@ -8,6 +8,7 @@
 namespace OCA\Shifts\Controller;
 
 use OCA\Shifts\AppInfo\Application;
+use OCA\Shifts\Service\ShiftsCalendarChangeService;
 use OCA\Shifts\Service\ShiftService;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
@@ -19,6 +20,9 @@ use OCP\IGroupManager;
 class ShiftController extends Controller {
 	/** @var ShiftService */
 	private $service;
+
+	/** @var ShiftsCalendarChangeService */
+	private $calendarChangeService;
 
 	/** @var string */
 	private $userId;
@@ -32,12 +36,13 @@ class ShiftController extends Controller {
 	use Errors;
 
 
-	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, Settings $settings, $userId){
+	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, ShiftsCalendarChangeService $calendarChangeService, Settings $settings, $userId){
 		parent::__construct(Application::APP_ID, $request);
 		$this->service = $service;
 		$this->userId = $userId;
 		$this->groupManager = $groupManager;
 		$this->settings = $settings;
+		$this->calendarChangeService = $calendarChangeService;
 	}
 
 	/**
@@ -71,7 +76,9 @@ class ShiftController extends Controller {
 	 * @return DataResponse
 	 */
 	public function create(string $analystId, int $shiftTypeId, string $date): DataResponse {
-		return new DataResponse($this->service->create($analystId, $shiftTypeId, $date));
+		$shift = $this->service->create($analystId, $shiftTypeId, $date);
+		$this->calendarChangeService->create($shift->getId(), $shiftTypeId, $date, '-1', $analystId, 'update', date(DATE_ATOM), $this->userId, false);
+		return new DataResponse($shift);
 	}
 
 	/**
@@ -81,11 +88,16 @@ class ShiftController extends Controller {
 	 * @param string $analystId
 	 * @param int $shiftTypeId
 	 * @param string $date
+	 * @param string $oldAnalystId
+	 * @param bool $saveChanges
 	 * @return DataResponse
 	 */
-	public function update(int $id, string $analystId, int $shiftTypeId, string $date): DataResponse
+	public function update(int $id, string $analystId, int $shiftTypeId, string $date, string $oldAnalystId, bool $saveChanges): DataResponse
 	{
-		return $this->handleNotFound(function() use ($id, $analystId, $shiftTypeId, $date){
+		return $this->handleNotFound(function() use ($id, $analystId, $shiftTypeId, $date, $oldAnalystId, $saveChanges){
+			if ($saveChanges) {
+				$this->calendarChangeService->create($id, $shiftTypeId, $date, $oldAnalystId, $analystId, $analystId === '-1'? 'unassign' : 'update', date(DATE_ATOM), $this->userId, false);
+			}
 			return $this->service->update($id, $analystId, $shiftTypeId, $date);
 		});
 	}
@@ -227,21 +239,6 @@ class ShiftController extends Controller {
 	public function triggerUnassignedShifts() : DataResponse {
 		$bool = $this->service->triggerUnassignedShifts();
 		return new DataResponse($bool);
-	}
-
-
-	/**
-	 * @NoAdminRequired
-	 *
-	 * Fetches assigned shifts
-	 *
-	 * @return DataResponse
-	 */
-	public function getAssignedShifts() : DataResponse
-	{
-		return $this->handleNotFound(function (){
-			return $this->service->findAssignedShifts();
-		});
 	}
 
 	/**

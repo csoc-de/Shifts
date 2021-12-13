@@ -7,93 +7,26 @@
 <template>
 	<Modal
 		size="large"
-		:title="t('shifts', 'Neuer Schichttyp')"
+		:title="t('shifts', 'New Shiftstype')"
 		@close="$emit('close')">
 		<div class="shifts-type-modal">
 			<!-- eslint-disable -->
 			<v-text-field
+				key="typeName"
 				class="mb-1 p-1"
 				hide-details
 				:value="shiftsType.name"
 				@change="updateName"
 			></v-text-field>
-			<Multiselect :value="shiftsType.skillGroupId"
+			<Multiselect
+				key="skillGroupSelect"
+				:value="shiftsType.skillGroupId"
 				:options="skillGroups"
 				track-by="id"
 				label="name"
 				@change="updateSkillGroup" />
 			<v-menu
-				ref="startMenu"
-				v-model="startMenu"
-				:close-on-click="true"
-				:close-on-content-click="false"
-				:nudge-right="40"
-				v-if="showTimeSelector"
-				transition="scale-transition"
-				offset-y
-				attach
-				max-width="290px"
-				min-width="290px">
-				<template v-slot:activator="{ on, attrs }">
-					<v-text-field
-						:value="shiftsType.startTimestamp"
-						label=" Start Time"
-						v-bind="attrs"
-						v-on="on">
-					</v-text-field>
-				</template>
-				<v-time-picker
-					v-if="startMenu"
-					:value="shiftsType.startTimestamp"
-					format="24hr"
-					full-width
-					@change="changeStart">
-				</v-time-picker>
-			</v-menu>
-			<v-menu
-				ref="stopMenu"
-				v-model="stopMenu"
-				:close-on-content-click="false"
-				:close-on-click="true"
-				:nudge-right="40"
-				v-if="showTimeSelector"
-				transition="scale-transition"
-				offset-y
-				attach
-				max-width="290px"
-				min-width="290px">
-				<template v-slot:activator="{ on, attrs }">
-					<v-text-field
-						:value="shiftsType.stopTimestamp"
-						label=" Stop Time"
-						v-bind="attrs"
-						v-on="on">
-					</v-text-field>
-				</template>
-				<v-time-picker
-					v-if="stopMenu"
-					:value="shiftsType.stopTimestamp"
-					format="24hr"
-					full-width
-					@change="changeStop">
-				</v-time-picker>
-			</v-menu>
-			<v-checkbox
-				v-model="shiftsType.isWeekly"
-				:label="t('shifts','Wöchentlich')"
-				@change="updateIsWeekly">
-			</v-checkbox>
-			<v-text-field
-				v-if="!showTimeSelector"
-				:label="t('shifts', 'Wöchtenliche Schichten')"
-				type="number"
-				min="-1"
-				max="10"
-				hide-details
-				:value="shiftsType.moRule"
-				@change="changeMoRule"
-			></v-text-field>
-			<v-menu
+				key="color"
 				ref="colorMenu"
 				v-model="colorMenu"
 				:close-on-content-click="false"
@@ -101,13 +34,13 @@
 				:nudge-right="40"
 				transition="scale-transition"
 				offset-y
-				top
 				attach
+				absolute
 				min-width="290px">
 				<template v-slot:activator="{ on, attrs }">
 					<v-text-field
 						:value="shiftsType.color"
-						label="Calendar Color"
+						:label="t('shifts', 'Calendar Color')"
 						v-bind="attrs"
 						v-on="on">
 					</v-text-field>
@@ -126,14 +59,93 @@
 					Ok
 				</v-btn>
 			</v-menu>
+			<div v-if="showTimeSelector">
+				<v-menu
+					key="startTimestamp"
+					ref="startMenu"
+					v-model="startMenu"
+					:close-on-click="true"
+					:close-on-content-click="false"
+					:nudge-right="40"
+					transition="scale-transition"
+					offset-y
+					attach
+					absolute
+					max-width="290px"
+					min-width="290px">
+					<template v-slot:activator="{ on, attrs }">
+						<v-text-field
+							:value="shiftsType.startTimestamp"
+							:label="t('shifts', 'Start Time')"
+							v-bind="attrs"
+							v-on="on">
+						</v-text-field>
+					</template>
+					<v-time-picker
+						v-if="startMenu"
+						:value="shiftsType.startTimestamp"
+						format="24hr"
+						full-width
+						@change="changeStart">
+					</v-time-picker>
+				</v-menu>
+				<v-menu
+					key="stopTimestamp"
+					ref="stopMenu"
+					v-model="stopMenu"
+					:close-on-content-click="false"
+					:close-on-click="true"
+					:nudge-right="40"
+					transition="scale-transition"
+					offset-y
+					attach
+					absolute
+					max-width="290px"
+					min-width="290px">
+					<template v-slot:activator="{ on, attrs }">
+						<v-text-field
+							:value="shiftsType.stopTimestamp"
+							:label="t('shifts', 'Stop Time')"
+							v-bind="attrs"
+							v-on="on">
+						</v-text-field>
+					</template>
+					<v-time-picker
+						v-if="stopMenu"
+						:value="shiftsType.stopTimestamp"
+						format="24hr"
+						full-width
+						@change="changeStop">
+					</v-time-picker>
+				</v-menu>
+			</div>
+			<div v-if="!showTimeSelector">
+				<v-text-field
+					key="numShifts"
+					:label="t('shifts', 'weekly Shifts')"
+					type="number"
+					min="-1"
+					max="10"
+					hide-details
+					:value="shiftsType.moRule"
+					@change="changeMoRule"
+				></v-text-field>
+			</div>
+			<v-checkbox
+				key="isWeekly"
+				v-model="shiftsType.isWeekly"
+				:label="t('shifts','Weekly')"
+				@change="updateIsWeekly">
+			</v-checkbox>
 			<v-expansion-panels
+				key="rules"
 				:flat="true"
 				v-if="showTimeSelector">
 				<v-expansion-panel>
-					<v-expansion-panel-header>{{ t('shifts', 'Regeln')}}</v-expansion-panel-header>
+					<v-expansion-panel-header>{{ t('shifts', 'Rules')}}</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<v-text-field
-							:label="t('shifts', 'Montag')"
+							:label="t('shifts', 'Monday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -142,7 +154,7 @@
 							@change="changeMoRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Dienstag')"
+							:label="t('shifts', 'Tuesday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -151,7 +163,7 @@
 							@change="changeTuRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Mittwoch')"
+							:label="t('shifts', 'Wednesday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -160,7 +172,7 @@
 							@change="changeWeRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Donnerstag')"
+							:label="t('shifts', 'Thursday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -169,7 +181,7 @@
 							@change="changeThRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Freitag')"
+							:label="t('shifts', 'Friday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -178,7 +190,7 @@
 							@change="changeFrRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Samstag')"
+							:label="t('shifts', 'Saturday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -187,7 +199,7 @@
 							@change="changeSaRule"
 						></v-text-field>
 						<v-text-field
-							:label="t('shifts', 'Sonntag')"
+							:label="t('shifts', 'Sunday')"
 							type="number"
 							min="-1"
 							max="10"
@@ -201,11 +213,11 @@
 			<v-row
 				class="float_right">
 				<v-btn @click="$emit('close')">
-					{{ t('shifts','Abbrechen') }}
+					{{ t('shifts','Cancel') }}
 				</v-btn>
 				<v-btn color="#03a9f4"
 					   @click="save">
-					{{ t('shifts','Speichern') }}
+					{{ t('shifts','Save') }}
 				</v-btn>
 			</v-row>
 			<!-- eslint-enable -->

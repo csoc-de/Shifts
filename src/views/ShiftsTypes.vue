@@ -10,14 +10,14 @@
 		<v-btn
 			color="light-blue"
 			@click="openDialog()">
-			{{ t('shifts','Neuen Schichttypen anlegen') }}
+			{{ t('shifts','Add new Shiftstype') }}
 		</v-btn>
 		<ShiftsTypeModal v-if="dialogOpen"
 			:shifts-type="shiftsTypes"
 			@close="closeDialog"
 			@saved="dialogSaved" />
 
-		<h1>{{ t('shifts', 'Schichttypen') }}</h1>
+		<h1>{{ t('shifts', 'Shiftstype') }}</h1>
 		<v-list>
 			<v-list-item-group>
 				<v-list-item
@@ -34,12 +34,12 @@
 									dark
 									v-bind="attrs"
 									v-on="on">
-									{{ t('shifts', 'Enfernen') }}
+									{{ t('shifts', 'Delete') }}
 								</v-btn>
 							</template>
 							<v-card>
 								<v-card-text>
-									{{ t('shifts', 'Möchten sie wirklich den Schichttypen und alle dazugehörigen Schichten löschen?') }}
+									{{ t('shifts', 'Are you sure that u want to delete the Shiftstype and all its Shifts') }}
 								</v-card-text>
 								<v-card-actions>
 									<v-spacer></v-spacer>
@@ -47,7 +47,7 @@
 										color="red lighten-1"
 										dark
 										@click="deleteShiftsType(item)">
-										{{ t('shifts', 'Enfernen') }}
+										{{ t('shifts', 'Delete') }}
 									</v-btn>
 								</v-card-actions>
 							</v-card>
@@ -55,7 +55,7 @@
 						<v-btn
 							color="light-blue"
 							@click="openEditDialog(item)">
-							{{ t('shifts', 'Bearbeiten') }}
+							{{ t('shifts', 'Edit') }}
 						</v-btn>
 					</v-list-item-action>
 				</v-list-item>

@@ -9,10 +9,11 @@ import Router from 'vue-router'
 import { getRootUrl, generateUrl } from '@nextcloud/router'
 
 import Shifts from './views/Shifts'
-
 import Requests from './views/Requests'
 import ShiftsTypes from './views/ShiftsTypes'
 import Archive from './views/Archive'
+
+import store from './store'
 
 Vue.use(Router)
 
@@ -45,11 +46,27 @@ const router = new Router({
 			path: '/shiftsTypes',
 			component: ShiftsTypes,
 			name: 'ShiftsTypes',
+			beforeEnter: async (to, from, next) => {
+				const val = await store.dispatch('requestAdminStatus')
+				if (val) {
+					next()
+				} else {
+					next('/timeline')
+				}
+			}
 		},
 		{
 			path: '/archive',
 			component: Archive,
 			name: 'Archive',
+			beforeEnter: async (to, from, next) => {
+				const val = await store.dispatch('requestAdminStatus')
+				if (val) {
+					next()
+				} else {
+					next('/timeline')
+				}
+			}
 		},
 	],
 })

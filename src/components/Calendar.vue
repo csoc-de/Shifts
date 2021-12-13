@@ -18,7 +18,7 @@
 					class="mr-4"
 					color="grey darken-2"
 					@click="setToday">
-					{{ $t('shifts', 'Heute') }}
+					{{ $t('shifts', 'Today') }}
 				</v-btn>
 				<v-btn
 					fab
@@ -48,6 +48,7 @@
 				<v-select
 					class="calendar-format-select"
 					:items="calendarFormats"
+					:label="selectedCalendarFormat"
 					outlined
 					attach
 					@change="updateCalendar">
@@ -138,11 +139,11 @@ export default {
 			calendarFormats: [
 				{
 					value: 'month',
-					text: t('shifts', 'Monat'),
+					text: t('shifts', 'Month'),
 				},
 				{
 					value: 'week',
-					text: t('shifts', 'Woche'),
+					text: t('shifts', 'Week'),
 				},
 			],
 		}
@@ -166,7 +167,7 @@ export default {
 			const result = [
 				{
 					uid: '-1',
-					label: t('shifts', 'Offene Schichten'),
+					label: t('shifts', 'Open Shifts'),
 				},
 			]
 			result.push(...this.analysts.map((analyst) => {
@@ -209,17 +210,6 @@ export default {
 			}
 		},
 	},
-	watch: {
-		// watches or changes in the shifts Array to update the Calendar
-		shifts: {
-			handler(newVal, oldVal) {
-				if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
-					// TODO Shifts change
-				}
-			},
-			deep: true,
-		},
-	},
 	methods: {
 		cellBackground(shiftsType) {
 			return {
@@ -239,41 +229,60 @@ export default {
 				return day.date === shift.date
 			})
 			return dayShifts.filter((shift) => {
-				return shift.userId === analyst.uid && shift.shiftsType.isWeekly === '0'
+				return shift.userId === analyst.uid && (shift.shiftsType.isWeekly === '0' || !shift.shiftsType.isWeekly)
 			})
 		},
 		onDailyDrop(event, day, analyst) {
 			const shiftId = event.dataTransfer.getData('shiftId')
 			const shiftTypeId = event.dataTransfer.getData('shiftTypeId')
-			this.$store.dispatch('updateShift', {
-				id: shiftId,
-				analystId: analyst.uid,
-				shiftTypeId,
-				date: day.date,
-			})
+			const oldAnalystId = event.dataTransfer.getData('oldAnalyst')
+			if (oldAnalystId !== analyst.uid) {
+				this.$store.dispatch('updateShift', {
+					id: shiftId,
+					analystId: analyst.uid,
+					shiftTypeId,
+					date: day.date,
+					oldAnalystId,
+					saveChanges: true,
+				})
+			}
 		},
 		deleteShift(shift) {
-			this.$store.dispatch('deleteAssignment', shift)
+			if (shift.userId !== '-1') {
+				shift.analystId = '-1'
+				shift.oldAnalystId = shift.userId
+				shift.saveChanges = true
+				this.$store.dispatch('updateShift', shift)
+			} else {
+				this.$store.dispatch('deleteShift', shift)
+			}
 		},
 		onWeeklyDrop(event, shiftType, analyst) {
 			const shiftId = event.dataTransfer.getData('shiftId')
-			this.$store.dispatch('updateShift', {
-				id: shiftId,
-				analystId: analyst.uid,
-				shiftTypeId: shiftType.id,
-				date: this.date.startOf('week').format('YYYY-MM-DD'),
-			})
+			const oldAnalystId = event.dataTransfer.getData('oldAnalyst')
+			if (oldAnalystId !== analyst.uid && shiftType.isWeekly === '1') {
+				this.$store.dispatch('updateShift', {
+					id: shiftId,
+					analystId: analyst.uid,
+					shiftTypeId: shiftType.id,
+					date: this.date.startOf('week').format('YYYY-MM-DD'),
+					oldAnalystId,
+					saveChanges: true,
+				})
+			}
 		},
 		startDailyDrag(evt, shift) {
 			evt.dataTransfer.dropEffect = 'move'
 			evt.dataTransfer.effectAllowed = 'move'
 			evt.dataTransfer.setData('shiftId', shift.id)
 			evt.dataTransfer.setData('shiftTypeId', shift.shiftTypeId)
+			evt.dataTransfer.setData('oldAnalyst', shift.userId)
 		},
 		startWeeklyDrag(evt, shift) {
 			evt.dataTransfer.dropEffect = 'move'
 			evt.dataTransfer.effectAllowed = 'move'
 			evt.dataTransfer.setData('shiftId', shift.id)
+			evt.dataTransfer.setData('oldAnalyst', shift.userId)
 		},
 		// changes the Calendar Timespan to Month or Week
 		async updateCalendar(format) {

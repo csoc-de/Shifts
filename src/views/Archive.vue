@@ -19,7 +19,7 @@
 			<template v-slot:activator="{ on, attrs }">
 				<v-text-field
 					v-model="dateRangeText"
-					:label="t('shifts', 'Zeitspanne')"
+					:label="t('shifts', 'Timespan')"
 					prepend-icon="icon-calendar-dark"
 					readonly
 					v-bind="attrs"
@@ -36,7 +36,7 @@
 					text
 					color="primary"
 					@click="menu = false">
-					{{ t('shifts', 'Abbrechen') }}
+					{{ t('shifts', 'Cancel') }}
 				</v-btn>
 				<v-btn
 					text

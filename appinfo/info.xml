@@ -8,7 +8,7 @@
 <info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>shifts</id>
-    <name>Schichtplan</name>
+    <name>Shiftplan</name>
     <summary>App for organising Shifts</summary>
     <description><![CDATA[* **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
 * **Manage and organize your Shifts System!** Customize your Shifts Model with different Shifttypes
@@ -21,7 +21,7 @@ More to come:
 
 If you experience any issues or have any suggestions for improvement, please feel free to use the issue tracker.
 ]]></description>
-    <version>1.8.1</version>
+    <version>1.8.3</version>
     <licence>agpl</licence>
     <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
     <namespace>Shifts</namespace>
@@ -41,7 +41,7 @@ If you experience any issues or have any suggestions for improvement, please fee
 	</settings>
     <navigations>
         <navigation>
-            <name>Schichtplan</name>
+            <name>Shift plan</name>
             <route>shifts.page.index</route>
         </navigation>
     </navigations>

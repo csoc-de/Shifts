@@ -66,12 +66,21 @@
 			shiftWorkerGroup: shiftsWorkerGroup,
 			skillGroups,
 		}
+		OC.msg.startSaving('#OWMApiKeySettingsMsg');
 		$.ajax({
 			method: 'PUT',
 			url: OC.generateUrl('apps/shifts/settings'),
 			data,
 			success: function onSuccess(response) {
-				console.log('Successfull saving of settings')
+				if (response.error || response.error === undefined) {
+					$('.toast-header').text(t('shifts', 'Successfully saved changes'));
+					$('.toast').show(1).delay(1000).hide(1);
+					console.log('Successfull saving of settings')
+				} else {
+					$('.toast-header').text(t('shifts', 'Could not save changes'));
+					$('.toast').show(1).delay(1000).hide(1);
+					console.log('Error: ', response.error)
+				}
 			},
 		})
 	})

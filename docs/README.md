@@ -19,3 +19,13 @@ In your Nextcloud, simply navigate to »Apps«, choose the category »Organizati
 | CalendarOrganizer | admin | Account which acts as an organizer for the Nextcloud-Calendar events |
 | CalendarOrganizerEmail | admin@test.com | Email of the afformentionend Organizer |
 | CalendarName | ShiftsCalendar | Name of the Calendar where the shifts are saved |
+
+### Explaining some Funtionality
+
+#### The Rules Tab for new Shift-types
+
+These Options allow the Admin to define how many shifts are needed for a given weekday. When updating these values, open shifts will either be added or removed upon saving the changes.
+
+When 0 is given, there will not be any open shifts added, but the admins can still add shifts of this type to the Plan.
+
+When X is given, the app will add X amount of open shifts to the databse for a given weekday.

@@ -8,16 +8,16 @@ use OCP\IRequest;
 use PHPUnit\Framework\TestCase;
 
 use OCA\Shifts\Db\Shift;
-use OCA\Shifts\Db\ShiftMapper;
-use OCA\Shifts\Controller\ShiftController;
+use OCA\Shifts\Db\ShiftsType;
 
 
-class ShiftsIntegrationTest extends TestCase {
-	private $controller;
+class ShiftsIntegrationTest extends TestCase{
+	private $service;
+	private $typeMapper;
 	private $mapper;
 	private $userId = 'fabian';
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$app = new App('shifts');
 		$container = $app->getContainer();
@@ -26,12 +26,12 @@ class ShiftsIntegrationTest extends TestCase {
 			return $this->userId;
 		});
 
-		$container->registerService(IRequest::class, function () {
-			return $this->createMock(IRequest::class);
-		});
+		$this->service = $container->query(
+			'OCA\Shifts\Service\ShiftService'
+		);
 
-		$this->controller = $container->query(
-			'OCA\Shifts\Controller\ShiftController'
+		$this->typeMapper = $container->query(
+			'OCA\Shifts\Db\ShiftsTypeMapper'
 		);
 
 		$this->mapper = $container->query(
@@ -39,17 +39,76 @@ class ShiftsIntegrationTest extends TestCase {
 		);
 	}
 
-	public function testInsert() {
+	public function testGetShiftsByUserId() {
 		$shift = new Shift();
-		$shift->setUserId($this->userId);
+		$shift->setUserId('fabian');
 		$shift->setShiftTypeId('1');
-		$shift->setDate('2021-10-19');
+		$shift->setDate('1970-01-01');
 
-		$result = $this->mapper->insert($shift);
+		$resultShift = $this->mapper->insert($shift);
 
-		$this->assertEquals($shift, $result);
+		$shiftList = $this->service->findById($this->userId);
 
-		// clean up
-		$this->mapper->delete($result);
+		$shiftsIdList = array_column($shiftList, 'id');
+
+		$this->assertContains($resultShift->getId(), $shiftsIdList);
+
+		$this->mapper->delete($resultShift);
+	}
+
+	public function testFindInTimeRange() {
+		$shiftIn = new Shift();
+		$shiftIn->setUserId('fabian');
+		$shiftIn->setShiftTypeId('1');
+		$shiftIn->setDate('1971-01-01');
+
+		$shiftOut = new Shift();
+		$shiftOut->setUserId('-1');
+		$shiftOut->setShiftTypeId('1');
+		$shiftOut->setDate('1970-01-01');
+
+		$resultIn = $this->mapper->insert($shiftIn);
+		$resultOut = $this->mapper->insert($shiftOut);
+
+		$result = $this->service->findByTimeRange('1970-12-31', '1971-01-02');
+
+		$this->assertCount(1, $result);
+
+		$this->mapper->delete($resultIn);
+		$this->mapper->delete($resultOut);
+	}
+
+	public function testTriggerUnassignedShifts() {
+		$shiftsType = new ShiftsType();
+		$shiftsType->setName('testing');
+		$shiftsType->setDesc('');
+		$shiftsType->setStartTimeStamp('00:00');
+		$shiftsType->setStopTimeStamp('00:01');
+		$shiftsType->setCalendarColor('#ffffffff');
+		$shiftsType->setMoRule('1');
+		$shiftsType->setTuRule('0');
+		$shiftsType->setWeRule('0');
+		$shiftsType->setThRule('0');
+		$shiftsType->setFrRule('0');
+		$shiftsType->setSaRule('0');
+		$shiftsType->setSoRule('0');
+		$shiftsType->setSkillGroupId('0');
+		$shiftsType->setIsWeekly('1');
+
+		$resultShiftsType = $this->typeMapper->insert($shiftsType);
+
+		$this->service->triggerUnassignedShifts();
+
+		$resultShifts = $this->mapper->findByShiftsTypeId($resultShiftsType->getId());
+
+		$this->assertTrue(count($resultShifts) > 0);
+		foreach ($resultShifts as $values) {
+			$this->assertTrue(date('D', strtotime($values->getDate())) === 'Mon');
+			$this->assertEquals($values->getShiftTypeId(), $resultShiftsType->getId());
+			$this->assertEquals($values->getUserId(), '-1');
+			$this->mapper->delete($values);
+		}
+
+		$this->typeMapper->delete($resultShiftsType);
 	}
 }

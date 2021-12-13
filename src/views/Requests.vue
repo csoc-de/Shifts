@@ -13,7 +13,7 @@
 			v-if="isAnalyst || isAdmin"
 			color="light-blue"
 			@click="openDialog()">
-			{{ t('shifts','Neue Anfrage') }}
+			{{ t('shifts','New Request') }}
 		</v-btn>
 		<RequestsModal v-if="dialogOpen"
 			:is-admin="isAdmin"
@@ -21,7 +21,7 @@
 			:analysts="analysts"
 			@close="closeDialog"
 			@saved="dialogSaved" />
-		<h1>{{ t('shifts','In Bearbeitung') }}</h1>
+		<h1>{{ t('shifts','In Progress') }}</h1>
 		<!--eslint-disable-->
 		<v-list>
 			<v-list-group
@@ -31,7 +31,7 @@
 				:prepend-icon=" shiftsChange.type === '0' ? 'mdi-swap-horizontal' : 'icon-confirm'">
 				<template v-slot:activator>
 					<v-list-item-content>
-						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Tausch') : t('shifts','Angebot')"></v-list-item-title>
+						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Swap') : t('shifts','Offer')"></v-list-item-title>
 						<v-row>
 							<v-col
 								cols="12"
@@ -64,15 +64,15 @@
 				</template>
 				<div class="float_right list_items">
 					<p v-if="isAdmin && shiftsChange.analystApproval === '1'">
-						{{ t('shifts', 'Analyst Genehmigung: ')
-					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
+						{{ t('shifts', 'Analyst Approval: ')
+					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
 					+ getDateString(shiftsChange.analystApprovalDate) }}
 					</p>
 					<v-btn
 						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
 						color="red"
 						@click="disapproved(shiftsChange)">
-						{{ t('shifts','Ablehnen') }}
+						{{ t('shifts','Decline') }}
 						<v-icon>
 							icon-close
 						</v-icon>
@@ -81,7 +81,7 @@
 						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
 						color="green"
 						@click="approved(shiftsChange)">
-						{{ t('shifts','Genehmigen') }}
+						{{ t('shifts','Approve') }}
 						<v-icon>
 							icon-checkmark
 						</v-icon>
@@ -89,7 +89,7 @@
 				</div>
 			</v-list-group>
 		</v-list>
-		<h1>{{ t('shifts','Bearbeitet') }}</h1>
+		<h1>{{ t('shifts','Processed') }}</h1>
 		<v-list>
 			<v-list-group
 				v-for="shiftsChange in doneShiftsChanges"
@@ -98,7 +98,7 @@
 				:prepend-icon=" shiftsChange.type === '0' ? 'mdi-swap-horizontal' : 'icon-confirm'">
 				<template v-slot:activator>
 					<v-list-item-content>
-						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Tausch') : t('shifts','Angebot')"></v-list-item-title>
+						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Swap') : t('shifts','Offer')"></v-list-item-title>
 						<v-row>
 							<v-col
 								cols="12"
@@ -131,13 +131,13 @@
 				</template>
 				<div class="done_shifts_items list_items">
 					<p>
-						{{ t('shifts', 'Analyst Genehmigung: ')
-					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
+						{{ t('shifts', 'Analyst Approval: ')
+					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
 					+ getDateString(shiftsChange.analystApprovalDate) }}
 					</p>
 					<p>
-						{{ t('shifts', 'Admin Genehmigung: ')
-					+ (shiftsChange.adminApproval === '1' ? 'true' : 'false') + t('shifts', ' am ')
+						{{ t('shifts', 'Admin Approval: ')
+					+ (shiftsChange.adminApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
 					+ getDateString(shiftsChange.adminApprovalDate) }}
 					</p>
 				</div>
@@ -258,12 +258,14 @@ export default {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
 					oldShift.analystId = shiftsChange.newAnalystId
+					oldShift.saveChanges = false
 					await axios.put(generateUrl(`/apps/shifts/shifts/${oldShift.id}`), oldShift)
 					const newShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.newShiftsId)
 					})
 					if (newShift) {
 						newShift.analystId = shiftsChange.oldAnalystId
+						newShift.saveChanges = false
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
 					// fetches and updates shifts

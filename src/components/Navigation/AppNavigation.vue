@@ -11,29 +11,29 @@
 	<AppNavigationVue>
 		<template #list>
 			<AppNavigationItem
-				:title="t('shifts', 'Schichtplan')"
+				:title="t('shifts', 'Shift plan')"
 				icon="icon-calendar-dark"
 				to="/timeline" />
 
 			<AppNavigationItem
-				:title="t('shifts', 'Schichttausch')"
+				:title="t('shifts', 'Shiftchange')"
 				icon="icon-category-organization"
 				to="/requests" />
 
 			<AppNavigationItem
 				v-if="isAdmin && !loading"
-				:title="t('shifts', 'Schichttypen')"
+				:title="t('shifts', 'Shifttypes')"
 				icon="icon-category-customization"
 				to="/shiftsTypes" />
 
 			<AppNavigationItem
 				v-if="isAdmin && !loading"
-				:title="t('shifts', 'Schichtdaten')"
+				:title="t('shifts', 'Shiftsdata')"
 				icon="icon-category-files"
 				to="/archive" />
 		</template>
 		<template #footer>
-			Version: 1.8.0
+			Version: 1.8.3
 		</template>
 	</AppNavigationVue>
 </template>

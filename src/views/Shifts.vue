@@ -23,7 +23,7 @@
 						dark
 						v-bind="attrs"
 						v-on="on">
-						{{ t('shifts','Neue Schicht vergeben') }}
+						{{ t('shifts','Add Shift') }}
 					</v-btn>
 				</template>
 				<v-layout class="popover-menu-layout">
@@ -36,7 +36,7 @@
 				:disabled="disabled || !settingsFetched"
 				dark
 				@click="syncCalendar">
-				{{ t('shifts','Kalender synchronisieren') }}
+				{{ t('shifts','Synchronize Calendar') }}
 			</v-btn>
 		</div>
 		<Calendar v-if="!loading" />

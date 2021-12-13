@@ -16,6 +16,7 @@ class Shift extends Entity implements JsonSerializable {
 	protected $userId;
 	protected $shiftTypeId;
 	protected $date;
+	protected $hasChanged;
 
 	public function __construct(){
 		$this->addType('id','integer');
@@ -26,7 +27,8 @@ class Shift extends Entity implements JsonSerializable {
 			'id' => $this->id,
 			'userId' => $this->userId,
 			'shiftTypeId' => $this->shiftTypeId,
-			'date' => $this->date
+			'date' => $this->date,
+			'hasChanged' => $this->hasChanged,
 		];
 	}
 
