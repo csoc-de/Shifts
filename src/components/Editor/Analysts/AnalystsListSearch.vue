@@ -204,10 +204,26 @@ export default {
 				query = query.toLowerCase()
 				const lemail = analyst.email.toLowerCase()
 				const lname = analyst.commonName.toLowerCase()
-				return lemail.includes(query) || lname.includes(query)
+				return (lemail.includes(query) || lname.includes(query)) && !this.alreadyInvitedEmails.includes(analyst.email)
 			})
-			return data.filter((analyst) => {
-				return !this.alreadyInvitedEmails.includes(analyst.email)
+			return data.map((analyst) => {
+				let name
+				if (analyst.name && analyst.email === undefined) {
+					name = analyst.name
+				} else if (analyst.name && analyst.email) {
+					name = `${analyst.name} (${analyst.email})`
+				} else {
+					name = analyst.email
+				}
+				return {
+					calendarUserType: 'INDIVIDUAL',
+					commonName: analyst.name,
+					email: analyst.email,
+					isUser: true,
+					avatar: analyst.uid,
+					dropdownName: name,
+					userId: analyst.uid,
+				}
 			})
 		},
 	},

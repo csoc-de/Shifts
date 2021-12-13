@@ -12,6 +12,7 @@ use DateInterval;
 use DatePeriod;
 use Exception;
 
+use OCA\Shifts\Db\ShiftsCalendarChangeMapper;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
@@ -43,14 +44,6 @@ class ShiftService {
 		try{
 			return $this->mapper->findById($userId);
 		} catch(Exception $e){
-			$this->handleException($e);
-		}
-	}
-	public function findAssignedShifts() : array
-	{
-		try {
-			return $this->mapper->findAssignedShifts();
-		} catch(Exception $e) {
 			$this->handleException($e);
 		}
 	}
@@ -114,7 +107,7 @@ class ShiftService {
 	}
 
 	public function triggerUnassignedShifts(): bool {
-		try {
+		try{
 			$start = new DateTime();
 			$start->modify('this monday');
 			$interval = DateInterval::createFromDateString('1day');

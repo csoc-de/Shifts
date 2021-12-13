@@ -9,12 +9,15 @@
   -->
 <template>
 	<div>
-		<Multiselect v-model="value1"
+		<Multiselect
+			v-model="value1"
+			class="invitees-search"
+			open-direction="bottom"
 			:options="shiftsTypes"
 			track-by="id"
 			label="name"
 			@change="updateShiftType" />
-		<div class="app-sidebar-tab__content">
+		<div style="margin-top:20px;" class="app-sidebar-tab__content">
 			<AnalystsList
 				v-if="!isLoading"
 				:is-read-only="false"
@@ -23,6 +26,7 @@
 		<!--eslint-disable-->
 
 		<v-menu
+			style="margin-top:20px;"
 			ref="dateMenu"
 			v-model="dateMenu"
 			:close-on-content-click="false"
@@ -34,6 +38,7 @@
 			<template v-slot:activator="{ on }">
 				<v-combobox
 					v-model="newShiftInstance.dates"
+					:label="t('shifts', 'Select Date')"
 					multiple
 					chips
 					small-chips
@@ -82,7 +87,7 @@ export default {
 			isLoading: true,
 			value1: {
 				id: -1,
-				name: t('shifts', 'Schichtauswahl'),
+				name: t('shifts', 'Select Shiftstype'),
 			},
 			dateMenu: false,
 		}
@@ -95,7 +100,8 @@ export default {
 			newShiftInstance: (state) => state.newShiftInstance.newShiftInstance,
 		}),
 		allowedDates() {
-			if (!this.newShiftInstance.shiftsType.isWeekly) {
+			console.log(this.newShiftInstance.shiftsType)
+			if (this.newShiftInstance.shiftsType.isWeekly === '0') {
 				return null
 			} else {
 				return val => new Date(val).getDay() === 1

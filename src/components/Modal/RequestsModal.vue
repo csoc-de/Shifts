@@ -11,10 +11,10 @@
 <template>
 	<Modal
 		size="large"
-		:title="t('shifts', 'Neue Anfrage')"
+		:title="t('shifts', 'New Request')"
 		@close="$emit('close')">
 		<div class="modal__content">
-			<h1>{{ t('shifts', 'Neue Anfrage') }}</h1>
+			<h1>{{ t('shifts', 'New Request') }}</h1>
 			<v-tabs v-model="tab">
 				<v-tab v-for="item in tabItems"
 					:key="item">
@@ -41,7 +41,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="analystFilter"
-								:label="t('shifts','Wähle alten Analysten')"
+								:label="t('shifts','Select old analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -80,7 +80,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="analystFilter"
-								:label="t('shifts','Wähle neuen Analysten')"
+								:label="t('shifts','Select new analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -123,7 +123,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="shiftsFilter"
-								:label="t('shifts','Wähle die Schichten des alten Analysten')"
+								:label="t('shifts','Select shifts of old analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -163,7 +163,7 @@
 								item-value="id"
 								:filter="shiftsFilter"
 								:disabled="selectedNewAnalyst === null"
-								:label="t('shifts','Wähle Schichten des neuen Analysten')"
+								:label="t('shifts','Select shifts of new analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -194,8 +194,8 @@
 							md="12">
 							<v-textarea
 								name="desc"
-								:label=" t('shifts', 'Beschreibung')"
-								:hint=" t('shifts', 'Beschreibung oder Grund')"
+								:label=" t('shifts', 'Description')"
+								:hint=" t('shifts', 'Description or Purpose')"
 								:value="desc">
 							</v-textarea>
 						</v-col>
@@ -215,7 +215,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="analystFilter"
-								:label="t('shifts','Wähle alten Analysten')"
+								:label="t('shifts','Select old analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -254,7 +254,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="analystFilter"
-								:label="t('shifts','Wähle neuen Analysten')"
+								:label="t('shifts','Select new analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -297,7 +297,7 @@
 								item-text="date"
 								item-value="id"
 								:filter="shiftsFilter"
-								:label="t('shifts','Wähle die Schichten des alten Analysten')"
+								:label="t('shifts','Select shifts of analyst')"
 								attach>
 								<template v-slot:selection="data">
 									<v-chip
@@ -331,8 +331,8 @@
 							md="12">
 							<v-textarea
 								name="desc"
-								:label=" t('shifts', 'Beschreibung')"
-								:hint=" t('shifts', 'Beschreibung oder Grund')"
+								:label=" t('shifts', 'Description')"
+								:hint=" t('shifts', 'Description or Purpose')"
 								:value="desc">
 							</v-textarea>
 						</v-col>
@@ -342,12 +342,12 @@
 			<v-row
 				class="float_right">
 				<v-btn @click="$emit('close')">
-					{{ t('shifts','Abbrechen') }}
+					{{ t('shifts','Cancel') }}
 				</v-btn>
 				<v-btn color="#03a9f4"
 					@click="save()"
 					:disabled="saveDisabled">
-					{{ t('shifts','Speichern') }}
+					{{ t('shifts','Save') }}
 				</v-btn>
 			</v-row>
 			<!--eslint-enable-->
@@ -389,9 +389,9 @@ export default {
 			oldAnalystSelectedShifts: [],
 			newAnalystSelectedShifts: [],
 			mutableAnalysts: this.analysts,
-			tab: t('shifts', 'Tauschen'),
+			tab: t('shifts', 'Swap'),
 			desc: '',
-			tabItems: [t('shifts', 'Tauschen'), t('shifts', 'Angebot')],
+			tabItems: [t('shifts', 'Swap'), t('shifts', 'Offer')],
 		}
 	},
 	computed: {
@@ -450,8 +450,8 @@ export default {
 		},
 		// returns whether or not the Save button is disabled or not
 		saveDisabled() {
-			const shiftsOk = (this.tab === t('shifts', 'Tauschen') && this.newAnalystSelectedShifts.length === this.oldAnalystSelectedShifts.length)
-				|| (this.tab === t('shifts', 'Angebot') && this.newAnalystSelectedShifts.length > 0)
+			const shiftsOk = (this.tab === t('shifts', 'Swap') && this.newAnalystSelectedShifts.length === this.oldAnalystSelectedShifts.length)
+				|| (this.tab === t('shifts', 'Offer') && this.newAnalystSelectedShifts.length > 0)
 			const analystsOk = this.selectedOldAnalyst && this.selectedNewAnalyst
 
 			return shiftsOk && analystsOk

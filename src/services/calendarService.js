@@ -10,6 +10,8 @@ import { DateTimeValue, AttendeeProperty, createEvent, getParserManager } from '
 import { findAllCalendars } from './caldavService'
 import { calcShiftDate } from '../utils/date'
 import store from '../store'
+import axios from '@nextcloud/axios'
+import { generateUrl } from '@nextcloud/router'
 
 /**
  * returns the calDav conform Timezone
@@ -24,7 +26,85 @@ const findCurrentTimezone = () => {
 
 const timezone = findCurrentTimezone()
 
-const syncAllAssignedShifts = async (shiftsList, shiftTypes, allAnalysts) => {
+const syncAllShiftsChanges = async (shiftsList, shiftTypes, allAnalysts) => {
+	const shiftsCalendar = await findShiftsCalendar()
+	const groups = shiftsList.reduce((array, item) => {
+		const group = (array[item.shiftDate] || [])
+		group.push(item)
+		array[item.shiftDate] = group
+		return array
+	}, {})
+	for (const group in groups) {
+		const changes = groups[group]
+		console.log(changes)
+		let currShiftTypeId = '-1'
+		let vObject
+		let eventComponent
+		for (const change of changes) {
+			console.log(change)
+			try {
+				if (change.shiftTypeId !== currShiftTypeId) {
+					try {
+						[vObject, eventComponent] = await findEventComponent(shiftsCalendar, group, change.shiftsType, timezone)
+					} catch (e) {
+						if (e.message.includes('Could not find corresponding Event')) {
+							const timestamps = getTimestamps(group, change.shiftsType)
+							eventComponent = createEventComponent(
+								timestamps[0],
+								timestamps[1],
+								change.shiftsType.isWeekly)
+							console.log(change)
+							console.log(getOrganizerName())
+							eventComponent.setOrganizerFromNameAndEMail(getOrganizerName(), getOrganizerEmail())
+
+							eventComponent.title = change.shiftsType.name + ': '
+							if (eventComponent.isDirty()) {
+								vObject = await calendar.createVObject(eventComponent.root.toICS())
+							}
+						} else {
+							throw new Error(e)
+						}
+					}
+					currShiftTypeId = change.shiftsType.id
+				}
+				console.log(eventComponent)
+				if (change.action === 'update') {
+					const removeAnalyst = allAnalysts.find((analyst) => analyst.uid === change.oldUserId)
+					const newAnalyst = allAnalysts.find((analyst) => analyst.uid === change.newUserId)
+
+					eventComponent = await addAnalystToEvent(eventComponent, newAnalyst)
+					if (removeAnalyst !== undefined) {
+						eventComponent = await removeAnalystFromEvent(eventComponent, removeAnalyst)
+					}
+				}
+				if (change.action === 'unassign') {
+					const removeAnalyst = allAnalysts.find((analyst) => analyst.uid === change.oldUserId)
+
+					console.log(removeAnalyst)
+					eventComponent = await removeAnalystFromEvent(eventComponent, removeAnalyst)
+				}
+				console.log(eventComponent)
+				const attendeeIteratorCheck = eventComponent.getPropertyIterator('ATTENDEE')
+				const attendeesCheck = Array.from(attendeeIteratorCheck)
+				console.log(attendeesCheck)
+				if (attendeesCheck.length > 0) {
+					if (eventComponent.isDirty()) {
+						vObject.data = eventComponent.root.toICS()
+						await vObject.update()
+					}
+				} else if (attendeesCheck.length === 0) {
+					await vObject.delete()
+				}
+				change.isDone = true
+				await axios.put(generateUrl(`/apps/shifts/shiftsCalendarChange/${change.id}`), change)
+			} catch (e) {
+				throw new Error(e)
+			}
+		}
+	}
+}
+
+const syncAll = async (shiftsList, shiftTypes, allAnalysts) => {
 	const shiftsCalendar = await findShiftsCalendar()
 	const groups = shiftsList.reduce((array, item) => {
 		const group = (array[item.date] || [])
@@ -156,6 +236,44 @@ const syncCalendarObject = async(calendar, shiftsType, dateString, analysts) => 
 			throw new Error(e)
 		}
 	}
+}
+
+/**
+ * adds analyst to EventComponent
+ * @param {any} eventComponent The event to be edited
+ * @param {object} analyst The given analyst
+ * @return {any}
+ */
+const addAnalystToEvent = async (eventComponent, analyst) => {
+	const attendeeIterator = eventComponent.getPropertyIterator('ATTENDEE')
+	const attendees = Array.from(attendeeIterator)
+	if (!attendees.some(attendee => attendee.email === 'mailto:' + analyst.email)) {
+		const attendee = createAttendeeFromAnalyst(analyst)
+
+		eventComponent.addProperty(attendee)
+
+		eventComponent.title = eventComponent.title + ' ' + analyst.name
+	}
+	return eventComponent
+}
+
+/**
+ * removes analyst from EventComponent
+ * @param {any} eventComponent The event to be edited
+ * @param {object} analyst The given analyst
+ * @return {any}
+ */
+const removeAnalystFromEvent = async (eventComponent, analyst) => {
+	const attendeeIterator = eventComponent.getPropertyIterator('ATTENDEE')
+	const attendees = Array.from(attendeeIterator)
+	for (const attendee of attendees) {
+		if (attendee.email === 'mailto:' + analyst.email) {
+			eventComponent.removeAttendee(attendee)
+
+			eventComponent.title = eventComponent.title.replace(attendee.commonName, '')
+		}
+	}
+	return eventComponent
 }
 
 /**
@@ -328,7 +446,7 @@ const findEventComponent = async (calendar, dateString, shiftsType, timezone) =>
 	const cleanDateString = dateString.replaceAll('-', '')
 	let vObject
 	for (const obj of vObjects) {
-		if (obj.data.includes(`SUMMARY:${shiftsType.name}`) && (obj.data.includes(`DTSTART;VALUE=DATE:${cleanDateString}`) || shiftsType.isWeekly === '0')) {
+		if (obj.data.includes(`SUMMARY:${shiftsType.name}:`) && (obj.data.includes(`DTSTART;VALUE=DATE:${cleanDateString}`) || shiftsType.isWeekly === '0')) {
 			vObject = obj
 			break
 		}
@@ -384,5 +502,6 @@ const getTimestamps = (dateString, shiftsType) => {
 
 export {
 	updateExistingCalendarObjectFromShiftsChange,
-	syncAllAssignedShifts,
+	syncAllShiftsChanges,
+	syncAll,
 }

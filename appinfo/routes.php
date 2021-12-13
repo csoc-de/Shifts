@@ -9,7 +9,8 @@ return [
 	'resources' => [
 		'shift' => ['url' => '/shifts'],
 		'shiftsType' => ['url' => '/shiftsType'],
-		'shiftsChange' => ['url' => '/shiftsChange']
+		'shiftsChange' => ['url' => '/shiftsChange'],
+		'shiftsCalendarChange' => ['url' => '/shiftsCalendarChange'],
 	],
 	'routes' => [
 		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
@@ -23,7 +24,6 @@ return [
 		['name' => 'shift#getShiftsByUserId', 'url' => '/shifts/getAllByUserId', 'verb' => 'GET'],
 		['name' => 'shift#getCurrentUserId', 'url' => '/getCurrentUserId', 'verb' => 'GET'],
 		['name' => 'shift#triggerUnassignedShifts', 'url' => '/triggerUnassignedShifts', 'verb' => 'GET'],
-		['name' => 'shift#getAssignedShifts', 'url' => '/getAssignedShifts', 'verb' => 'GET'],
 		['name' => 'shift#getShiftsDataByTimeRange', 'url' => '/getShiftsDataByTimeRange/{start}/{end}', 'verb' => 'GET'],
 		['name' => 'settings#getSettings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#saveSettings', 'url' => '/settings', 'verb' => 'PUT'],

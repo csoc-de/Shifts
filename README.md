@@ -37,4 +37,4 @@ make dev-setup
 ## Documentation
 
 
-* [Admin documentation](docs/admin.md) (installation, configuration, troubleshooting)
+* [Admin documentation](docs/README.md) (installation, configuration, troubleshooting)

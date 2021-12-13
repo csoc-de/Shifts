@@ -7,7 +7,6 @@
 
 namespace OCA\Shifts\Db;
 
-use DateTime;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\Entity;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
@@ -104,23 +103,7 @@ class ShiftMapper extends QBMapper {
 	}
 
 	/**
-	 * Fetches all assigned Shifts
-	 * @return array
-	 */
-	public function findAssignedShifts() : array {
-		/* @var $qb IQueryBuilder */
-		$currentDate = date('Y-m-d', strtotime("-7 days"));
-		$qb = $this->db->getQueryBuilder();
-		$qb->select('*')
-			->from('shifts')
-			->where($qb->expr()->neq('user_id', $qb->createNamedParameter('-1')))
-			->andWhere($qb->expr()->gte('date', $qb->createNamedParameter($currentDate)))
-			->orderBy('date');
-		return $this->findEntities($qb);
-	}
-
-	/**
-	 * Fetches all shifts in timerange
+	 * Fetches all shifts in timerange for archival display
 	 * @param string $start
 	 * @param string $end
 	 * @return array
@@ -128,8 +111,6 @@ class ShiftMapper extends QBMapper {
 	public function findByTimeRange(string $start, string $end) : array {
 		$startDate = date('Y-m-d', strtotime($start));
 		$endDate = date('Y-m-d', strtotime($end));
-		error_log($startDate);
-		error_log($endDate);
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('user_id', 'shift_type_id', $qb->func()->count('*','num_shifts'))

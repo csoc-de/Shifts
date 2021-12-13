@@ -11,6 +11,7 @@ use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -62,14 +63,23 @@ class SettingsController extends Controller {
 	 * @param string $adminGroup
 	 * @param string $shiftWorkerGroup
 	 * @param array $skillGroups
+	 * @return DataResponse
 	 */
-	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $skillGroups) {
+	public function saveSettings(string $calendarName, string $organizerName, string $organizerEmail, string $adminGroup, string $shiftWorkerGroup, array $skillGroups): DataResponse {
 		$this->settings->setCalendarName($calendarName);
 		$this->settings->setOrganizerName($organizerName);
 		$this->settings->setOrganizerEmail($organizerEmail);
 		$this->settings->setAdminGroup($adminGroup);
 		$this->settings->setShiftWorkerGroup($shiftWorkerGroup);
 		$this->settings->setSkillGroups($skillGroups);
+		return new DataResponse([
+			'calendarName' => $this->settings->getCalendarName(),
+			'organizerName' => $this->settings->getOrganizerName(),
+			'organizerEmail' => $this->settings->getOrganizerEmail(),
+			'adminGroup' => $this->settings->getAdminGroup(),
+			'shiftWorkerGroup' => $this->settings->getShiftWorkerGroup(),
+			'skillGroups' => $this->settings->getSkillGroups(),
+		]);
 	}
 
 	/**

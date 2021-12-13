@@ -12,6 +12,9 @@ use DateInterval;
 use DatePeriod;
 use Exception;
 
+use OCA\Shifts\Controller\ShiftsCalendarChangeController;
+use OCA\Shifts\Db\ShiftsCalendarChange;
+use OCA\Shifts\Db\ShiftsCalendarChangeMapper;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
@@ -28,9 +31,13 @@ class ShiftsTypeService {
 	/** @var ShiftMapper */
 	private $shiftMapper;
 
-	public function __construct(ShiftsTypeMapper $mapper, ShiftMapper $shiftMapper){
+	/** @var ShiftsCalendarChangeMapper */
+	private $shiftsCalendarChangeMapper;
+
+	public function __construct(ShiftsTypeMapper $mapper, ShiftMapper $shiftMapper, ShiftsCalendarChangeMapper $shiftsCalendarChangeMapper){
 		$this->mapper = $mapper;
 		$this->shiftMapper = $shiftMapper;
+		$this->shiftsCalendarChangeMapper = $shiftsCalendarChangeMapper;
 	}
 
 	public function findAll(): array
@@ -88,7 +95,8 @@ class ShiftsTypeService {
 				$shifts = $this->shiftMapper->findByDateTypeandAssignment($dt->format('Y-m-d'),$shiftsTypeId);
 				if (count($shifts) >= $countToDelete) {
 					for($i = 0; $i < $countToDelete; $i++) {
-						$this->shiftMapper->delete($shifts[$i]);
+						$shifts[$i]->setHasChanged('deleted');
+						$this->shiftMapper->update($shifts[$i]);
 					}
 				}
 			}
@@ -109,7 +117,6 @@ class ShiftsTypeService {
 				$modifier = 'this monday';
 				$this->deleteShifts($id, $countToDelete, $modifier);
 				$shiftsType->setMoRule($moRule);
-
 			}
 			if($shiftsType->getTuRule() != $tuRule) {
 				$countToDelete = $shiftsType->getTuRule() - $tuRule;
@@ -162,6 +169,17 @@ class ShiftsTypeService {
 			$this->mapper->delete($shiftsType);
 			$shifts = $this->shiftMapper->findByShiftsTypeId($id);
 			foreach ( $shifts as $shift) {
+				$shiftsCalendarChange = new ShiftsCalendarChange();
+				$shiftsCalendarChange->setShiftId($shift->getId());
+				$shiftsCalendarChange->setShiftTypeId($shift->getShiftTypeId());
+				$shiftsCalendarChange->setShiftDate($shift->getDate());
+				$shiftsCalendarChange->setOldUserId($shift->getUserId());
+				$shiftsCalendarChange->setNewUserId('-1');
+				$shiftsCalendarChange->setAction('unassign');
+				$shiftsCalendarChange->setDateChanged('');
+				$shiftsCalendarChange->setAdminId('unknown');
+				$shiftsCalendarChange->setIsDone('0');
+				$this->shiftsCalendarChangeMapper->insert($shiftsCalendarChange);
 				$this->shiftMapper->delete($shift);
 			}
 			return $shiftsType;

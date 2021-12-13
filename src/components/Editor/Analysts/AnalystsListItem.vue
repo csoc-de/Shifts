@@ -32,7 +32,7 @@
 			<ActionButton
 				icon="icon-delete"
 				@click="removeAttendee">
-				{{ $t('shifts', 'Remove attendee') }}
+				{{ $t('shifts', 'Remove analyst') }}
 			</ActionButton>
 		</Actions>
 	</div>

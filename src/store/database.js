@@ -10,7 +10,7 @@ import { showError } from '@nextcloud/dialogs'
 import dayjs from 'dayjs'
 import dayOfYear from 'dayjs/plugin/dayOfYear'
 import isBetween from 'dayjs/plugin/isBetween'
-import { syncAllAssignedShifts } from '../services/calendarService'
+import { syncAll, syncAllShiftsChanges } from '../services/calendarService'
 import 'dayjs/locale/de'
 
 dayjs.extend(dayOfYear)
@@ -23,7 +23,6 @@ const state = {
 	allShiftsChanges: [],
 	allShiftsTypes: [],
 	allShifts: [],
-	assignedShifts: [],
 	displayedShifts: [],
 	isCurrentUserAdmin: false,
 	currentUserId: null,
@@ -37,7 +36,6 @@ const mutations = {
 		state.allShiftsChanges = []
 		state.allShiftsTypes = []
 		state.allShifts = []
-		state.assignedShifts = []
 		state.displayedShifts = []
 		state.isCurrentUserAdmin = false
 		state.currentUserId = null
@@ -58,9 +56,6 @@ const mutations = {
 	},
 	updateAllShifts(state, allShifts) {
 		state.allShifts = allShifts
-	},
-	updateAllAssignedShifts(state, allAssignedShifts) {
-		state.assignedShifts = allAssignedShifts
 	},
 	updateAllShiftsTypes(state, allShiftsTypes) {
 		state.allShiftsTypes = allShiftsTypes
@@ -122,9 +117,6 @@ const getters = {
 	currentDateDisplayFormat(state) {
 		return state.currentDateDisplayFormat
 	},
-	assignedShifts(state) {
-		return state.assignedShifts
-	},
 	getAnalystById: (state) => (id) => {
 		return state.allAnalysts.find(analyst => analyst.uid.toString() === id)
 	},
@@ -146,7 +138,6 @@ const actions = {
 			const shiftTypeResponse = await axios.get(generateUrl('/apps/shifts/shiftsType'))
 			const analystsResponse = await axios.get(generateUrl('/apps/shifts/getAllAnalysts'))
 			const currentUserResponse = await axios.get(generateUrl('/apps/shifts/getCurrentUserId'))
-			const assignedShiftsResponse = await axios.get(generateUrl('/apps/shifts/getAssignedShifts'))
 
 			commit('updateCurrentUser', currentUserResponse.data)
 			commit('updateUserStatus', isAdminResponse.data)
@@ -159,12 +150,6 @@ const actions = {
 				allShifts.push(shift)
 			})
 			commit('updateAllShifts', allShifts)
-			const assignedShifts = []
-			assignedShiftsResponse.data.forEach(shift => {
-				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				assignedShifts.push(shift)
-			})
-			commit('updateAllAssignedShifts', assignedShifts)
 			if (state.isCurrentUserAdmin) {
 				axios.get(generateUrl('/apps/shifts/triggerUnassignedShifts')).then(() => dispatch('updateShifts'))
 			}
@@ -174,6 +159,15 @@ const actions = {
 		}
 
 		commit('updateLoading', false)
+	},
+	async requestAdminStatus({ state, dispatch, commit }) {
+		try {
+			const isAdminResponse = await axios.get(generateUrl('/apps/shifts/checkAdmin'))
+			return isAdminResponse.data
+		} catch (e) {
+			console.error(e)
+			showError(t('shifts', 'Could not fetch data'))
+		}
 	},
 	async updateShift({ state, dispatch, commit }, newShift) {
 		try {
@@ -187,19 +181,12 @@ const actions = {
 	async updateShifts({ state, dispatch, commit }) {
 		try {
 			const newShifts = []
-			const newAssignedShifts = []
 			const shiftResponse = await axios.get(generateUrl('/apps/shifts/shifts'))
-			const assignedShiftResponse = await axios.get(generateUrl('/apps/shifts/getAssignedShifts'))
 			shiftResponse.data.forEach(shift => {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				newShifts.push(shift)
 			})
-			assignedShiftResponse.data.forEach(shift => {
-				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				newAssignedShifts.push(shift)
-			})
 			commit('updateAllShifts', newShifts)
-			commit('updateAllAssignedShifts', newAssignedShifts)
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not fetch shifts'))
@@ -223,14 +210,9 @@ const actions = {
 			showError(t('shifts', 'Could not fetch shifts-changes'))
 		}
 	},
-	async deleteAssignment({ state, dispatch, getters }, shift) {
+	async deleteShift({ state, dispatch, getters }, shift) {
 		try {
-			if (shift.userId === '-1') {
-				await axios.delete(generateUrl(`/apps/shifts/shifts/${shift.id}`))
-			} else {
-				shift.analystId = '-1'
-				await axios.put(generateUrl(`/apps/shifts/shifts/${shift.id}`), shift)
-			}
+			await axios.delete(generateUrl(`/apps/shifts/shifts/${shift.id}`))
 			dispatch('updateShifts')
 		} catch (e) {
 			console.error(e)
@@ -247,7 +229,23 @@ const actions = {
 		}
 	},
 	async syncCalendar({ state, dispatch, getters }) {
-		await syncAllAssignedShifts(state.allShifts, state.allShiftsTypes, state.allAnalysts)
+		try {
+			const changesResponse = await axios.get(generateUrl('/apps/shifts/shiftsCalendarChange'))
+			const changes = []
+			changesResponse.data.forEach(shift => {
+				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
+				changes.push(shift)
+			})
+			if (changes.some(change => change.isDone === '0')) {
+				await syncAllShiftsChanges(changes.filter(change => change.isDone === '0'), state.allShiftsTypes, state.allAnalysts)
+			} else if (changes.length === 0) {
+				await syncAll(state.allShifts, state.allShiftsTypes, state.allAnalysts)
+			}
+			dispatch('updateShifts')
+		} catch (e) {
+			console.error(e)
+			showError(t('shifts', ' Could not update Calendar'))
+		}
 	},
 }
 

@@ -211,10 +211,6 @@ h1, h2, h3 {
 	color: var(--color-main-text)!important;
 }
 
-.v-btn{
-	color: var(--color-main-background)!important;
-}
-
 .modal__content {
 	background-color: var(--color-main-background)!important;
 }
@@ -263,6 +259,13 @@ h1, h2, h3 {
 
 .shifts_delete {
 	padding: 6px 6px !important;
+}
+
+.popover-menu-layout .v-input {
+	margin-top: 20px;
+}
+.v-text-field__slot label {
+	margin-left: 20px;
 }
 
 

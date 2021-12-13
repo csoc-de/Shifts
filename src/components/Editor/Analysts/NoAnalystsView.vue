@@ -26,7 +26,7 @@
 	<div class="editor-reminders-list-empty-message">
 		<div class="icon icon-group editor-reminders-list-empty-message__icon" />
 		<div class="editor-reminders-list-empty-message__caption">
-			{{ $t('calendar', 'No attendees yet') }}
+			{{ $t('calendar', 'No analysts yet') }}
 		</div>
 	</div>
 </template>
