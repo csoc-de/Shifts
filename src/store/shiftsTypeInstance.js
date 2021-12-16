@@ -109,6 +109,7 @@ const actions = {
 	},
 	async saveCurrentShiftsType({ state, dispatch, commit }) {
 		try {
+			state.shiftsTypeInstance.deleted = false
 			if (state.shiftsTypeInstance.id) {
 				await axios.put(generateUrl(`/apps/shifts/shiftsType/${state.shiftsTypeInstance.id}`), state.shiftsTypeInstance)
 			} else {

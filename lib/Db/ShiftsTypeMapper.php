@@ -42,7 +42,8 @@ class ShiftsTypeMapper extends QBMapper {
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('*')
-			->from('shifts_type');
+			->from('shifts_type')
+			->where($qb->expr()->eq('deleted', $qb->createNamedParameter('0')));
 		return $this->findEntities($qb);
 	}
 
