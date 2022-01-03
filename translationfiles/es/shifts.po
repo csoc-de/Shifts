@@ -31,7 +31,7 @@ msgstr "Semana"
 #: /var/www/apps/shifts/js/shifts-main.js:24735
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:5
 msgid "Open Shifts"
-msgstr "Crea Turnos"
+msgstr "Crear Turnos"
 
 #: /var/www/apps/shifts/js/shifts-main.js:25226
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:7
@@ -125,7 +125,7 @@ msgstr "No pude borrar el tipo de turno"
 
 #: /var/www/apps/shifts/js/shifts-main.js:28659
 #: /var/www/apps/shifts/src/store/database.js:238
-msgid " Could not update Calendar"
+msgid "Could not update Calendar"
 msgstr "No pude actualizar el calendario"
 
 #: /var/www/apps/shifts/js/shifts-main.js:28824
@@ -181,7 +181,7 @@ msgstr "Quitar persona"
 #: /var/www/apps/shifts/js/shifts-main.js:91174
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:9
 msgid "No analysts yet"
-msgstr "No hay una persona todavia"
+msgstr "No hay ninguna persona todavia"
 
 #: /var/www/apps/shifts/js/shifts-main.js:91204
 #: /var/www/apps/shifts/js/shifts-main.js:91216
@@ -331,17 +331,17 @@ msgstr "Datos de Turnos"
 #: /var/www/apps/shifts/js/shifts-main.js:92819
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:49
 msgid "Timespan"
-msgstr "Tiempo"
+msgstr "Duración"
 
 #: /var/www/apps/shifts/js/shifts-main.js:92898
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:51
 msgid "Ok"
-msgstr "Ok"
+msgstr ""
 
 #: /var/www/apps/shifts/js/shifts-main.js:93017
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:53
 msgid "Select Date"
-msgstr "Seleccionar fecha"
+msgstr "Selecciona fecha"
 
 #: /var/www/apps/shifts/js/shifts-main.js:93175
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:56
@@ -385,7 +385,7 @@ msgstr "Aprobación de la persona afectada: "
 #: /var/www/apps/shifts/js/shifts-main.js:93574
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:66
 msgid "Admin Approval: "
-msgstr "Aprobación de la responsable: "
+msgstr "Aprobación de la persona responsable: "
 
 #: /var/www/apps/shifts/js/shifts-main.js:93662
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:69
@@ -489,7 +489,7 @@ msgstr "Nombre del grupo de las personas asiganas a turnos"
 
 #: /var/www/apps/shifts/templates/settings.php:41
 msgid "Name of the Analyst-Skill Group"
-msgstr "Nombre del grupo de responsabilidades de las personas asignadas a turnos"
+msgstr "Nombre del grupo según responsabilidades de las personas asignadas a turnos"
 
 #: /var/www/apps/shifts/templates/settings.php:47
 msgid "Add"
@@ -509,8 +509,8 @@ msgstr "Color del calendario"
 
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:34
 msgid "Start Time"
-msgstr "Horario inicio"
+msgstr "Horario de inicio"
 
 #: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:35
 msgid "Stop Time"
-msgstr "Horario final"
+msgstr "Horario de fin"
