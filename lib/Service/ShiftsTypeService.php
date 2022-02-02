@@ -63,7 +63,7 @@ class ShiftsTypeService {
 	}
 
 	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly, bool $deleted){
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
@@ -79,6 +79,7 @@ class ShiftsTypeService {
 		$shiftsType->setSoRule($soRule);
 		$shiftsType->setSkillGroupId($skillGroupId);
 		$shiftsType->setIsWeekly($isWeekly ?: '0');
+		$shiftsType->setDeleted($deleted ?: '0');
 		return $this->mapper->insert($shiftsType);
 	}
 
@@ -104,7 +105,7 @@ class ShiftsTypeService {
 	}
 
 	public function update(int $id, string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly){
+						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly, bool $deleted){
 		try{
 			$shiftsType = $this->mapper->find($id);
 			$shiftsType->setName($name);
@@ -156,6 +157,24 @@ class ShiftsTypeService {
 			}
 			$shiftsType->setSkillGroupId($skillGroupId);
 			$shiftsType->setIsWeekly($isWeekly ?: '0');
+			$shiftsType->setDeleted($deleted ?: '0');
+			if($deleted) {
+				$shifts = $this->shiftMapper->findByShiftsTypeId($id);
+				foreach ( $shifts as $shift) {
+					$shiftsCalendarChange = new ShiftsCalendarChange();
+					$shiftsCalendarChange->setShiftId($shift->getId());
+					$shiftsCalendarChange->setShiftTypeId($shift->getShiftTypeId());
+					$shiftsCalendarChange->setShiftDate($shift->getDate());
+					$shiftsCalendarChange->setOldUserId($shift->getUserId());
+					$shiftsCalendarChange->setNewUserId('-1');
+					$shiftsCalendarChange->setAction('unassign');
+					$shiftsCalendarChange->setDateChanged('');
+					$shiftsCalendarChange->setAdminId('unknown');
+					$shiftsCalendarChange->setIsDone('0');
+					$this->shiftsCalendarChangeMapper->insert($shiftsCalendarChange);
+					$this->shiftMapper->delete($shift);
+				}
+			}
 			return $this->mapper->update($shiftsType);
 		} catch(Exception $e){
 			$this->handleException($e);

@@ -48,7 +48,7 @@
 				<v-select
 					class="calendar-format-select"
 					:items="calendarFormats"
-					:label="selectedCalendarFormat"
+					:label="calendarFormats.find((format) => format.value === selectedCalendarFormat).text"
 					outlined
 					attach
 					@change="updateCalendar">

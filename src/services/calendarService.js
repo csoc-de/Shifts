@@ -36,12 +36,10 @@ const syncAllShiftsChanges = async (shiftsList, shiftTypes, allAnalysts) => {
 	}, {})
 	for (const group in groups) {
 		const changes = groups[group]
-		console.log(changes)
 		let currShiftTypeId = '-1'
 		let vObject
 		let eventComponent
 		for (const change of changes) {
-			console.log(change)
 			try {
 				if (change.shiftTypeId !== currShiftTypeId) {
 					try {
@@ -53,8 +51,6 @@ const syncAllShiftsChanges = async (shiftsList, shiftTypes, allAnalysts) => {
 								timestamps[0],
 								timestamps[1],
 								change.shiftsType.isWeekly)
-							console.log(change)
-							console.log(getOrganizerName())
 							eventComponent.setOrganizerFromNameAndEMail(getOrganizerName(), getOrganizerEmail())
 
 							eventComponent.title = change.shiftsType.name + ': '
@@ -67,7 +63,6 @@ const syncAllShiftsChanges = async (shiftsList, shiftTypes, allAnalysts) => {
 					}
 					currShiftTypeId = change.shiftsType.id
 				}
-				console.log(eventComponent)
 				if (change.action === 'update') {
 					const removeAnalyst = allAnalysts.find((analyst) => analyst.uid === change.oldUserId)
 					const newAnalyst = allAnalysts.find((analyst) => analyst.uid === change.newUserId)
@@ -80,13 +75,10 @@ const syncAllShiftsChanges = async (shiftsList, shiftTypes, allAnalysts) => {
 				if (change.action === 'unassign') {
 					const removeAnalyst = allAnalysts.find((analyst) => analyst.uid === change.oldUserId)
 
-					console.log(removeAnalyst)
 					eventComponent = await removeAnalystFromEvent(eventComponent, removeAnalyst)
 				}
-				console.log(eventComponent)
 				const attendeeIteratorCheck = eventComponent.getPropertyIterator('ATTENDEE')
 				const attendeesCheck = Array.from(attendeeIteratorCheck)
-				console.log(attendeesCheck)
 				if (attendeesCheck.length > 0) {
 					if (eventComponent.isDirty()) {
 						vObject.data = eventComponent.root.toICS()
@@ -439,7 +431,9 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
  */
 const findEventComponent = async (calendar, dateString, shiftsType, timezone) => {
 	const timestamps = getTimestamps(dateString, shiftsType)
+	console.log(timestamps)
 	const vObjects = await calendar.findByTypeInTimeRange('VEVENT', timestamps[0], timestamps[1])
+
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}

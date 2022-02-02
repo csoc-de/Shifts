@@ -221,7 +221,8 @@ const actions = {
 	},
 	async deleteShiftsType({ state, dispatch, getters }, shiftsType) {
 		try {
-			await axios.delete(generateUrl(`/apps/shifts/shiftsType/${shiftsType.id}`))
+			shiftsType.deleted = true
+			await axios.put(generateUrl(`/apps/shifts/shiftsType/${shiftsType.id}`), shiftsType)
 			dispatch('updateShiftsTypes')
 		} catch (e) {
 			console.error(e)
@@ -232,10 +233,14 @@ const actions = {
 		try {
 			const changesResponse = await axios.get(generateUrl('/apps/shifts/shiftsCalendarChange'))
 			const changes = []
-			changesResponse.data.forEach(shift => {
-				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				changes.push(shift)
-			})
+			for (const change of changesResponse.data) {
+				change.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === change.shiftTypeId)
+				if (change.shiftsType === undefined && change.isDone === '0') {
+					const shiftsTypeResponse = await axios.get(generateUrl(`/apps/shifts/shiftsType/${change.shiftTypeId}`))
+					change.shiftsType = shiftsTypeResponse.data
+				}
+				changes.push(change)
+			}
 			if (changes.some(change => change.isDone === '0')) {
 				await syncAllShiftsChanges(changes.filter(change => change.isDone === '0'), state.allShiftsTypes, state.allAnalysts)
 			} else if (changes.length === 0) {

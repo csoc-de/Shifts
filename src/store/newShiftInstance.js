@@ -58,6 +58,8 @@ const actions = {
 							analystId,
 							shiftTypeId,
 							date,
+							oldAnalystId: analystId,
+							saveChanges: true
 						}
 					})
 					await Promise.all(newShifts.map(async (newShift) => {
