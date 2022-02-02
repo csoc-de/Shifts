@@ -100,7 +100,6 @@ export default {
 			newShiftInstance: (state) => state.newShiftInstance.newShiftInstance,
 		}),
 		allowedDates() {
-			console.log(this.newShiftInstance.shiftsType)
 			if (this.newShiftInstance.shiftsType.isWeekly === '0') {
 				return null
 			} else {

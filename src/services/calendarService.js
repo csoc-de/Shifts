@@ -431,7 +431,9 @@ const editEventComponent = (event, removeAnalyst, addAnalyst, timezone) => {
  */
 const findEventComponent = async (calendar, dateString, shiftsType, timezone) => {
 	const timestamps = getTimestamps(dateString, shiftsType)
+	console.log(timestamps)
 	const vObjects = await calendar.findByTypeInTimeRange('VEVENT', timestamps[0], timestamps[1])
+
 	if (vObjects.length <= 0) {
 		throw new Error('Could not find corresponding Events')
 	}

@@ -257,15 +257,19 @@ export default {
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
+					oldShift.oldAnalystId = oldShift.userId
 					oldShift.analystId = shiftsChange.newAnalystId
 					oldShift.saveChanges = false
+
 					await axios.put(generateUrl(`/apps/shifts/shifts/${oldShift.id}`), oldShift)
 					const newShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.newShiftsId)
 					})
 					if (newShift) {
+						newShift.oldAnalystId = newShift.userId
 						newShift.analystId = shiftsChange.oldAnalystId
 						newShift.saveChanges = false
+
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
 					// fetches and updates shifts
