@@ -86,6 +86,12 @@
 							icon-checkmark
 						</v-icon>
 					</v-btn>
+					<v-btn
+						color="red lighten-1"
+						dark
+						@click="deleteRequest(shiftsChange)">
+						{{ t('shifts', 'Delete') }}
+					</v-btn>
 				</div>
 			</v-list-group>
 		</v-list>
@@ -154,6 +160,7 @@ import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { updateExistingCalendarObjectFromShiftsChange } from '../services/calendarService'
 import { mapGetters } from 'vuex'
+import dayjs from 'dayjs'
 export default {
 	name: 'Requests',
 	components: {
@@ -176,13 +183,21 @@ export default {
 		// returns ShiftsChanges which are still in Progress and needs approval
 		inProgressShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
+				const oldDate = dayjs(shiftsChange.oldShift.date)
+				const newDate = dayjs(shiftsChange.newShift.date)
 				return !(shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== '')
+						&& dayjs().subtract(14, 'day').isBefore(oldDate)
+						&& dayjs().subtract(14, 'day').isBefore(newDate)
 			})
 		},
 		// returns ShiftsChanges which dont need further action
 		doneShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
+				const oldDate = dayjs(shiftsChange.oldShift.date)
+				const newDate = dayjs(shiftsChange.newShift.date)
 				return shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== ''
+					&& dayjs().subtract(14, 'day').isBefore(oldDate)
+					&& dayjs().subtract(14, 'day').isBefore(newDate)
 			})
 		},
 		// returns if current user is an analyst
@@ -322,6 +337,9 @@ export default {
 			const timeString = dateObj.toLocaleTimeString('de-DE')
 
 			return dateString + ' ' + timeString
+		},
+		deleteRequest(request) {
+			this.$store.dispatch('deleteRequest', request)
 		},
 	},
 }

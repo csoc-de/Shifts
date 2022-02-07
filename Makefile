@@ -11,7 +11,7 @@ source_dir=$(build_dir)/source
 sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
-version = 1.8.4
+version = 1.8.5
 
 all: dev-setup lint build-js-production test
 
