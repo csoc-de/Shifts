@@ -148,6 +148,7 @@ const actions = {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				allShifts.push(shift)
 			})
+			commit('updateAllShifts', allShifts)
 			const shiftsChanges = []
 			shiftsChangeResponse.data.forEach(shiftsChange => {
 				shiftsChange.oldShift = state.allShifts.find((shift) => shift.id.toString() === shiftsChange.oldShiftsId.toString())
@@ -155,7 +156,6 @@ const actions = {
 				shiftsChanges.push(shiftsChange)
 			})
 			commit('updateAllShiftsChanges', shiftsChanges)
-			commit('updateAllShifts', allShifts)
 			if (state.isCurrentUserAdmin) {
 				axios.get(generateUrl('/apps/shifts/triggerUnassignedShifts')).then(() => dispatch('updateShifts'))
 			}
