@@ -142,13 +142,19 @@ const actions = {
 			commit('updateCurrentUser', currentUserResponse.data)
 			commit('updateUserStatus', isAdminResponse.data)
 			commit('updateAllAnalysts', analystsResponse.data)
-			commit('updateAllShiftsChanges', shiftsChangeResponse.data)
 			commit('updateAllShiftsTypes', shiftTypeResponse.data)
 			const allShifts = []
 			shiftResponse.data.forEach(shift => {
 				shift.shiftsType = state.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
 				allShifts.push(shift)
 			})
+			const shiftsChanges = []
+			shiftsChangeResponse.data.forEach(shiftsChange => {
+				shiftsChange.oldShift = state.allShifts.find((shift) => shift.id.toString() === shiftsChange.oldShiftsId.toString())
+				shiftsChange.newShift = state.allShifts.find((shift) => shift.id.toString() === shiftsChange.newShiftsId.toString())
+				shiftsChanges.push(shiftsChange)
+			})
+			commit('updateAllShiftsChanges', shiftsChanges)
 			commit('updateAllShifts', allShifts)
 			if (state.isCurrentUserAdmin) {
 				axios.get(generateUrl('/apps/shifts/triggerUnassignedShifts')).then(() => dispatch('updateShifts'))
@@ -227,6 +233,14 @@ const actions = {
 		} catch (e) {
 			console.error(e)
 			showError(t('shifts', 'Could not delete shiftsType'))
+		}
+	},
+	async deleteRequest({ state, dispatch, getters }, shiftsChange) {
+		try {
+			await axios.delete(generateUrl(`/apps/shifts/shiftsType/${shiftsChange.id}`))
+		} catch (e) {
+			console.error(e)
+			showError(t('shifts', 'Could not delete request'))
 		}
 	},
 	async syncCalendar({ state, dispatch, getters }) {
