@@ -21,7 +21,7 @@ More to come:
 
 If you experience any issues or have any suggestions for improvement, please feel free to use the issue tracker.
 ]]></description>
-    <version>1.8.5</version>
+    <version>1.8.6</version>
     <licence>agpl</licence>
     <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
     <namespace>Shifts</namespace>

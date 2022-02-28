@@ -157,6 +157,7 @@ export default {
 				avatar: analyst.uid,
 				dropdownName: name,
 				userId: analyst.uid,
+				name,
 			}
 			this.matches.push(a)
 		})
@@ -182,6 +183,7 @@ export default {
 							avatar: null,
 							dropdownName: query,
 							userId: '',
+							name: query,
 						})
 					}
 				}
@@ -191,7 +193,27 @@ export default {
 			} else {
 				this.inputGiven = false
 				this.isLoading = false
-				matches.push(...this.allAnalysts)
+				this.allAnalysts.forEach((analyst) => {
+					let name
+					if (analyst.name && analyst.email === undefined) {
+						name = analyst.name
+					} else if (analyst.name && analyst.email) {
+						name = `${analyst.name} (${analyst.email})`
+					} else {
+						name = analyst.email
+					}
+					const a = {
+						calendarUserType: 'INDIVIDUAL',
+						commonName: analyst.name,
+						email: analyst.email,
+						isUser: true,
+						avatar: analyst.uid,
+						dropdownName: name,
+						userId: analyst.uid,
+						name,
+					}
+					matches.push(a)
+				})
 			}
 
 			this.matches = matches
@@ -203,7 +225,7 @@ export default {
 			const data = this.allAnalysts.filter((analyst) => {
 				query = query.toLowerCase()
 				const lemail = analyst.email.toLowerCase()
-				const lname = analyst.commonName.toLowerCase()
+				const lname = analyst.name.toLowerCase()
 				return (lemail.includes(query) || lname.includes(query)) && !this.alreadyInvitedEmails.includes(analyst.email)
 			})
 			return data.map((analyst) => {
@@ -223,6 +245,7 @@ export default {
 					avatar: analyst.uid,
 					dropdownName: name,
 					userId: analyst.uid,
+					name,
 				}
 			})
 		},
