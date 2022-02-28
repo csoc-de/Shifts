@@ -183,6 +183,10 @@ export default {
 		// returns ShiftsChanges which are still in Progress and needs approval
 		inProgressShiftsChanges() {
 			return this.shiftsChanges.filter((shiftsChange) => {
+				if (shiftsChange.oldShift === undefined || shiftsChange.newShift === undefined) {
+					shiftsChange.oldShift = this.allShifts.find((shift) => shift.id.toString() === shiftsChange.oldShiftsId.toString())
+					shiftsChange.newShift = this.allShifts.find((shift) => shift.id.toString() === shiftsChange.newShiftsId.toString())
+				}
 				const oldDate = dayjs(shiftsChange.oldShift.date)
 				const newDate = dayjs(shiftsChange.newShift.date)
 				return !(shiftsChange.adminApprovalDate !== '' && shiftsChange.analystApprovalDate !== '')
