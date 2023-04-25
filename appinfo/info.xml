@@ -21,9 +21,9 @@ More to come:
 
 If you experience any issues or have any suggestions for improvement, please feel free to use the issue tracker.
 ]]></description>
-    <version>1.8.6</version>
+    <version>1.9.0</version>
     <licence>agpl</licence>
-    <author mail="fabian.kirchesch@csoc.de" >Fabian Kirchesch</author>
+    <author mail="dev@csoc.de">CSOC</author>
     <namespace>Shifts</namespace>
     <category>office</category>
 	<category>organization</category>
@@ -33,7 +33,7 @@ If you experience any issues or have any suggestions for improvement, please fee
 	<repository type="git">https://github.com/csoc-de/shifts.git</repository>
 	<screenshot>https://raw.githubusercontent.com/csoc-de/shifts/master/docs/frontpage.png</screenshot>
     <dependencies>
-        <nextcloud min-version="20" max-version="23"/>
+        <nextcloud min-version="25" max-version="26"/>
     </dependencies>
 	<settings>
 		<admin>OCA\Shifts\Settings\AdminSettings</admin>

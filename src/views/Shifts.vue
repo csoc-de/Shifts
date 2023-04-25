@@ -1,58 +1,60 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <!--
   - View to display Shifts and add Shifts or Shiftstypes if admin is current user
   -->
 <template>
-	<div class="shifts_content">
-		<div v-if="isAdmin">
-			<!--eslint-disable-->
-			<v-menu	 v-if="!loading"
-				v-model="shiftOpen"
-				:close-on-content-click="false"
-				:nudge-width="200"
-				attach
-				offset-y>
-				<template v-slot:activator="{ on, attrs }">
-					<v-btn
+	<div>
+		<div
+			v-if="isAdmin"
+			class="top-bar">
+			<div class="buttons-bar">
+				<div class="left">
+					<NcButton
 						color="light-blue"
-						dark
-						v-bind="attrs"
-						v-on="on">
+						:disabled="disabled || !settingsFetched"
+						@click="openNewShift">
 						{{ t('shifts','Add Shift') }}
-					</v-btn>
-				</template>
-				<v-layout class="popover-menu-layout">
-					<NewShift @close="closeNewShift()">
-					</NewShift>
-				</v-layout>
-			</v-menu>
-			<v-btn
-				color="light-blue"
-				:disabled="disabled || !settingsFetched"
-				dark
-				@click="syncCalendar">
-				{{ t('shifts','Synchronize Calendar') }}
-			</v-btn>
+					</NcButton>
+
+					<NcButton
+						color="light-blue"
+						:disabled="disabled || !settingsFetched"
+						@click="syncCalendar">
+						{{ t('shifts','Synchronize Calendar') }}
+					</NcButton>
+				</div>
+			</div>
+
+			<NewShift
+				v-if="shiftOpen"
+				@close="closeNewShift()" />
 		</div>
-		<Calendar v-if="!loading" />
-		<!-- eslint-enable-->
+
+		<Calendar />
 	</div>
 </template>
 <script>
-import Calendar from '../components/Calendar'
+
+import store from '../store'
 import NewShift from './NewShift'
 import { mapGetters } from 'vuex'
+import { NcButton } from '@nextcloud/vue'
+import { showError } from '@nextcloud/dialogs'
+import Calendar from '../components/Calendar/Calendar'
 
 export default {
 	name: 'Shifts',
 	components: {
 		Calendar,
 		NewShift,
+		NcButton,
 	},
 	data() {
 		return {
@@ -68,13 +70,20 @@ export default {
 		}),
 	},
 	methods: {
+		openNewShift() {
+			this.shiftOpen = true
+		},
 		closeNewShift() {
 			this.shiftOpen = false
 		},
-		async syncCalendar() {
+		syncCalendar() {
 			this.disabled = true
-			await this.$store.dispatch('syncCalendar')
-			this.disabled = false
+			store.dispatch('synchronizeCalendar').catch((e) => {
+				showError(t('shifts', 'Failed to synchronize calendar'))
+				console.error('Failed to synchronize calendar:', e)
+			}).finally(() => {
+				this.disabled = false
+			})
 		},
 	},
 }

@@ -8,748 +8,726 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nextcloud 3.14159\n"
 "Report-Msgid-Bugs-To: translations\\@example.com\n"
-"POT-Creation-Date: 2021-12-13 11:35+0100\n"
+"POT-Creation-Date: 2023-03-14 10:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /var/www/apps/shifts/js/settings.js:76
-msgid "Successfully saved changes"
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:20588
+msgid "delete"
 msgstr ""
 
-#: /var/www/apps/shifts/js/settings.js:80
-msgid "Could not save changes"
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:20588
+msgid "has"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:2620
-msgid "REQUEST-STATUS"
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:20588
+msgid "get"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:14370
-msgid "app-content-wrapper app-content-wrapper--mobile"
-msgid_plural "app-content-wrapper--show-details"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14370
-msgid "app-content no-snapper"
-msgid_plural "app-content-vue"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14467
-#: /var/www/apps/shifts/js/shifts-main.js:14925
-msgid "mention-bubble__title"
-msgid_plural "heading"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14467
-#: /var/www/apps/shifts/js/shifts-main.js:14925
-msgid "mention-bubble__select"
-msgid_plural "none"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14467
-#: /var/www/apps/shifts/js/shifts-main.js:14925
-msgid "mention-bubble"
-msgid_plural "mention-bubble--primary"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14530
-#: /var/www/apps/shifts/js/shifts-main.js:15009
-msgid "focusable"
-msgid_plural "#"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14530
-#: /var/www/apps/shifts/js/shifts-main.js:15009
-msgid "icon-confirm"
-msgid_plural "submit"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14551
-#: /var/www/apps/shifts/js/shifts-main.js:15030
-msgid "avatardiv__user-status"
-msgid_plural "avatardiv__user-status--"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14763
-msgid "action"
-msgid_plural "action--disabled"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14806
-msgid "progress-ring__circle"
-msgid_plural "white"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14806
-msgid "progress-ring"
-msgid_plural "50"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:14806
-msgid "mask"
-msgid_plural "modal-mask"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15402
-msgid "popover__menu"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15591
-msgid "empty-content__icon"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15591
-msgid "empty-content__title"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15591
-msgid "empty-content"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15741
-msgid "aria-expanded"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15741
-msgid "app-navigation-toggle"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:15823
-msgid "icon-collapse"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16011
-msgid "app-navigation-entry__icon-bullet"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16053
-msgid "app-settings-section__title"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16053
-msgid "app-settings-section"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16220
-msgid "navigation-list__link"
-msgid_plural "navigation-list__link--active"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16220
-msgid "navigation-list"
-msgid_plural "tablist"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16220
-msgid "app-settings__navigation"
-msgid_plural "tablist"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:16220
-msgid "app-settings__content"
-msgid_plural "settingsScroller"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:24706
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:3
+#. TRANSLATORS src/components/Calendar/Calendar.vue:205
+#. TRANSLATORS src/components/Calendar/CalendarTopBar.vue:74
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65209
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65644
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:56
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:84
 msgid "Month"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:24709
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:4
+#. TRANSLATORS src/components/Calendar/Calendar.vue:209
+#. TRANSLATORS src/components/Calendar/CalendarTopBar.vue:70
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65212
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65641
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:58
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:82
 msgid "Week"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:24734
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:5
-msgid "Open Shifts"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:25239
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:7
-msgid "Search for Emails or Users"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:25244
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:8
-msgid "No match found"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:25853
-#: /var/www/apps/shifts/js/shifts-main.js:25855
-#: /var/www/apps/shifts/js/shifts-main.js:25915
-#: /var/www/apps/shifts/js/shifts-main.js:93377
-#: /var/www/apps/shifts/js/shifts-main.js:93610
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:26
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:27
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:28
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:60
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:66
-msgid "Swap"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:25855
-#: /var/www/apps/shifts/js/shifts-main.js:25915
-#: /var/www/apps/shifts/js/shifts-main.js:93378
-#: /var/www/apps/shifts/js/shifts-main.js:93611
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:27
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:29
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:60
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:66
-msgid "Offer"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:25933
-#: /var/www/apps/shifts/js/shifts-main.js:26004
-#: /var/www/apps/shifts/js/shifts-main.js:28704
-#: /var/www/apps/shifts/js/shifts-main.js:28725
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:30
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:31
-#: /var/www/apps/shifts/src/store/database.js:169
-#: /var/www/apps/shifts/src/store/database.js:183
+#. TRANSLATORS src/components/Calendar/Calendar.vue:261
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:472
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65274
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:60
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:184
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:186
 msgid "Could not fetch shifts"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:26521
-#: /var/www/apps/shifts/js/shifts-main.js:90818
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:2
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:55
-msgid "Analyst"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:306
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65317
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:62
+msgid "You cannot set a weekly shift as a daily shift!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:26651
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:57
-msgid "Select Shiftstype"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:313
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65324
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65437
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:64
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:78
+msgid "You cannot assign a shift twice to an user!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:27025
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:71
-msgid "Could not save shifts Changes"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:317
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65328
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65441
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:66
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:80
+msgid "User has an insufficient skill level!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28428
-#: /var/www/apps/shifts/js/shifts-main.js:28470
-#: /var/www/apps/shifts/js/shifts-main.js:28686
-#: /var/www/apps/shifts/src/store/archive.js:73
-#: /var/www/apps/shifts/src/store/database.js:158
-msgid "Could not fetch data"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:336
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65359
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:68
+msgid "You are NOT allowed to create or change shifts!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28741
-#: /var/www/apps/shifts/src/store/database.js:192
-msgid "Could not fetch shifts-types"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:338
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65361
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65364
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:70
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:72
+msgid "Failed to assign shift!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28757
-#: /var/www/apps/shifts/src/store/database.js:201
-msgid "Could not fetch shifts-changes"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:396
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65429
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:74
+msgid "You cannot set a daily shift as a weekly shift!"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28773
-#: /var/www/apps/shifts/src/store/database.js:210
-msgid "Could not delete shift"
+#. TRANSLATORS src/components/Calendar/Calendar.vue:400
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65433
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:76
+msgid ""
+"You cannot set a weekly shift to another week. Stay in the same week number "
+"please."
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28789
-#: /var/www/apps/shifts/src/store/database.js:219
-msgid "Could not delete shiftsType"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:31
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:285
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:287
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:285
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:394
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:396
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:394
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65740
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65742
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66061
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67561
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:90
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:98
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:100
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:132
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:176
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:178
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:180
+msgid "Swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28817
-#: /var/www/apps/shifts/src/store/database.js:238
-msgid " Could not update Calendar"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:39
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:287
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65742
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66061
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67573
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:92
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:100
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:134
+msgid "Cede"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28981
-#: /var/www/apps/shifts/src/store/newShiftInstance.js:84
-msgid "Could not create the shift"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:338
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65787
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:104
+msgid "Please select the first user you want to swap shifts with"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:28985
-#: /var/www/apps/shifts/src/store/newShiftInstance.js:88
-msgid "No Analysts or Dates for Shift given"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:340
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65789
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:106
+msgid "Please select the date of the first shift you want to swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29091
-#: /var/www/apps/shifts/src/store/settings.js:69
-msgid "Could not fetch Settings"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:342
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65791
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:108
+msgid "Please select the shift of the first user you want to swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29095
-#: /var/www/apps/shifts/src/store/settings.js:72
-msgid "Please set a Calendarname in the App-Settings"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:344
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65793
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:110
+msgid "Please select the second user you want to swap shifts with"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29100
-#: /var/www/apps/shifts/src/store/settings.js:76
-msgid "Please set an Organizername in the App-Settings"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:346
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65795
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:112
+msgid "Please select the date of the second shift you want to swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29105
-#: /var/www/apps/shifts/src/store/settings.js:80
-msgid "Please set an Organizeremail in the App-Settings"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:348
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65797
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:114
+msgid "Please select a different date for the second shift you want to swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29110
-#: /var/www/apps/shifts/src/store/settings.js:84
-msgid "Please set at least one Skillgroup in the App-Settings"
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:350
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65799
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:116
+msgid "Please select the shift of the second user you want to swap"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29288
-#: /var/www/apps/shifts/src/store/shiftsTypeInstance.js:120
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:412
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65857
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:118
+msgid "Please select the first user you want to cede a shift to"
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:414
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65859
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:120
+msgid "Please select the date of your shift you want to cede"
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:416
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65861
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:122
+msgid "Please select your shift you want to cede"
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:418
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65863
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:124
+msgid "Please select the user you want to cede your shift to"
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:420
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65865
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:126
+msgid ""
+"This user has already the same kind of shift on that day. Please select "
+"another user you want to cede to."
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:536
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65970
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:65993
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:128
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:130
+msgid "Failed to request for shift change."
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:231
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66207
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:222
 msgid "Could not save the shiftType"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:29658
-msgid "iterator"
+#. TRANSLATORS src/views/NewShift.vue:102
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66435
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:246
+msgid "Select Shiftstype"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-compact-colors"
-msgid_plural "listbox"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-compact"
-msgid_plural "application"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-grayscale-colors"
-msgid_plural "listbox"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-grayscale"
-msgid_plural "application"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-material"
-msgid_plural "application"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "container"
-msgid_plural "vc-hue-container"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-slider-swatch-picker"
-msgid_plural "vc-slider-swatch-picker--active"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-slider-swatches"
-msgid_plural "group"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-slider"
-msgid_plural "application"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "24px"
-msgid_plural "24px"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-swatches-box"
-msgid_plural "listbox"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-swatches"
-msgid_plural "application"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-alpha-pointer"
-msgid_plural "%"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-ps-head"
-msgid_plural "heading"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-ps-ac-btn"
-msgid_plural "button"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "h"
-msgid_plural "°"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "s"
-msgid_plural "%"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "v"
-msgid_plural "%"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-ps-fields__hex"
-msgid_plural "#"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-sketch-presets"
-msgid_plural "group"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "#333"
-msgid_plural "M12,18.17L8.83,15L7.42,16.41L12,21L16.59,16.41L15.17,15M12,5.83L15.17,9L16.58,7.59L12,3L7.41,7.59L8.83,9L12,5.83Z"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-chrome-toggle-btn"
-msgid_plural "button"
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:85036
-msgid "vc-twitter"
-msgid_plural "vc-twitter-hide-triangle "
-msgstr[0] ""
-msgstr[1] ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:90720
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:1
-msgid "Today"
+#. TRANSLATORS src/views/Requests.vue:427
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66707
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:282
+msgid "Failed to delete shift change request"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:91151
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:6
-msgid "Remove analyst"
+#. TRANSLATORS src/views/Requests.vue:443
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66724
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:284
+msgid "Failed to update change request"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:91331
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:9
-msgid "No analysts yet"
+#. TRANSLATORS src/views/Requests.vue:533
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66863
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:286
+msgid "Could not save shifts Changes"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:91361
-#: /var/www/apps/shifts/js/shifts-main.js:91373
-#: /var/www/apps/shifts/js/shifts-main.js:93334
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:11
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:12
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:58
+#. TRANSLATORS src/views/Shifts.vue:97
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:66979
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:294
+msgid "Failed to synchronize calendar"
+msgstr ""
+
+#. TRANSLATORS src/components/Archive/ArchiveContent.vue:14
+#. TRANSLATORS src/components/Calendar/Calendar.vue:27
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67099
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67251
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:38
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:50
+msgid "Analyst"
+msgstr ""
+
+#. TRANSLATORS src/components/Archive/ArchiveTopBar.vue:19
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67150
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67160
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67170
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67180
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:40
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:42
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:44
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:46
+msgid "Months"
+msgstr ""
+
+#. TRANSLATORS src/components/Archive/ArchiveTopBar.vue:47
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67190
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:48
+msgid "Last Month"
+msgstr ""
+
+#. TRANSLATORS src/components/Calendar/Calendar.vue:35
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67255
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:52
+msgid "Weekly Shifts"
+msgstr ""
+
+#. TRANSLATORS src/components/Calendar/Calendar.vue:45
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67256
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:54
+msgid "Open Shifts"
+msgstr ""
+
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:14
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:19
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:14
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:17
+#. TRANSLATORS src/views/Requests.vue:19
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67538
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67545
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68501
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:86
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:88
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:146
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:148
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:248
 msgid "New Request"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:91426
-#: /var/www/apps/shifts/js/shifts-main.js:91942
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:13
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:19
-msgid "Select old analyst"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:91542
-#: /var/www/apps/shifts/js/shifts-main.js:92058
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:14
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:20
-msgid "Select new analyst"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:91668
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:15
-msgid "Select shifts of old analyst"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:91793
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:16
-msgid "Select shifts of new analyst"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:91908
-#: /var/www/apps/shifts/js/shifts-main.js:92307
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:17
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:22
-msgid "Description"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:91909
-#: /var/www/apps/shifts/js/shifts-main.js:92308
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:18
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:23
-msgid "Description or Purpose"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:92184
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:21
-msgid "Select shifts of analyst"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:92341
-#: /var/www/apps/shifts/js/shifts-main.js:92831
-#: /var/www/apps/shifts/js/shifts-main.js:93054
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:24
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:46
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:53
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:167
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:232
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:345
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:190
+#. TRANSLATORS src/views/Archive.vue:46
+#. TRANSLATORS src/views/NewShift.vue:69
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67890
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68250
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68456
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:50073
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:30
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:94
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:172
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:218
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:234
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:242
 msgid "Cancel"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92359
-#: /var/www/apps/shifts/js/shifts-main.js:92842
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:25
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:47
-#: /var/www/apps/shifts/templates/settings.php:59
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:173
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:238
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:350
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:195
+#. TRANSLATORS src/views/NewShift.vue:74
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67898
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68257
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68463
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:50081
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:32
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:96
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:174
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:220
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:244
 msgid "Save"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92398
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:32
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:11
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67924
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67942
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:188
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:190
 msgid "New Shiftstype"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92679
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:36
-msgid "weekly Shifts"
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:38
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:67968
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:192
+msgid "Calendar Color"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92695
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:37
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:64
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68007
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:194
 msgid "Weekly"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92715
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:38
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:74
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68024
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:196
+msgid "weekly Shifts"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:90
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68048
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:198
+msgid "Start Time"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:103
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68068
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:200
+msgid "Stop Time"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:110
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68081
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:202
 msgid "Rules"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92723
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:39
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:118
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:204
 msgid "Monday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92735
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:40
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:119
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:206
 msgid "Tuesday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92747
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:41
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:120
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:208
 msgid "Wednesday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92759
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:42
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:121
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:210
 msgid "Thursday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92771
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:43
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:122
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:212
 msgid "Friday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92783
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:44
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:123
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:214
 msgid "Saturday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92795
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:45
+#. TRANSLATORS src/components/Modal/ShiftsTypeModal.vue:124
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68085
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:216
 msgid "Sunday"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92886
-#: /var/www/apps/shifts/specialAppInfoFakeDummyForL10nScript.php:3
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:48
+#. TRANSLATORS src/components/Navigation/AppNavigation.vue:14
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68286
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialAppInfoFakeDummyForL10nScript.php:3
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:224
 msgid "Shift plan"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92894
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:49
+#. TRANSLATORS src/components/Navigation/AppNavigation.vue:19
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68292
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:226
 msgid "Shiftchange"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92903
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:50
+#. TRANSLATORS src/components/Navigation/AppNavigation.vue:25
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68298
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:228
 msgid "Shifttypes"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92913
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:51
+#. TRANSLATORS src/components/Navigation/AppNavigation.vue:31
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68304
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:230
 msgid "Shiftsdata"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:92993
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:52
-msgid "Timespan"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93072
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:54
-msgid "Ok"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93191
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:56
-msgid "Select Date"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93349
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:59
-msgid "In Progress"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93504
-#: /var/www/apps/shifts/js/shifts-main.js:93733
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:61
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:67
-msgid "Analyst Approval: "
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93508
-#: /var/www/apps/shifts/js/shifts-main.js:93737
-#: /var/www/apps/shifts/js/shifts-main.js:93752
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:62
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:68
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:70
-msgid " at "
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93535
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:63
-msgid "Decline"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93563
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:64
-msgid "Approve"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93582
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:65
-msgid "Processed"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93748
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:69
-msgid "Admin Approval: "
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:93836
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:72
+#. TRANSLATORS src/views/NewShift.vue:14
+#. TRANSLATORS src/views/NewShift.vue:18
+#. TRANSLATORS src/views/Shifts.vue:21
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68371
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68380
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68858
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:238
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:240
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:288
 msgid "Add Shift"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:93891
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:73
+#. TRANSLATORS src/views/Requests.vue:32
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68514
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:250
+msgid "In Progress"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:65
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68541
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68551
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68723
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68733
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:252
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:254
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:268
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:270
+msgid "Unknown shift type"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:97
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68565
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68575
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68747
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68757
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:256
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:258
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:272
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:274
+msgid "has confirmed"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:108
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68579
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68761
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:260
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:276
+msgid "has not confirmed"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:140
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68628
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68774
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:262
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:278
+msgid "An admin has approved"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:141
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68632
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68778
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:264
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:280
+msgid "An admin has not approved"
+msgstr ""
+
+#. TRANSLATORS src/views/Requests.vue:187
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68696
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:266
+msgid "Processed"
+msgstr ""
+
+#. TRANSLATORS src/views/Shifts.vue:28
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68866
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:290
 msgid "Synchronize Calendar"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:93945
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:74
+#. TRANSLATORS src/views/ShiftsTypes.vue:15
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68910
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:296
 msgid "Add new Shiftstype"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:93957
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:75
+#. TRANSLATORS src/views/ShiftsTypes.vue:28
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68918
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:298
 msgid "Shiftstype"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:94007
-#: /var/www/apps/shifts/js/shifts-main.js:94070
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:76
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:78
-msgid "Delete"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:94042
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:77
-msgid "Are you sure that u want to delete the Shiftstype and all its Shifts"
-msgstr ""
-
-#: /var/www/apps/shifts/js/shifts-main.js:94098
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:79
+#. TRANSLATORS src/views/ShiftsTypes.vue:47
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:68941
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:300
 msgid "Edit"
 msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:94246
-msgid "multiselect__tag-icon"
-msgid_plural "aria-hidden"
-msgstr[0] ""
-msgstr[1] ""
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:70775
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/archive.js:164
+msgid "Could not fetch archive data"
+msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:94246
-msgid "search"
-msgid_plural "multiselect__input"
-msgstr[0] ""
-msgstr[1] ""
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71104
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71595
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:203
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:493
+msgid "Could not fetch data"
+msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:94246
-msgid "tags"
-msgid_plural "multiselect__tags"
-msgstr[0] ""
-msgstr[1] ""
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71293
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:342
+msgid "Could not fetch shifts-changes"
+msgstr ""
 
-#: /var/www/apps/shifts/js/shifts-main.js:94246
-msgid "multiselect"
-msgid_plural "multiselect--active"
-msgstr[0] ""
-msgstr[1] ""
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71359
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:390
+msgid "Could not fetch shifts-types"
+msgstr ""
 
-#: /var/www/apps/shifts/specialAppInfoFakeDummyForL10nScript.php:2
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71387
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:399
+msgid "Could not delete shift"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71414
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:407
+msgid "Could not delete request"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:71533
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/database.js:446
+msgid " Could not update Calendar"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72037
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/newShiftInstance.js:86
+msgid "Could not create the shift"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72043
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/newShiftInstance.js:90
+msgid "No Analysts or Dates for Shift given"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:241
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72168
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49693
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:34
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/settings.js:66
+msgid "Could not fetch Settings"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72171
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/settings.js:69
+msgid "Please set a Calendarname in the App-Settings"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72175
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/settings.js:73
+msgid "Please set an Organizername in the App-Settings"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72179
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/settings.js:77
+msgid "Please set an Organizeremail in the App-Settings"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-main.js:72183
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/store/settings.js:81
+msgid "Please set at least one Skillgroup in the App-Settings"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:255
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49707
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:36
+msgid "Could not save Settings"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:14
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49828
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:2
+msgid "General"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:21
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49841
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:4
+msgid "Name of the Shiftscalendar"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:33
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49862
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:6
+msgid "Name of the Analyst Group"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:45
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49883
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:8
+msgid "Name of the Shiftsadmin Group"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:56
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49903
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:10
+msgid "Timezone:"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:65
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49926
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:12
+msgid "User can only swap shifts of the same type"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:71
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49939
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:14
+msgid "Add calendar events to the shift users calendar"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:79
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49941
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:16
+msgid "Organizer"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:85
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49953
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:18
+msgid "Name of the Shiftsorganizer"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:97
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49974
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:20
+msgid "Email of the Shiftsorganizer"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:110
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49990
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:22
+msgid "Skill level"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:118
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:49999
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:24
+msgid "Name"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:129
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:50005
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:26
+msgid "Name of the Analyst-Skill Group"
+msgstr ""
+
+#. TRANSLATORS evink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/settings/Settings.vue:154
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/js/shifts-settings.js:50060
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:28
+msgid "Add"
+msgstr ""
+
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialAppInfoFakeDummyForL10nScript.php:2
 msgid "Shiftplan"
 msgstr ""
 
-#: /var/www/apps/shifts/specialAppInfoFakeDummyForL10nScript.php:4
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialAppInfoFakeDummyForL10nScript.php:4
 msgid "App for organising Shifts"
 msgstr ""
 
-#: /var/www/apps/shifts/specialAppInfoFakeDummyForL10nScript.php:5
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialAppInfoFakeDummyForL10nScript.php:5
 msgid ""
 "* **Interactions with the Nextcloud Calender app!** Easy integration into "
 "the existing Calender of Nextcloud.\n"
@@ -767,59 +745,97 @@ msgid ""
 "feel free to use the issue tracker."
 msgstr ""
 
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:10
+#. TRANSLATORS src/components/ChangeRequests/ChangeRequestModal.vue:322
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:102
+msgid "Please select the first user to swap a shift with."
+msgstr ""
+
+#. TRANSLATORS src/components/Editor/Analysts/AnalystsListItem.vue:35
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:136
+msgid "Remove analyst"
+msgstr ""
+
+#. TRANSLATORS src/components/Editor/Analysts/AnalystsListSearch.vue:99
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:138
+msgid "Search for Emails or Users"
+msgstr ""
+
+#. TRANSLATORS src/components/Editor/Analysts/AnalystsListSearch.vue:103
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:140
+msgid "No match found"
+msgstr ""
+
+#. TRANSLATORS src/components/Editor/Analysts/NoAnalystsView.vue:29
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:142
+msgid "No analysts yet"
+msgstr ""
+
+#. TRANSLATORS src/components/Editor/Properties/PropertyTitle.vue:13
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:144
 msgid "Name of the Shift-Type"
 msgstr ""
 
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:33
-msgid "Calendar Color"
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:44
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:150
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:162
+msgid "Select old analyst"
 msgstr ""
 
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:34
-msgid "Start Time"
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:83
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:152
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:164
+msgid "Select new analyst"
 msgstr ""
 
-#: /var/www/apps/shifts/specialVueFakeDummyForL10nScript.js:35
-msgid "Stop Time"
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:126
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:154
+msgid "Select shifts of old analyst"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:166
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:156
+msgid "Select shifts of new analyst"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:197
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:158
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:168
+msgid "Description"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:198
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:160
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:170
+msgid "Description or Purpose"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:300
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:166
+msgid "Select shifts of analyst"
+msgstr ""
+
+#. TRANSLATORS src/components/Modal/RequestsModal.vue:396
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:178
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:182
+msgid "Offer"
+msgstr ""
+
+#. TRANSLATORS src/views/Archive.vue:29
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:232
+msgid "Timespan"
+msgstr ""
+
+#. TRANSLATORS src/views/Archive.vue:52
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:236
+msgid "Ok"
+msgstr ""
+
+#. TRANSLATORS src/views/Shifts.vue:34
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/specialVueFakeDummyForL10nScript.js:292
+msgid "Development TEST"
 msgstr ""
 
 #. TRANSLATORS This refers to global timezones in the timezone picker
-#: /var/www/apps/shifts/src/utils/timezone.js:40
+#: /home/kevink/Projekte/ShiftsApp/workspace/server/apps-extra/shifts/src/utils/timezone.js:40
 msgid "Global"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:21
-msgid "Shifts"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:23
-msgid "Documentation"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:27
-msgid "Name of the Shiftscalendar"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:31
-msgid "Name of the Shiftsorganizer"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:35
-msgid "Email fo the Shiftsorganizer"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:39
-msgid "Name of the Shiftsadmin Group"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:43
-msgid "Name of the Analyst Group"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:47
-msgid "Name of the Analyst-Skill Group"
-msgstr ""
-
-#: /var/www/apps/shifts/templates/settings.php:53
-msgid "Add"
 msgstr ""

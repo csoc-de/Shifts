@@ -141,5 +141,8 @@ export function modifyDate(date, { day = 0, week = 0, month = 0 }) {
  * @return {Date}
  */
 export function calcShiftDate(date, timestamp) {
+	if (timestamp.includes('T')) {
+		timestamp = timestamp.split('T')[1].substring(0, 5)
+	}
 	return new Date(date + 'T' + timestamp)
 }

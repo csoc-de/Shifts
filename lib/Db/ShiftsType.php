@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Db;
@@ -31,6 +33,30 @@ class ShiftsType extends Entity implements JsonSerializable {
 
 	public function __construct(){
 		$this->addType('id','integer');
+	}
+
+	public function getName(): string {
+		return $this->name;
+	}
+
+	public function getDescription(): string {
+		return $this->desc;
+	}
+
+	public function getStartTimestamp(): string {
+		return $this->startTimeStamp;
+	}
+
+	public function getStopTimestamp(): string {
+		return $this->stopTimeStamp;
+	}
+
+	public function isWeekly(): bool {
+		return $this->isWeekly;
+	}
+
+	public function getSkillGroupId() {
+		return $this->skillGroupId;
 	}
 
 	public function jsonSerialize(){

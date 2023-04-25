@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Service;
@@ -66,7 +68,7 @@ class ShiftService {
 		}
 	}
 
-	public function find(int $id){
+	public function find(int $id): Shift {
 		try{
 			return $this->mapper->find($id);
 		} catch(Exception $e){
@@ -165,5 +167,25 @@ class ShiftService {
 			$this->handleException($e);
 		}
 		return false;
+	}
+
+	public function swap(int $oldId, int $newId) {
+		try {
+			$oldShift = $this->mapper->find($oldId);
+			$newShift = $this->mapper->find($newId);
+			$this->mapper->swapShifts($oldId, $oldShift->getUserId(), $oldShift->getDate(), $newId, $newShift->getUserId(), $newShift->getDate());
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
+	}
+
+	public function cede(int $shiftId, string $newAnalystId) {
+		try {
+			$shift = $this->mapper->find($shiftId);
+			$shift->setUserId($newAnalystId);
+			return $this->mapper->update($shift);
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
 	}
 }

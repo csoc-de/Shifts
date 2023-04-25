@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Db;
@@ -113,7 +115,7 @@ class ShiftMapper extends QBMapper {
 		$endDate = date('Y-m-d', strtotime($end));
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('user_id', 'shift_type_id', $qb->func()->count('*','num_shifts'))
+		$qb->select('user_id', 'shift_type_id', $qb->func()->count('*','count'))
 			->from('shifts')
 			->where($qb->expr()->neq('user_id', $qb->createNamedParameter('-1')))
 			->andWhere($qb->expr()->gte('date', $qb->createNamedParameter($startDate)))
@@ -122,5 +124,38 @@ class ShiftMapper extends QBMapper {
 			->orderBy('user_id');
 		$result = $qb->execute();
 		return $result->fetchAll();
+	}
+
+	/**
+	 * Swaps dates of two shifts with the same shiftTypeId
+	 * @param int oldShiftId
+	 * @param int newShiftId
+	 * @return void
+	 */
+	public function swapShifts(int $oldShiftId, string $oldUserId, string $oldDate, int $newShiftId, string $newUserId, string $newDate): void {
+		$this->db->beginTransaction();
+		try {
+			/* @var $qb IQueryBuilder */
+        	$qb = $this->db->getQueryBuilder();
+        	$qb->update('shifts','s')
+        		->set('s.user_id', $qb->createNamedParameter($newUserId))
+        		->where($qb->expr()->eq('s.user_id', $qb->createNamedParameter($oldUserId)))
+        		->andWhere($qb->expr()->eq('s.date', $qb->createNamedParameter($oldDate)))
+        		->andWhere($qb->expr()->eq('s.id', $qb->createNamedParameter($oldShiftId)));
+        	$qb->executeStatement();
+
+			$qb = $this->db->getQueryBuilder();
+        	$qb->update('shifts','s')
+        		->set('s.user_id', $qb->createNamedParameter($oldUserId))
+				->where($qb->expr()->eq('s.user_id', $qb->createNamedParameter($newUserId)))
+				->andWhere($qb->expr()->eq('s.date', $qb->createNamedParameter($newDate)))
+				->andWhere($qb->expr()->eq('s.id', $qb->createNamedParameter($newShiftId)));
+			$qb->executeStatement();
+
+			$this->db->commit();
+		} catch(Throwable $e) {
+			$this->db->rollBack();
+			throw $e;
+		}
 	}
 }

@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Settings;
@@ -32,6 +34,13 @@ class Settings{
 	 * @var string
 	 */
 	private $_calendarName = "calendarName";
+
+	/**
+	 * AddUserCalendarEvent key
+	 *
+	 * @var string
+	 */
+	private $_addUserCalendarEvent = "addUserCalendarEvent";
 
 	/**
 	 * Calendar Organizer Name Key
@@ -67,6 +76,20 @@ class Settings{
 	 * @var string
 	 */
 	private $_skillGroups = "skillGroups";
+
+	/**
+	 * ShiftChange same ShiftTypeId Key
+	 *
+	 * @var string
+	 */
+	private $_shiftChangeSameType = "shiftChangeSameType";
+
+	/**
+	 * Shifts Timezone
+	 *
+	 * @var string
+	 */
+	private $_timezone = "shiftsTimezone";
 
 	/**
 	 * @param string $AppName
@@ -123,6 +146,32 @@ class Settings{
 			$calendarName = 'ShiftsCalendar';
 		}
 		return $calendarName;
+	}
+
+	/**
+	 * Saves AddUserCalendarEvent
+	 *
+	 * @param string $calendarName
+	 */
+	public function setAddUserCalendarEvent(bool $addUserCalendarEvent) {
+		$this->config->setAppValue($this->appName,$this->_addUserCalendarEvent, $addUserCalendarEvent ? '1' : '0');
+	}
+
+	/**
+	 * Get AddUserCalendarEvent
+	 *
+	 * @return boolean
+	 */
+	public function getAddUserCalendarEvent(): bool {
+		$addUserCalendarEvent = $this->config->getAppValue($this->appName, $this->_addUserCalendarEvent, '1');
+		if (empty($addUserCalendarEvent) && $addUserCalendarEvent != "0") {
+			$addUserCalendarEvent = $this->GetSystemValue($this->_addUserCalendarEvent);
+		}
+		if (empty($addUserCalendarEvent) && $addUserCalendarEvent != "0") {
+			$this->setAddUserCalendarEvent("1");
+			$addUserCalendarEvent = "1";
+		}
+		return $addUserCalendarEvent;
 	}
 
 	/**
@@ -263,5 +312,57 @@ class Settings{
 			$groups = json_decode('[{"id":0,"name":"Level 1"}]');
 		}
 		return $groups;
+	}
+
+	/**
+	 * Set ShiftChange same ShiftTypeId
+	 *
+	 * @param string $shiftChangeSameType
+	 */
+	public function setShiftChangeSameShiftType(string $shiftChangeSameType) {
+		$this->config->setAppValue($this->appName, $this->_shiftChangeSameType, $shiftChangeSameType);
+	}
+
+	/**
+	 * Get ShiftChange same ShiftTypeId
+	 *
+	 * @return string
+	 */
+	public function getShiftChangeSameShiftType(): string {
+		$shiftChangeSameType = $this->config->getAppValue($this->appName, $this->_shiftChangeSameType, "");
+		if (empty($shiftChangeSameType) && $shiftChangeSameType != "0") {
+			$shiftChangeSameType = $this->GetSystemValue($this->_shiftChangeSameType);
+		}
+		if (empty($shiftChangeSameType) && $shiftChangeSameType != "0") {
+			$this->setShiftChangeSameShiftType("1");
+			$shiftChangeSameType = "1";
+		}
+		return $shiftChangeSameType;
+	}
+
+	/**
+	 * Set ShiftChange same ShiftTypeId
+	 *
+	 * @param string $timezone
+	 */
+	public function setShiftsTimezone(string $timezone) {
+		$this->config->setAppValue($this->appName, $this->_timezone, $timezone);
+	}
+
+	/**
+	 * Get ShiftChange same ShiftTypeId
+	 *
+	 * @return string
+	 */
+	public function getShiftsTimezone(): string {
+		$timezone = $this->config->getAppValue($this->appName, $this->_timezone, "");
+		if (empty($timezone) && $timezone != "0") {
+			$timezone = $this->GetSystemValue($this->_timezone);
+		}
+		if (empty($timezone) && $timezone != "0") {
+			$this->setShiftsTimezone("UTC");
+			$timezone = "UTC";
+		}
+		return $timezone;
 	}
 }

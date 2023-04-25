@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Service;
@@ -10,18 +12,21 @@ namespace OCA\Shifts\Service;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
 use Exception;
 
-use OCA\Shifts\Controller\ShiftsCalendarChangeController;
 use OCA\Shifts\Db\ShiftsCalendarChange;
 use OCA\Shifts\Db\ShiftsCalendarChangeMapper;
+use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 
 use OCA\Shifts\Db\ShiftsType;
 use OCA\Shifts\Db\ShiftsTypeMapper;
-use OCA\Shifts\Db\Shift;
 use OCA\Shifts\Db\ShiftMapper;
+use Psr\Log\LoggerInterface;
 
 class ShiftsTypeService {
 
@@ -34,15 +39,18 @@ class ShiftsTypeService {
 	/** @var ShiftsCalendarChangeMapper */
 	private $shiftsCalendarChangeMapper;
 
-	public function __construct(ShiftsTypeMapper $mapper, ShiftMapper $shiftMapper, ShiftsCalendarChangeMapper $shiftsCalendarChangeMapper){
+	/** @var LoggerInterface */
+	private LoggerInterface $logger;
+
+	/** @var Settings */
+	private Settings $settings;
+
+	public function __construct(ShiftsTypeMapper $mapper, ShiftMapper $shiftMapper, ShiftsCalendarChangeMapper $shiftsCalendarChangeMapper, Settings $settings, LoggerInterface $logger){
 		$this->mapper = $mapper;
+		$this->logger = $logger;
+		$this->settings = $settings;
 		$this->shiftMapper = $shiftMapper;
 		$this->shiftsCalendarChangeMapper = $shiftsCalendarChangeMapper;
-	}
-
-	public function findAll(): array
-	{
-		return $this->mapper->findAll();
 	}
 
 	private function handleException($e){
@@ -54,16 +62,76 @@ class ShiftsTypeService {
 		}
 	}
 
-	public function find(int $id){
-		try{
-			return $this->mapper->find($id);
-		} catch(Exception $e){
+	private function validateDate($shiftsType): bool {
+		$result = true;
+
+		if($shiftsType->getIsWeekly())
+		{
+			return $result;
+		}
+
+		$ts = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStartTimeStamp());
+		if(!$ts) {
+			$this->logger->info("ShiftsTypeService::validateDate() -> Start-DateTime format is NOT ok", ['timestamp' => $shiftsType->getStartTimeStamp(), 'timezone' => $this->settings->getShiftsTimezone()]);
+			$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStartTimeStamp());
+			$timezone = new DateTimeZone($this->settings->getShiftsTimezone());
+			$timestamp = $timestamp->sub(DateInterval::createFromDateString($timezone->getOffset($timestamp) . " seconds"));
+			$shiftsType->setStartTimeStamp($timestamp->format(DateTimeInterface::RFC3339_EXTENDED));
+			$this->logger->info("ShiftsTypeService::validateDate() -> Start-Timestamp converted", ['timestamp' => $shiftsType->getStartTimeStamp(), 'offset' => $timezone->getOffset($timestamp)]);
+			$result = false;
+		}
+
+		$ts = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStopTimeStamp());
+		if(!$ts) {
+			$this->logger->info("ShiftsTypeService::validateDate() -> Stop-DateTime format is NOT ok", ['timestamp' => $shiftsType->getStopTimeStamp()]);
+			$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStopTimeStamp());
+			$timezone = new DateTimeZone($this->settings->getShiftsTimezone());
+			$timestamp = $timestamp->sub(DateInterval::createFromDateString($timezone->getOffset($timestamp) . " seconds"));
+			$shiftsType->setStopTimeStamp($timestamp->format(DateTimeInterface::RFC3339_EXTENDED));
+			$this->logger->info("ShiftsTypeService::validateDate() -> Stop-Timestamp converted", ['timestamp' => $shiftsType->getStopTimeStamp(), 'offset' => $timezone->getOffset($timestamp)]);
+			$result = false;
+		}
+
+		return $result;
+	}
+
+	public function find(int $id) {
+		try {
+			$shiftsType = $this->mapper->find($id);
+
+			if($this->validateDate($shiftsType)) {
+				$this->logger->debug("ShiftsTypeService::find() -> DateTime format is ok", ['shiftTypeId' => $id, 'start timestamp' => $shiftsType->getStartTimestamp(), 'end timestamp' => $shiftsType->getStartTimestamp()]);
+			} else {
+				$this->mapper->update($shiftsType);
+			}
+
+			return $shiftsType;
+		} catch(Exception $e) {
 			$this->handleException($e);
 		}
 	}
 
-	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color,
-						   int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly, bool $deleted){
+	public function findAll(): array
+	{
+		$this->logger->debug("ShiftsTypeService::findAll()");
+		try {
+			$shiftsTypes = $this->mapper->findAll();
+
+			foreach($shiftsTypes as $shiftsType) {
+				if($this->validateDate($shiftsType)) {
+					$this->logger->debug("ShiftsTypeService::findAll() -> DateTime format is ok", ['shiftTypeId' => $shiftsType->getid(), 'start timestamp' => $shiftsType->getStartTimeStamp(), 'end timestamp' => $shiftsType->getStartTimeStamp()]);
+				} else {
+					$this->mapper->update($shiftsType);
+				}
+			}
+
+			return $shiftsTypes;
+		} catch(Exception $e) {
+			$this->handleException($e);
+		}
+	}
+
+	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color, int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly) {
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
@@ -79,7 +147,7 @@ class ShiftsTypeService {
 		$shiftsType->setSoRule($soRule);
 		$shiftsType->setSkillGroupId($skillGroupId);
 		$shiftsType->setIsWeekly($isWeekly ?: '0');
-		$shiftsType->setDeleted($deleted ?: '0');
+		$shiftsType->setDeleted('0');
 		return $this->mapper->insert($shiftsType);
 	}
 
@@ -96,8 +164,7 @@ class ShiftsTypeService {
 				$shifts = $this->shiftMapper->findByDateTypeandAssignment($dt->format('Y-m-d'),$shiftsTypeId);
 				if (count($shifts) >= $countToDelete) {
 					for($i = 0; $i < $countToDelete; $i++) {
-						$shifts[$i]->setHasChanged('deleted');
-						$this->shiftMapper->update($shifts[$i]);
+						$this->shiftMapper->delete($shifts[$i]);
 					}
 				}
 			}

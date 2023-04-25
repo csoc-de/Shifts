@@ -1,14 +1,22 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Controller;
 
+use Exception;
+use OCA\Shifts\Service\PermissionException;
+use OCA\Shifts\Service\InvalidArgumentException;
+
+use OCP\AppFramework\Http;
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Service\ShiftsChangeService;
+use OCA\Shifts\Service\PermissionService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
@@ -17,16 +25,27 @@ class ShiftsChangeController extends Controller{
 	/** @var ShiftsChangeService */
 	private $service;
 
-	/** @var string */
-	private $userId;
+	private $permService;
 
 	use Errors;
 
 
-	public function __construct(IRequest $request, ShiftsChangeService $service, $userId){
+	public function __construct(IRequest $request, ShiftsChangeService $service, PermissionService $permService){
 		parent::__construct(Application::APP_ID, $request);
 		$this->service = $service;
-		$this->userId = $userId;
+		$this->permService = $permService;
+	}
+
+	private function handleException(Exception $e): DataResponse {
+		if($e instanceof PermissionException) {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		} elseif($e instanceof InvalidArgumentException) {
+			return new DataResponse(NULL, Http::STATUS_BAD_REQUEST);
+		} elseif($e instanceof NotFoundException) {
+			return new DataResponse(NULL, Http::STATUS_NOT_FOUND);
+        } else {
+			return new DataResponse(NULL, Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -44,9 +63,11 @@ class ShiftsChangeController extends Controller{
 	 * @return DataResponse
 	 */
 	public function show(int $id): DataResponse {
-		return $this->handleNotFound(function () use($id){
+		try {
 			return $this->service->find($id);
-		});
+		} catch(Exception $e) {
+			return $this->handleException($e);
+		}
 	}
 
 	/**
@@ -65,7 +86,15 @@ class ShiftsChangeController extends Controller{
 	 * @return DataResponse
 	 */
 	public function create(string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse {
-		return new DataResponse($this->service->create($oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type));
+		if($this->permService->isRequestingUser($oldAnalystId) || $this->permService->isRequestingUserAdmin()) {
+			try {
+				return new DataResponse($this->service->create($oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type));
+			} catch (Exception $e) {
+				return $this->handleException($e);
+			}
+		} else {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
 	}
 
 	/**
@@ -84,11 +113,18 @@ class ShiftsChangeController extends Controller{
 	 * @param string type
 	 * @return DataResponse
 	 */
-	public function update(int $id, string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, string $type): DataResponse
+	public function update(int $id, string $oldAnalystId, string $newAnalystId, string $adminApproval, string $adminApprovalDate, string $analystApproval, string $analystApprovalDate, int $oldShiftsId, int $newShiftsId, string $desc, int $type): DataResponse
 	{
-		return $this->handleNotFound(function() use ($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type){
-			return $this->service->update($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type);
-		});
+		if($this->permService->isRequestingUser($oldAnalystId) || $this->permService->isRequestingUser($newAnalystId) || $this->permService->isRequestingUserAdmin()) {
+			try {
+				$result = $this->service->update($id, $oldAnalystId, $newAnalystId, $adminApproval, $adminApprovalDate, $analystApproval, $analystApprovalDate, $oldShiftsId, $newShiftsId, $desc, $type);
+				return new DataResponse($result, Http::STATUS_OK);
+			} catch (Exception $e) {
+				return $this->handleException($e);
+			}
+		} else {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
 	}
 
 	/**
@@ -99,8 +135,15 @@ class ShiftsChangeController extends Controller{
 	 */
 	public function destroy(int $id): DataResponse
 	{
-		return $this->handleNotFound(function() use($id) {
-			return $this->service->delete($id);
-		});
+		if($this->permService->isRequestingUserAdmin()) {
+			try {
+				$result = $this->service->delete($id);
+				return new DataResponse($result, Http::STATUS_OK);
+			} catch(Exception $e) {
+				return $this->handleException($e);
+			}
+		} else {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
 	}
 }

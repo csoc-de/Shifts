@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Db;
@@ -26,6 +28,22 @@ class ShiftsChange extends Entity implements JsonSerializable {
 
 	public function __construct(){
 		$this->addType('id','integer');
+	}
+
+	public function getOldShiftsId(): int {
+		return $this->oldShiftsId;
+	}
+
+	public function getNewShiftsId(): int {
+		return $this->newShiftsId;
+	}
+
+	public function getOldAnalystId(): string {
+		return $this->oldAnalystId;
+	}
+
+	public function getNewAnalystId(): string {
+		return $this->newAnalystId;
 	}
 
 	public function jsonSerialize(){

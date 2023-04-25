@@ -1,2 +1,5 @@
 /node_modules/
-/js/shifts-main.j
+/vendor/
+.idea/
+js/
+build/

@@ -1,7 +1,9 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <!--
@@ -33,13 +35,13 @@
 				to="/archive" />
 		</template>
 		<template #footer>
-			Version: 1.8.6
+			<span style="margin-left: 10px">Version: 1.9.0-dev</span>
 		</template>
 	</AppNavigationVue>
 </template>
 
 <script>
-import { AppNavigation as AppNavigationVue, AppNavigationItem } from '@nextcloud/vue'
+import { NcAppNavigation as AppNavigationVue, NcAppNavigationItem as AppNavigationItem } from '@nextcloud/vue'
 import { mapGetters } from 'vuex'
 export default {
 	name: 'AppNavigation',
