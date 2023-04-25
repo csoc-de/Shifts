@@ -1,246 +1,242 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <template>
-	<Modal
+	<NcModal
 		size="large"
-		:title="t('shifts', 'New Shiftstype')"
-		@close="$emit('close')">
+		@close="close"
+		:title="t('shifts', 'New Shiftstype')">
 		<div class="shifts-type-modal">
-			<!-- eslint-disable -->
-			<v-text-field
-				key="typeName"
-				class="mb-1 p-1"
-				hide-details
-				:value="shiftsType.name"
-				@change="updateName"
-			></v-text-field>
-			<Multiselect
-				key="skillGroupSelect"
-				:value="shiftsType.skillGroupId"
-				:options="skillGroups"
-				track-by="id"
-				label="name"
-				@change="updateSkillGroup" />
-			<v-menu
-				key="color"
-				ref="colorMenu"
-				v-model="colorMenu"
-				:close-on-content-click="false"
-				:close-on-click="true"
-				:nudge-right="40"
-				transition="scale-transition"
-				offset-y
-				attach
-				absolute
-				min-width="290px">
-				<template v-slot:activator="{ on, attrs }">
-					<v-text-field
-						:value="shiftsType.color"
-						:label="t('shifts', 'Calendar Color')"
-						v-bind="attrs"
-						v-on="on">
-					</v-text-field>
-				</template>
-				<v-color-picker
-					dot-size="25"
-					mode="hexa"
-					swatches-max-height="200"
-					:value="color.hexa"
-					@update:color="changeColor">
-				</v-color-picker>
-				<v-btn color="primary" @click="colorMenu = false">
-					Cancel
-				</v-btn>
-				<v-btn color="primary" @click="saveColor()">
-					Ok
-				</v-btn>
-			</v-menu>
-			<div v-if="showTimeSelector">
-				<v-menu
-					key="startTimestamp"
-					ref="startMenu"
-					v-model="startMenu"
-					:close-on-click="true"
-					:close-on-content-click="false"
-					:nudge-right="40"
-					transition="scale-transition"
-					offset-y
-					attach
-					absolute
-					max-width="290px"
-					min-width="290px">
-					<template v-slot:activator="{ on, attrs }">
-						<v-text-field
-							:value="shiftsType.startTimestamp"
-							:label="t('shifts', 'Start Time')"
-							v-bind="attrs"
-							v-on="on">
-						</v-text-field>
-					</template>
-					<v-time-picker
-						v-if="startMenu"
-						:value="shiftsType.startTimestamp"
-						format="24hr"
-						full-width
-						@change="changeStart">
-					</v-time-picker>
-				</v-menu>
-				<v-menu
-					key="stopTimestamp"
-					ref="stopMenu"
-					v-model="stopMenu"
-					:close-on-content-click="false"
-					:close-on-click="true"
-					:nudge-right="40"
-					transition="scale-transition"
-					offset-y
-					attach
-					absolute
-					max-width="290px"
-					min-width="290px">
-					<template v-slot:activator="{ on, attrs }">
-						<v-text-field
-							:value="shiftsType.stopTimestamp"
-							:label="t('shifts', 'Stop Time')"
-							v-bind="attrs"
-							v-on="on">
-						</v-text-field>
-					</template>
-					<v-time-picker
-						v-if="stopMenu"
-						:value="shiftsType.stopTimestamp"
-						format="24hr"
-						full-width
-						@change="changeStop">
-					</v-time-picker>
-				</v-menu>
+			<div class="container">
+				<div class="row">
+					<h3>Informationen</h3>
+				</div>
+				<div class="row">
+					<div class="col">
+						<NcTextField
+							:value.sync="name"
+							:label="t('shifts', 'New Shiftstype')" />
+					</div>
+
+					<div class="col">
+						<NcMultiselect
+							key="skillGroupSelect"
+							:value.sync="skillGroupId"
+							:options="skillGroups"
+							track-by="id"
+							label="name" />
+					</div>
+				</div>
 			</div>
-			<div v-if="!showTimeSelector">
-				<v-text-field
-					key="numShifts"
-					:label="t('shifts', 'weekly Shifts')"
-					type="number"
-					min="-1"
-					max="10"
-					hide-details
-					:value="shiftsType.moRule"
-					@change="changeMoRule"
-				></v-text-field>
+
+			<!-- Calendar color picker -->
+			<div class="container">
+				<div class="row">
+					<h3>{{t('shifts', 'Calendar Color')}}</h3>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						<div :style="{'background-color': color}" class="colorPreview"></div>
+					</div>
+
+					<div class="col">
+						<NcColorPicker
+							v-model="color"
+							:advanced-fields="true">
+							<NcButton>Farbe ändern</NcButton>
+						</NcColorPicker>
+					</div>
+				</div>
 			</div>
-			<v-checkbox
-				key="isWeekly"
-				v-model="shiftsType.isWeekly"
-				:label="t('shifts','Weekly')"
-				@change="updateIsWeekly">
-			</v-checkbox>
-			<v-expansion-panels
-				key="rules"
-				:flat="true"
-				v-if="showTimeSelector">
-				<v-expansion-panel>
-					<v-expansion-panel-header>{{ t('shifts', 'Rules')}}</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<v-text-field
-							:label="t('shifts', 'Monday')"
+
+			<!-- Start and end time of shift -->
+			<div class="container">
+				<div class="row">
+					<h3>Zeit</h3>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						<NcCheckboxRadioSwitch :checked.sync="weekly">{{t('shifts','Weekly')}}</NcCheckboxRadioSwitch>
+					</div>
+
+					<div class="col" style="padding-left: 12px">
+						<input
 							type="number"
 							min="-1"
 							max="10"
-							hide-details
-							:value="shiftsType.moRule"
-							@change="changeMoRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Tuesday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.tuRule"
-							@change="changeTuRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Wednesday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.weRule"
-							@change="changeWeRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Thursday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.thRule"
-							@change="changeThRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Friday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.frRule"
-							@change="changeFrRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Saturday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.saRule"
-							@change="changeSaRule"
-						></v-text-field>
-						<v-text-field
-							:label="t('shifts', 'Sunday')"
-							type="number"
-							min="-1"
-							max="10"
-							hide-details
-							:value="shiftsType.soRule"
-							@change="changeSoRule"
-						></v-text-field>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-			</v-expansion-panels>
-			<v-row
-				class="float_right">
-				<v-btn @click="$emit('close')">
-					{{ t('shifts','Cancel') }}
-				</v-btn>
-				<v-btn color="#03a9f4"
-					   @click="save">
-					{{ t('shifts','Save') }}
-				</v-btn>
-			</v-row>
-			<!-- eslint-enable -->
+							v-model="moRule"
+							:disabled="!weekly"
+							:placeholder="t('shifts', 'weekly Shifts')" />
+					</div>
+				</div>
+
+				<div v-if="!weekly"
+					class="row">
+					<div class="col">
+						<NcDatetimePicker
+							clearable
+							v-model="startTime"
+							type="time"
+							show-hour
+							show-minute
+							format="HH:mm"
+							:show-second="false"
+							:disabled="weekly"
+							:placeholder="t('shifts', 'Start Time')" />
+					</div>
+
+					<div class="col">
+						<NcDatetimePicker
+							clearable
+							v-model="stopTime"
+							type="time"
+							show-hour
+							show-minute
+							format="HH:mm"
+							:show-second="false"
+							:disabled="weekly"
+							:placeholder="t('shifts', 'Stop Time')" />
+					</div>
+				</div>
+			</div>
+
+			<div class="container">
+				<div class="row">
+					<h3>{{ t('shifts', 'Rules') }}</h3>
+				</div>
+
+				<div class="row">
+					<table class="ruleTable">
+						<thead>
+							<!-- Table header for date -->
+							<tr v-if="!weekly">
+								<th>{{t('shifts', 'Monday')}}</th>
+								<th>{{t('shifts', 'Tuesday')}}</th>
+								<th>{{t('shifts', 'Wednesday')}}</th>
+								<th>{{t('shifts', 'Thursday')}}</th>
+								<th>{{t('shifts', 'Friday')}}</th>
+								<th>{{t('shifts', 'Saturday')}}</th>
+								<th>{{t('shifts', 'Sunday')}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-if="!weekly">
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="moRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="tuRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="weRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="thRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="frRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="saRule" />
+								</td>
+								<td>
+									<input type="number"
+										min="-1"
+										max="10"
+										:disabled="weekly"
+										v-model="soRule" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Action buttons -->
+			<div class="buttons-bar">
+				<div class="right">
+					<NcButton
+						type="secondary"
+						@click="close">
+						{{ t('shifts','Cancel') }}
+					</NcButton>
+					<NcButton
+						type="primary"
+						@click="save">
+						{{ t('shifts','Save') }}
+					</NcButton>
+				</div>
+			</div>
 		</div>
-	</Modal>
+	</NcModal>
 </template>
 
 <script>
-import Modal from '@nextcloud/vue/dist/Components/Modal'
-import Multiselect from '@nextcloud/vue/dist/Components/Multiselect'
+import store from '../../store'
 import { mapGetters } from 'vuex'
+import { showError } from '@nextcloud/dialogs'
+import { NcModal, NcButton, NcMultiselect, NcTextField, NcColorPicker, NcDatetimePicker, NcCheckboxRadioSwitch } from '@nextcloud/vue'
+
 export default {
 	name: 'ShiftsTypeModal',
 	components: {
-		Modal,
-		Multiselect,
+		NcModal,
+		NcButton,
+		NcTextField,
+		NcColorPicker,
+		NcMultiselect,
+		NcDatetimePicker,
+		NcCheckboxRadioSwitch,
 	},
 	data() {
 		return {
-			startMenu: false,
-			stopMenu: false,
-			colorMenu: false,
-			color: '',
+		}
+	},
+	methods: {
+		save() {
+			store.dispatch('saveCurrentShiftsType').then(() => {
+				this.close()
+			}).catch((e) => {
+				console.error('Failed to save shifts type:', e)
+				showError(t('shifts', 'Could not save the shiftType'))
+			}).finally(() => {
+				store.dispatch('triggerUnassignedShifts')
+				store.dispatch('updateShifts')
+			})
+		},
+		close() {
+			this.$emit('close')
 		}
 	},
 	computed: {
@@ -248,60 +244,164 @@ export default {
 			shiftsType: 'shiftsTypeInstance',
 			skillGroups: 'getSkillGroups',
 		}),
-		showTimeSelector() {
-			return !this.shiftsType.isWeekly
+
+		name: {
+			get() {
+				return store.state.shiftsTypeInstance.name
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceName', value)
+			}
 		},
-	},
-	methods: {
-		updateName(name) {
-			this.$store.commit('changeName', name)
+		color: {
+			get() {
+				return store.state.shiftsTypeInstance.color
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceColor', value)
+			}
 		},
-		changeStart(start) {
-			this.startMenu = false
-			this.$store.commit('changeStart', start)
+		skillGroupId: {
+			get() {
+				return store.state.shiftsTypeInstance.skillGroupId
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceSkillGroupId', value)
+			}
 		},
-		changeStop(stop) {
-			this.stopMenu = false
-			this.$store.commit('changeStop', stop)
+		startTime: {
+			get() {
+				return store.state.shiftsTypeInstance.startTimestamp
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceStartTime', value)
+			}
 		},
-		changeColor(color) {
-			this.color = color
+		stopTime: {
+			get() {
+				return store.state.shiftsTypeInstance.stopTimestamp
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceStopTime', value)
+			}
 		},
-		changeMoRule(value) {
-			this.$store.commit('changeMoRule', value)
+		weekly: {
+			get() {
+				return store.state.shiftsTypeInstance.isWeekly
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceWeekly', value)
+			}
 		},
-		changeTuRule(value) {
-			this.$store.commit('changeTuRule', value)
+		moRule: {
+			get() {
+				return store.state.shiftsTypeInstance.moRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceMoRule', value)
+			}
 		},
-		changeWeRule(value) {
-			this.$store.commit('changeWeRule', value)
+		tuRule: {
+			get() {
+				return store.state.shiftsTypeInstance.tuRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceTuRule', value)
+			}
 		},
-		changeThRule(value) {
-			this.$store.commit('changeThRule', value)
+		weRule: {
+			get() {
+				return store.state.shiftsTypeInstance.weRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceWeRule', value)
+			}
 		},
-		changeFrRule(value) {
-			this.$store.commit('changeFrRule', value)
+		thRule: {
+			get() {
+				return store.state.shiftsTypeInstance.thRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceThRule', value)
+			}
 		},
-		changeSaRule(value) {
-			this.$store.commit('changeSaRule', value)
+		frRule: {
+			get() {
+				return store.state.shiftsTypeInstance.frRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceFrRule', value)
+			}
 		},
-		changeSoRule(value) {
-			this.$store.commit('changeSoRule', value)
+		saRule: {
+			get() {
+				return store.state.shiftsTypeInstance.saRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceSaRule', value)
+			}
 		},
-		saveColor() {
-			this.colorMenu = false
-			this.$store.commit('changeColor', this.color.hexa)
-		},
-		updateSkillGroup(skillGroup) {
-			this.$store.commit('changeSkillGroupId', skillGroup)
-		},
-		updateIsWeekly(value) {
-			this.$store.commit('changeIsWeekly', value)
-		},
-		save() {
-			this.$store.dispatch('saveCurrentShiftsType')
-			this.$emit('saved')
-		},
+		soRule: {
+			get() {
+				return store.state.shiftsTypeInstance.soRule
+			},
+			set(value) {
+				store.dispatch('setShiftsTypeInstanceSoRule', value)
+			}
+		}
 	},
 }
 </script>
+
+<style lang="scss" scoped>
+h3 {
+	font-weight: bold;
+}
+
+.colorPreview {
+	width: 100px;
+	height: 40px;
+	border-radius: 6px;
+}
+
+.ruleTable {
+	line-height: 1.5;
+	max-width: 100%;
+	border-spacing: 0;
+	border-color: grey;
+	border-collapse: collapse;
+
+	thead {
+		tr {
+			th {
+				height: 48px;
+				padding: 0 16px;
+				font-weight: bold;
+			}
+			th:first-child {
+				margin-right: 4px;
+			}
+
+			td {
+				height: 48px;
+				padding: 0 16px;
+			}
+		}
+	}
+
+	tbody {
+		tr {
+			border-bottom: 1px;
+
+			td {
+				height: 48px;
+				padding: 0 16px;
+			}
+		}
+
+		tr:hover {
+			background: transparent;
+		}
+	}
+}
+</style>

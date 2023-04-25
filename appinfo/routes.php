@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 return [
@@ -10,6 +12,7 @@ return [
 		'shift' => ['url' => '/shifts'],
 		'shiftsType' => ['url' => '/shiftsType'],
 		'shiftsChange' => ['url' => '/shiftsChange'],
+		'shiftsCalendar' => ['url' => '/shiftsCalendar'],
 		'shiftsCalendarChange' => ['url' => '/shiftsCalendarChange'],
 	],
 	'routes' => [
@@ -27,5 +30,10 @@ return [
 		['name' => 'shift#getShiftsDataByTimeRange', 'url' => '/getShiftsDataByTimeRange/{start}/{end}', 'verb' => 'GET'],
 		['name' => 'settings#getSettings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'settings#saveSettings', 'url' => '/settings', 'verb' => 'PUT'],
+		['name' => 'shiftsCalendar#index', 'url' => '/shiftsCalendar', 'verb' => 'GET'],
+		['name' => 'shiftsCalendar#create', 'url' => '/shiftsCalendar', 'verb' => 'POST'],
+		['name' => 'shiftsCalendar#update', 'url' => '/shiftsCalendar', 'verb' => 'PUT'],
+		['name' => 'shiftsCalendar#delete', 'url' => '/shiftsCalendar', 'verb' => 'DELETE'],
+		['name' => 'shiftsCalendar#synchronize', 'url' => '/shiftsCalendar', 'verb' => 'PATCH'],
 	]
 ];

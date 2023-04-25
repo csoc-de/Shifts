@@ -1,7 +1,9 @@
 /*!
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 .mx-datepicker-popup{
@@ -270,3 +272,81 @@ h1, h2, h3 {
 
 
 
+.shifts_container {
+	margin-left: 44px;
+}
+
+.top-bar {
+	display: flex;
+	z-index: 10;
+	padding: 4px 8px;
+	background-color: var(--color-main-background);
+	border-bottom: 1px solid var(--color-border);
+
+	.left {
+		flex-grow: 1;
+		flex-basis: 0;
+		max-width: 100%;
+		justify-content: flex-start;
+	}
+
+	.spacer {
+		flex-grow: 1;
+	}
+
+	.right {
+		flex: 0 0 auto;
+		justify-content: flex-end;
+
+		margin-right: 14px;
+	}
+}
+.buttons-bar {
+	display: flex;
+	flex-direction: column;
+
+	.right {
+		display: flex;
+		align-self: end;
+		align-items: flex-end;
+	}
+
+	.left {
+		display: flex;
+		align-self: start;
+		align-items: flex-start;
+	}
+
+	button {
+		margin: 0 2px;
+		white-space: nowrap;
+	}
+}
+
+.content {
+	margin: 24px 8px;
+
+	.header {
+		margin-bottom: 12px;
+
+		font-size: 24px;
+		font-weight: bold;
+	}
+
+	.body {
+
+	}
+}
+
+.container {
+	.row {
+		display: flex;
+		flex-direction: row;
+
+		padding: 4px;
+
+		.col {
+			padding: 4px;
+		}
+	}
+}

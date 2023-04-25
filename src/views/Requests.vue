@@ -1,174 +1,348 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <!--
   - View to display and add Requests
   -->
 <template>
-	<div class="tab_content">
-		<v-btn
-			v-if="isAnalyst || isAdmin"
-			color="light-blue"
-			@click="openDialog()">
-			{{ t('shifts','New Request') }}
-		</v-btn>
-		<RequestsModal v-if="dialogOpen"
-			:is-admin="isAdmin"
-			:shifts="shifts"
-			:analysts="analysts"
-			@close="closeDialog"
-			@saved="dialogSaved" />
-		<h1>{{ t('shifts','In Progress') }}</h1>
-		<!--eslint-disable-->
-		<v-list>
-			<v-list-group
-				v-for="shiftsChange in inProgressShiftsChanges"
-				:key="shiftsChange.id"
-				v-model="shiftsChange.active"
-				:prepend-icon=" shiftsChange.type === '0' ? 'mdi-swap-horizontal' : 'icon-confirm'">
-				<template v-slot:activator>
-					<v-list-item-content>
-						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Swap') : t('shifts','Offer')"></v-list-item-title>
-						<v-row>
-							<v-col
-								cols="12"
-								em="6"
-								class="display_name_col">
-								<v-list-item-subtitle v-text="getDisplayNameByUserId(shiftsChange.oldAnalystId)"></v-list-item-subtitle>
-							</v-col>
-							<v-col
-								cols="12"
-								em="6"
-								class="shifts_details_col">
-								<v-list-item-subtitle v-text="getShiftsDetailsByShiftsIdAsString(shiftsChange.oldShiftsId)"></v-list-item-subtitle>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col
-								cols="12"
-								em="6"
-								class="display_name_col">
-								<v-list-item-subtitle v-text="getDisplayNameByUserId(shiftsChange.newAnalystId)"></v-list-item-subtitle>
-							</v-col>
-							<v-col
-								cols="12"
-								em="6"
-								class="shifts_details_col">
-								<v-list-item-subtitle v-text="getShiftsDetailsByShiftsIdAsString(shiftsChange.newShiftsId)"></v-list-item-subtitle>
-							</v-col>
-						</v-row>
-					</v-list-item-content>
-				</template>
-				<div class="float_right list_items">
-					<p v-if="isAdmin && shiftsChange.analystApproval === '1'">
-						{{ t('shifts', 'Analyst Approval: ')
-					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
-					+ getDateString(shiftsChange.analystApprovalDate) }}
-					</p>
-					<v-btn
-						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
-						color="red"
-						@click="disapproved(shiftsChange)">
-						{{ t('shifts','Decline') }}
-						<v-icon>
-							icon-close
-						</v-icon>
-					</v-btn>
-					<v-btn
-						v-if="(shiftsChange.newAnalystId === currentUser && shiftsChange.analystApproval !== '1') || (isAdmin && shiftsChange.analystApproval === '1') || (isAdmin && shiftsChange.newAnalystId === currentUser)"
-						color="green"
-						@click="approved(shiftsChange)">
-						{{ t('shifts','Approve') }}
-						<v-icon>
-							icon-checkmark
-						</v-icon>
-					</v-btn>
-					<v-btn
-						color="red lighten-1"
-						dark
-						@click="deleteRequest(shiftsChange)">
-						{{ t('shifts', 'Delete') }}
-					</v-btn>
+	<div>
+		<!-- Top button bar -->
+		<div class="top-bar">
+			<div class="left">
+				<div class="buttons-bar">
+					<NcButton
+						type="primary"
+						@click="openDialog()">
+						{{ t('shifts','New Request') }}
+					</NcButton>
 				</div>
-			</v-list-group>
-		</v-list>
-		<h1>{{ t('shifts','Processed') }}</h1>
-		<v-list>
-			<v-list-group
-				v-for="shiftsChange in doneShiftsChanges"
-				:key="shiftsChange.id"
-				v-model="shiftsChange.active"
-				:prepend-icon=" shiftsChange.type === '0' ? 'mdi-swap-horizontal' : 'icon-confirm'">
-				<template v-slot:activator>
-					<v-list-item-content>
-						<v-list-item-title v-text="shiftsChange.type === '0' ? t('shifts','Swap') : t('shifts','Offer')"></v-list-item-title>
-						<v-row>
-							<v-col
-								cols="12"
-								em="6"
-								class="display_name_col">
-								<v-list-item-subtitle v-text="getDisplayNameByUserId(shiftsChange.oldAnalystId)"></v-list-item-subtitle>
-							</v-col>
-							<v-col
-								cols="12"
-								em="6"
-								class="shifts_details_col">
-								<v-list-item-subtitle v-text="getShiftsDetailsByShiftsIdAsString(shiftsChange.oldShiftsId)"></v-list-item-subtitle>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col
-								cols="12"
-								em="6"
-								class="display_name_col">
-								<v-list-item-subtitle v-text="getDisplayNameByUserId(shiftsChange.newAnalystId)"></v-list-item-subtitle>
-							</v-col>
-							<v-col
-								cols="12"
-								em="6"
-								class="shifts_details_col">
-								<v-list-item-subtitle v-text="getShiftsDetailsByShiftsIdAsString(shiftsChange.newShiftsId)"></v-list-item-subtitle>
-							</v-col>
-						</v-row>
-					</v-list-item-content>
-				</template>
-				<div class="done_shifts_items list_items">
-					<p>
-						{{ t('shifts', 'Analyst Approval: ')
-					+ (shiftsChange.analystApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
-					+ getDateString(shiftsChange.analystApprovalDate) }}
-					</p>
-					<p>
-						{{ t('shifts', 'Admin Approval: ')
-					+ (shiftsChange.adminApproval === '1' ? 'true' : 'false') + t('shifts', ' at ')
-					+ getDateString(shiftsChange.adminApprovalDate) }}
-					</p>
-				</div>
-			</v-list-group>
-		</v-list>
-		<!--eslint-enable-->
+			</div>
+		</div>
+
+		<ChangeRequestModal v-if="dialogOpen" @close="closeDialog" :is-admin="this.isAdmin" />
+
+		<div class="requestTableContainer">
+			<!-- Request still in progress -->
+			<table>
+				<thead>
+					<tr>
+						<th style="color: goldenrod">{{ t('shifts','In Progress') }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="(changeRequest, i) in getInProgressShiftChangeRequests"
+						:key="i">
+						<td>
+							<!-- <span>{{changeRequest}}</span>-->
+							<div class="container shiftChangeRequestItem">
+								<div class="row">
+									<div class="col">
+										<h2>{{changeRequest.oldAnalystId}}</h2>
+									</div>
+									<div class="col">
+										<h2 v-if="changeRequest.type === 0">&#8644;</h2>
+										<h2 v-else-if="changeRequest.type === 1">&#10140;</h2>
+									</div>
+									<div class="col">
+										<h2>{{changeRequest.newAnalystId}}</h2>
+									</div>
+								</div>
+
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col">
+										<div class="container">
+											<div class="row">
+												<div class="col">
+													<div v-if="changeRequest.oldShift">
+														<span>{{changeRequest.oldShift.shiftsType.name}}</span>
+														<span>{{changeRequest.oldShift.date}}</span>
+													</div>
+													<div v-else>
+														<span>{{t('shifts','Unknown shift type')}}</span>
+														<span>N/A</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col"></div>
+									<div class="col">
+										<div class="container">
+											<div class="row">
+												<div class="col">
+													<div v-if="changeRequest.newShift">
+														<span>{{changeRequest.newShift.shiftsType.name}}</span>
+														<span>{{changeRequest.newShift.date}}</span>
+													</div>
+													<div v-else-if="changeRequest.type === 0">
+														<span>{{t('shifts','Unknown shift type')}}</span>
+														<span>N/A</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- User approval -->
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col alignCenter">
+										<div class="container">
+											<div class="row">
+												<div class="col alignCenter">
+													<span>{{changeRequest.oldAnalystId}} {{t('shifts', 'has confirmed')}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col"></div>
+									<div class="col alignCenter">
+										<div class="container">
+											<div class="row">
+												<div class="col alignCenter">
+													<span v-if="changeRequest.analystApproval">{{changeRequest.newAnalystId}} {{t('shifts', 'has confirmed')}}</span>
+													<span v-else style="color: red">{{changeRequest.newAnalystId}} {{t('shifts', 'has not confirmed')}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div
+										v-if="!isAdmin && currentUser === changeRequest.newAnalystId"
+										class="col buttons-bar">
+										<div class="right">
+											<NcButton
+												type="primary"
+												:disabled="loading || changeRequest.analystApproval"
+												@click="confirmUser(changeRequest)">
+												<template #icon>
+													<CheckBold></CheckBold>
+												</template>
+											</NcButton>
+											<NcButton
+												type="error"
+												:disabled="loading"
+												@click="cancelUser(changeRequest)">
+												<template #icon>
+													<CloseThick></CloseThick>
+												</template>
+											</NcButton>
+										</div>
+									</div>
+								</div>
+
+								<!-- Admin approval -->
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col alignCenter" style="padding-top: 0;">
+										<h3 v-if="changeRequest.adminApproval">{{t('shifts', 'An admin has approved')}}</h3>
+										<h3 v-else style="color: red">{{t('shifts', 'An admin has not approved')}}</h3>
+									</div>
+									<div class="col"></div>
+									<div class="col"></div>
+									<div
+										v-if="isAdmin"
+										class="col buttons-bar">
+										<div class="right">
+											<NcButton
+												type="primary"
+												:disabled="loading"
+												@click="approveAdmin(changeRequest)">
+												<template #icon>
+													<CheckBold v-if="!changeRequest.adminApproval"></CheckBold>
+													<BackupRestore v-else></BackupRestore>
+												</template>
+											</NcButton>
+											<NcButton
+												type="error"
+												:disabled="loading"
+												@click="cancelAdmin(changeRequest)">
+												<template #icon>
+													<CloseThick></CloseThick>
+												</template>
+											</NcButton>
+											<NcButton
+												type="error"
+												:disabled="loading"
+												@click="deleteAdmin(changeRequest)">
+												<template #icon>
+													<TrashCanOutline></TrashCanOutline>
+												</template>
+											</NcButton>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<!-- Processed requests -->
+			<table>
+				<thead>
+					<tr>
+						<th style="color: green">{{ t('shifts','Processed') }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="(changeRequest, i) in getProcessedShiftChangeRequests"
+						:key="i">
+						<td>
+							<!-- <span>{{changeRequest}}</span>-->
+							<div class="container shiftChangeRequestItem">
+								<div class="row">
+									<div class="col">
+										<h2>{{changeRequest.oldAnalystId}}</h2>
+									</div>
+									<div class="col">
+										<h2 v-if="changeRequest.type === 0">&#8644;</h2>
+										<h2 v-else-if="changeRequest.type === 1">&#10140;</h2>
+									</div>
+									<div class="col">
+										<h2>{{changeRequest.newAnalystId}}</h2>
+									</div>
+								</div>
+
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col">
+										<div class="container">
+											<div class="row">
+												<div class="col">
+													<div v-if="changeRequest.oldShift">
+														<span>{{changeRequest.oldShift.shiftsType.name}}</span>
+														<span>{{changeRequest.oldShift.date}}</span>
+													</div>
+													<div v-else>
+														<span>{{t('shifts','Unknown shift type')}}</span>
+														<span>N/A</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col"></div>
+									<div class="col">
+										<div class="container">
+											<div class="row">
+												<div class="col">
+													<div v-if="changeRequest.newShift">
+														<span>{{changeRequest.newShift.shiftsType.name}}</span>
+														<span>{{changeRequest.newShift.date}}</span>
+													</div>
+													<div v-else-if="changeRequest.type === 0">
+														<span>{{t('shifts','Unknown shift type')}}</span>
+														<span>N/A</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- User approval -->
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col alignCenter">
+										<div class="container">
+											<div class="row">
+												<div class="col alignCenter">
+													<span>{{changeRequest.oldAnalystId}} {{t('shifts', 'has confirmed')}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col"></div>
+									<div class="col alignCenter">
+										<div class="container">
+											<div class="row">
+												<div class="col alignCenter">
+													<span v-if="changeRequest.analystApproval">{{changeRequest.newAnalystId}} {{t('shifts', 'has confirmed')}}</span>
+													<span v-else style="color: red">{{changeRequest.newAnalystId}} {{t('shifts', 'has not confirmed')}}</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div
+										v-if="!isAdmin && currentUser === changeRequest.newAnalystId"
+										class="col buttons-bar">
+									</div>
+								</div>
+
+								<!-- Admin approval -->
+								<div class="row" style="padding-top: 0; padding-bottom: 0">
+									<div class="col alignCenter" style="padding-top: 0;">
+										<h3 v-if="changeRequest.adminApproval">{{t('shifts', 'An admin has approved')}}</h3>
+										<h3 v-else style="color: red">{{t('shifts', 'An admin has not approved')}}</h3>
+									</div>
+									<div class="col"></div>
+									<div class="col"></div>
+									<div
+										v-if="isAdmin"
+										class="col buttons-bar">
+										<div class="right">
+											<NcButton
+												type="primary"
+												:disabled="loading || !changeRequest.analystApproval"
+												@click="approveAdmin(changeRequest)">
+												<template #icon>
+													<CheckBold v-if="!changeRequest.adminApproval"></CheckBold>
+													<BackupRestore v-else></BackupRestore>
+												</template>
+											</NcButton>
+											<NcButton
+												type="error"
+												:disabled="loading"
+												@click="deleteAdmin(changeRequest)">
+												<template #icon>
+													<TrashCanOutline></TrashCanOutline>
+												</template>
+											</NcButton>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </template>
 
 <script>
-import RequestsModal from '../components/Modal/RequestsModal'
-import { showError, showWarning } from '@nextcloud/dialogs'
-import axios from '@nextcloud/axios'
-import { generateUrl } from '@nextcloud/router'
-import { updateExistingCalendarObjectFromShiftsChange } from '../services/calendarService'
-import { mapGetters } from 'vuex'
 import dayjs from 'dayjs'
+import store from '../store'
+import { mapGetters } from 'vuex'
+import axios from '@nextcloud/axios'
+import { NcButton } from '@nextcloud/vue'
+import { generateUrl } from '@nextcloud/router'
+import { showError, showWarning } from '@nextcloud/dialogs'
+import CheckBold from 'vue-material-design-icons/CheckBold'
+import CloseThick from 'vue-material-design-icons/CloseThick'
+import BackupRestore from 'vue-material-design-icons/BackupRestore'
+import TrashCanOutline from 'vue-material-design-icons/TrashCanOutline'
+import ChangeRequestModal from '../components/ChangeRequests/ChangeRequestModal'
+
 export default {
 	name: 'Requests',
 	components: {
-		RequestsModal,
+		NcButton,
+		CheckBold,
+		CloseThick,
+		BackupRestore,
+		TrashCanOutline,
+		ChangeRequestModal,
 	},
 	data() {
 		return {
 			dialogOpen: false,
+
+			loading: false,
 		}
 	},
 	computed: {
@@ -179,6 +353,9 @@ export default {
 			shifts: 'allShifts',
 			isAdmin: 'isAdmin',
 			currentUser: 'currentUserId',
+
+			getProcessedShiftChangeRequests: 'getProcessedShiftChangeRequests',
+			getInProgressShiftChangeRequests: 'getInProgressShiftChangeRequests',
 		}),
 		// returns ShiftsChanges which are still in Progress and needs approval
 		inProgressShiftsChanges() {
@@ -223,6 +400,56 @@ export default {
 		closeDialog() {
 			this.dialogOpen = false
 		},
+
+		confirmUser(changeRequest) {
+			changeRequest.analystApproval = true
+			this.updateChangeRequest(changeRequest)
+		},
+		cancelUser(changeRequest) {
+			changeRequest.analystApproval = false
+			this.updateChangeRequest(changeRequest)
+		},
+		approveAdmin(changeRequest) {
+			if (changeRequest.adminApproval) {
+				changeRequest.adminApproval = false
+			} else {
+				changeRequest.adminApproval = true
+			}
+			this.updateChangeRequest(changeRequest)
+		},
+		cancelAdmin(changeRequest) {
+			changeRequest.adminApproval = false
+			this.updateChangeRequest(changeRequest)
+		},
+		deleteAdmin(changeRequest) {
+			this.loading = true
+			store.dispatch('deleteShiftChangeRequest', changeRequest).catch((e) => {
+				console.error('Failed to delete shift change request:', e)
+				showError(t('shifts', 'Failed to delete shift change request'))
+			}).finally(() => {
+				store.dispatch('fetchShiftsChanges').finally(() => {
+					this.loading = false
+				})
+			})
+		},
+		updateChangeRequest(changeRequest) {
+			this.loading = true
+			const cr = Object.assign({}, changeRequest)
+			cr.adminApproval = changeRequest.adminApproval ? '1' : '0'
+			cr.analystApproval = changeRequest.analystApproval ? '1' : '0'
+			store.dispatch('updateShiftChangeRequest', cr).then(() => {
+				console.info('Successfully update change request')
+			}).catch((e) => {
+				console.error('Failed to update change request:', e)
+				showError(t('shifts', 'Failed to update change request'))
+			}).finally(() => {
+				store.dispatch('fetchShiftsChanges').finally(() => {
+					this.loading = false
+					store.dispatch('updateShifts')
+				})
+			})
+		},
+
 		dialogSaved(shiftsChanges) {
 			this.dialogOpen = false
 			this.shiftsChanges.push(...shiftsChanges)
@@ -267,12 +494,6 @@ export default {
 				// checks for approval to change shifts
 				// only done when both approvals are given
 				if (shiftsChange.adminApproval === '1' && shiftsChange.analystApproval === '1') {
-					const oldAnalyst = this.analysts.find((analyst) => {
-						return analyst.uid === shiftsChange.oldAnalystId
-					})
-					const newAnalyst = this.analysts.find((analyst) => {
-						return analyst.uid === shiftsChange.newAnalystId
-					})
 					const oldShift = this.shifts.find((shift) => {
 						return shift.id === parseInt(shiftsChange.oldShiftsId)
 					})
@@ -292,7 +513,6 @@ export default {
 						await axios.put(generateUrl(`/apps/shifts/shifts/${newShift.id}`), newShift)
 					}
 					// fetches and updates shifts
-					await updateExistingCalendarObjectFromShiftsChange(oldShift, newShift, oldAnalyst, newAnalyst)
 					await this.$store.dispatch('updateShifts')
 				}
 				// updates shiftsChange
@@ -348,3 +568,67 @@ export default {
 	},
 }
 </script>
+
+<style scoped lang="scss">
+.requestTableContainer {
+	width: 100%;
+	display: flex;
+
+	margin-top: 12px;
+
+	table {
+		width: 50%;
+
+		thead {
+			tr {
+				th {
+					width: 100%;
+
+					font-size: 32px;
+					font-weight: bold;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				td {
+					padding: 5px;
+				}
+			}
+		}
+	}
+}
+
+h2, h3 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.col.alignCenter {
+	display: flex;
+	align-items: center;
+}
+
+.container.shiftChangeRequestItem {
+	width: 100%;
+
+	.row {
+		.col {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+		.col:first-child {
+			width: 50%
+		}
+		.col:nth-child(2) {
+			width: 25px
+		}
+
+		.col.buttons-bar {
+			display: flex;
+			flex: 1;
+		}
+	}
+}
+</style>

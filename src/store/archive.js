@@ -1,108 +1,112 @@
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 import { showError } from '@nextcloud/dialogs'
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
+import Vue from 'vue'
+import dayjs from 'dayjs'
 
 const state = {
-	currentShiftsData: [],
-	currentFormat: null,
-	archiveLoading: false,
-	dates: [],
-}
-
-const mutations = {
-	updateSelectedFormat(state, format) {
-		state.currentFormat = format
-	},
-	updateShiftsData(state, data) {
-		state.currentShiftsData = data
-	},
-	updateArchiveLoading(state, loading) {
-		state.archiveLoading = loading
-	},
-	updateDates(state, dates) {
-		state.dates = dates
-	},
+	timeRange: 6,
+	startDate: 0,
+	endDate: 0,
+	archiveShifts: {},
 }
 
 const getters = {
-	archiveLoading(state) {
-		return state.archiveLoading
+	getArchiveTimeRange(state) {
+		return state.timeRange
 	},
-	currentShiftsData(state) {
-		return state.currentShiftsData
-	},
-	currentDates(state) {
-		return state.dates
+	getShiftsForAnalystByShiftType: (state) => (analystId, shiftTypeId) => {
+		if (analystId in state.archiveShifts) {
+			if (shiftTypeId in state.archiveShifts[analystId]) {
+				return state.archiveShifts[analystId][shiftTypeId]
+			} else {
+				return 0
+			}
+		} else {
+			return 0
+		}
 	},
 }
 
 const actions = {
-	async setupArchive({ dispatch, commit, rootState }) {
+	setArchiveTimeRange(context, { timeRange, startDate, endDate }) {
+		if (!startDate) {
+			startDate = dayjs()
+		}
+
+		if (!endDate) {
+			endDate = dayjs()
+		}
+
+		if (timeRange) {
+			startDate = startDate.subtract(timeRange, 'month')
+			context.commit('setArchiveTimeRange', timeRange)
+		} else {
+			context.commit('setArchiveTimeRange', 0)
+		}
+
+		context.commit('setArchiveStartAndEndTime', { startDate, endDate })
+		context.dispatch('fetchCurrentArchiveData')
+	},
+
+	fetchCurrentArchiveData(context) {
 		try {
-			commit('updateArchiveLoading', true)
-			const shiftResponse = await axios.get(generateUrl('/apps/shifts/getShiftsDataByTimeRange/1970-01-01/2100-01-01'))
-			const allShifts = []
-			shiftResponse.data.forEach(shift => {
-				shift.shiftsType = rootState.database.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				allShifts.push(shift)
-			})
-			const rows = []
-			let currUserId = ''
-			let currRow = null
-			allShifts.forEach(shiftData => {
-				if (currUserId !== shiftData.user_id) {
-					if (currRow) {
-						rows.push(currRow)
+			axios.get(generateUrl('/apps/shifts/getShiftsDataByTimeRange/' + context.state.startDate.format('YYYY-MM-DD') + '/' + context.state.endDate.format('YYYY-MM-DD'))).then(response => {
+				context.commit('clearArchiveShifts')
+
+				response.data.forEach(shift => {
+
+					if (typeof shift.shift_type_id === 'string') {
+						shift.shift_type_id = parseInt(shift.shift_type_id)
 					}
-					currRow = {}
-					currUserId = shiftData.user_id
-					currRow.userName = currUserId
-				}
-				currRow[shiftData.shift_type_id.toString()] = shiftData.num_shifts
+					if (typeof shift.count === 'string') {
+						shift.count = parseInt(shift.count)
+					}
+
+					context.commit('setArchiveShiftsForAnalyst', {
+						analystId: shift.user_id,
+						shiftTypeId: shift.shift_type_id,
+						count: shift.count,
+					})
+				})
+			}).catch(e => {
+				console.error('Failed to fetch archive data:', e)
 			})
-			this.items = rows
-			commit('updateShiftsData', rows)
 		} catch (e) {
 			console.error(e)
-			showError(t('shifts', 'Could not fetch data'))
+			showError(t('shifts', 'Could not fetch archive data'))
 		}
-		commit('updateArchiveLoading', false)
+	}
+}
+
+const mutations = {
+	setArchiveTimeRange(state, timeRange) {
+		state.timeRange = timeRange
 	},
-	async fetchArchiveData({ state, dispatch, commit, rootState, getters }, dates) {
-		try {
-			const shiftResponse = await axios.get(generateUrl(`/apps/shifts/getShiftsDataByTimeRange/${dates[0]}/${dates[1]}`))
-			const allShifts = []
-			shiftResponse.data.forEach(shift => {
-				shift.shiftsType = rootState.database.allShiftsTypes.find((shiftType) => shiftType.id.toString() === shift.shiftTypeId)
-				allShifts.push(shift)
-			})
-			const rows = []
-			let currUserId = ''
-			let currRow = null
-			allShifts.forEach(shiftData => {
-				if (currUserId !== shiftData.user_id) {
-					if (currRow) {
-						rows.push(currRow)
-					}
-					currRow = {}
-					currUserId = shiftData.user_id
-					currRow.userName = currUserId
-				}
-				currRow[shiftData.shift_type_id.toString()] = shiftData.num_shifts
-			})
-			this.items = rows
-			commit('updateShiftsData', rows)
-		} catch (e) {
-			console.error(e)
-			showError(t('shifts', 'Could not fetch data'))
+	setArchiveStartAndEndTime(state, { startDate, endDate }) {
+		state.startDate = startDate
+		state.endDate = endDate
+	},
+
+	clearArchiveShifts(state) {
+		Vue.set(state, 'archiveShifts', {})
+	},
+	setArchiveShiftsForAnalyst(state, { analystId, shiftTypeId, count }) {
+		let obj = {}
+		if (analystId in state.archiveShifts) {
+			obj = state.archiveShifts[analystId]
 		}
-	},
+		obj[shiftTypeId] = count
+		Vue.set(state.archiveShifts, analystId, obj)
+	}
 }
 
 export default { state, mutations, getters, actions }

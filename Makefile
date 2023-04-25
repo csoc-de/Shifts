@@ -10,8 +10,8 @@ appstore_dir=$(build_dir)/appstore
 source_dir=$(build_dir)/source
 sign_dir=$(build_dir)/sign
 package_name=$(app_name)
-cert_dir=$(HOME)/.nextcloud/certificates
-version = 1.8.6
+cert_dir=$(HOME)/Projekte/ShiftsApp/openssl
+version = 1.9.0
 
 all: dev-setup lint build-js-production test
 
@@ -40,10 +40,12 @@ dev-setup: clean-dev npm-init
 
 dependabot: dev-setup npm-update build-js-production
 
-release: appstore create-tag
+release: appstore
+
+release-tag: appstore create-tag
 
 build-js:
-	npm run dev
+	npm --openssl-legacy-provider run dev
 
 build-js-production:
 	npm run build
@@ -92,6 +94,7 @@ appstore:
 	--exclude=composer.json \
 	--exclude=composer.lock \
 	--exclude=docs \
+    --exclude=.idea \
 	--exclude=.drone.yml \
 	--exclude=.eslintignore \
 	--exclude=.eslintrc.js \
@@ -119,10 +122,11 @@ appstore:
 	$(project_dir)/  $(sign_dir)/$(app_name)
 	@if [ -f $(cert_dir)/$(app_name).key ]; then \
 		echo "Signing app files…"; \
-		php ../../occ integrity:sign-app \
-			--privateKey=$(cert_dir)/$(app_name).key\
-			--certificate=$(cert_dir)/$(app_name).crt\
-			--path=$(sign_dir)/$(app_name); \
+        docker exec master_nextcloud_1 adduser --disabled-password --gecos "" builder; \
+		docker exec -u builder master_nextcloud_1 php /var/www/html/occ integrity:sign-app \
+			--privateKey=/$(app_name).key\
+			--certificate=/$(app_name).crt\
+			--path=/var/www/html/apps-extra/$(app_name); \
 	fi
 	tar -czf $(build_dir)/$(app_name)-$(version).tar.gz \
 		-C $(sign_dir) $(app_name)

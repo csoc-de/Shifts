@@ -1,21 +1,28 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Controller;
 
+use OCP\IRequest;
+use OCP\IGroupManager;
+use OCP\AppFramework\Http;
 use OCA\Shifts\AppInfo\Application;
 use OCA\Shifts\Service\ShiftsCalendarChangeService;
 use OCA\Shifts\Service\ShiftService;
+use OCA\Shifts\Service\PermissionService;
 use OCA\Shifts\Settings\Settings;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\IRequest;
-use OCP\IGroupManager;
+
+use function OCP\Log\logger;
 
 class ShiftController extends Controller {
 	/** @var ShiftService */
@@ -33,16 +40,32 @@ class ShiftController extends Controller {
 	/** @var Settings */
 	private $settings;
 
+	/** @var PermissionService */
+	private $permService;
+
 	use Errors;
 
 
-	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, ShiftsCalendarChangeService $calendarChangeService, Settings $settings, $userId){
+	public function __construct(IRequest $request,IGroupManager $groupManager, ShiftService $service, ShiftsCalendarChangeService $calendarChangeService, Settings $settings, PermissionService $permService, $userId){
 		parent::__construct(Application::APP_ID, $request);
 		$this->service = $service;
 		$this->userId = $userId;
 		$this->groupManager = $groupManager;
 		$this->settings = $settings;
+		$this->permService = $permService;
 		$this->calendarChangeService = $calendarChangeService;
+	}
+
+	private function handleException(Exception $e): DataResponse {
+		if($e instanceof PermissionException) {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		} elseif($e instanceof InvalidArgumentException) {
+			return new DataResponse(NULL, Http::STATUS_BAD_REQUEST);
+		} elseif($e instanceof NotFoundException) {
+			return new DataResponse(NULL, Http::STATUS_NOT_FOUND);
+		} else {
+			return new DataResponse(NULL, Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -76,8 +99,12 @@ class ShiftController extends Controller {
 	 * @return DataResponse
 	 */
 	public function create(string $analystId, int $shiftTypeId, string $date): DataResponse {
+		if(!$this->permService->isRequestingUserAdmin()) {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
+
 		$shift = $this->service->create($analystId, $shiftTypeId, $date);
-		$this->calendarChangeService->create($shift->getId(), $shiftTypeId, $date, '-1', $analystId, 'update', date(DATE_ATOM), $this->userId, false);
+		$this->calendarChangeService->create($shift->getId(), $shiftTypeId, $date, '-1', $analystId, 'assign', date(DATE_ATOM), $this->userId, false);
 		return new DataResponse($shift);
 	}
 
@@ -94,6 +121,10 @@ class ShiftController extends Controller {
 	 */
 	public function update(int $id, string $analystId, int $shiftTypeId, string $date, string $oldAnalystId, bool $saveChanges): DataResponse
 	{
+		if(!$this->permService->isRequestingUserAdmin()) {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
+
 		return $this->handleNotFound(function() use ($id, $analystId, $shiftTypeId, $date, $oldAnalystId, $saveChanges){
 			if ($saveChanges) {
 				$this->calendarChangeService->create($id, $shiftTypeId, $date, $oldAnalystId, $analystId, $analystId === '-1'? 'unassign' : 'update', date(DATE_ATOM), $this->userId, false);
@@ -110,6 +141,10 @@ class ShiftController extends Controller {
 	 */
 	public function destroy(int $id): DataResponse
 	{
+		if(!$this->permService->isRequestingUserAdmin()) {
+			return new DataResponse(NULL, Http::STATUS_UNAUTHORIZED);
+		}
+
 		return $this->handleNotFound(function() use($id) {
 			return $this->service->delete($id);
 		});
@@ -123,7 +158,7 @@ class ShiftController extends Controller {
 	public function getGroupStatus(): DataResponse
 	{
 		$adminGroup = $this->settings->getAdminGroup();
-		return new DataResponse($this->groupManager->isInGroup($this->userId, $adminGroup));
+		return new DataResponse($this->permService->isRequestingUserAdmin());
 	}
 
 	private function getHighestSkillGroupByUserId(string $userId = '')
@@ -152,7 +187,7 @@ class ShiftController extends Controller {
 		$group = $this->groupManager->get($groupName);
 		$users = [];
 		$result = $group->getUsers();
-		foreach( $result as $user) {
+		foreach($result as $user) {
 			$id = $user->getUID();
 			$name = $user->getDisplayName();
 			$email = $user->getEMailAddress();

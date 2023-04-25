@@ -1,37 +1,48 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <!--
   - Main Component of Vue-App
   -->
 <template>
-	<VueContent id="content" app-name="shifts">
+	<div id="content" class="app-shifts">
 		<AppNavigation />
 		<AppContent>
-			<v-app>
-				<router-view />
-			</v-app>
+			<div class="shifts_container">
+				<div v-if="!loading">
+					<router-view />
+				</div>
+				<div v-else>
+					<h3>Loading...</h3>
+				</div>
+			</div>
 		</AppContent>
-	</VueContent>
+	</div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import AppNavigation from './components/Navigation/AppNavigation'
-import VueContent from '@nextcloud/vue/dist/Components/Content'
-import AppContent from '@nextcloud/vue/dist/Components/AppContent'
-import { initializeClientForUserView } from './services/caldavService'
+import { NcAppContent as AppContent } from '@nextcloud/vue'
 export default {
 	name: 'App',
 	components: {
-		VueContent,
 		AppContent,
 		AppNavigation,
 	},
-	async beforeCreate() {
-		await initializeClientForUserView()
+	computed: {
+		...mapGetters({
+			loading: 'loading',
+		}),
 	},
 }
 </script>
+
+<style lang="scss">
+@import '../css/custom.scss';
+</style>

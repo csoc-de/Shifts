@@ -1,7 +1,9 @@
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 import { showError, showWarning } from '@nextcloud/dialogs'
@@ -91,6 +93,20 @@ const actions = {
 		}
 
 	},
+
+	createNewShift(context, shift) {
+		return new Promise((resolve, reject) => {
+			axios.post(generateUrl('/apps/shifts/shifts'), shift).then(() => {
+				resolve()
+			}).catch((e) => {
+				if (e.response) {
+					reject(e.response)
+				} else {
+					reject(e)
+				}
+			})
+		})
+	}
 }
 
 export default { state, mutations, getters, actions }

@@ -1,8 +1,10 @@
 <?php
 /*
  * @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
  *
  * @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+ * @author Kevin Küchler <kevin.kuechler@csoc.de>
  */
 
 namespace OCA\Shifts\Db;
@@ -56,6 +58,19 @@ class ShiftsTypeMapper extends QBMapper {
 		$qb = $this->db->getQueryBuilder();
 		$qb->select('id', 'mo_rule', 'tu_rule', 'we_rule', 'th_rule', 'fr_rule', 'sa_rule', 'so_rule', 'is_weekly')
 			->from('shifts_type');
+		return $this->findEntities($qb);
+	}
+
+	/**
+	 * Find all skill group ids
+	 * @return array
+	 */
+	public function findAllSkillGroupIds(): array {
+		/* @var $qb IQueryBuilder */
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('id', 'skill_group_id')
+			->from('shifts_type')
+			->groupBy('skill_group_id');
 		return $this->findEntities($qb);
 	}
 }

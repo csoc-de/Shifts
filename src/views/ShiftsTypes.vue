@@ -1,77 +1,83 @@
 <!--
   - @copyright Copyright (c) 2021. Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @copyright Copyright (c) 2023. Kevin Küchler <kevin.kuechler@csoc.de>
   -
   - @author Fabian Kirchesch <fabian.kirchesch@csoc.de>
+  - @author Kevin Küchler <kevin.kuechler@csoc.de>
   -->
 
 <template>
-	<div class="tab_content">
+	<div>
+		<div class="top-bar">
+			<div class="left">
+				<div class="buttons-bar">
+					<NcButton
+						type="primary"
+						@click="openDialog()">
+						{{ t('shifts','Add new Shiftstype') }}
+					</NcButton>
+				</div>
+			</div>
+		</div>
 		<!--eslint-disable-->
-		<v-btn
-			color="light-blue"
-			@click="openDialog()">
-			{{ t('shifts','Add new Shiftstype') }}
-		</v-btn>
-		<ShiftsTypeModal v-if="dialogOpen"
-			:shifts-type="shiftsTypes"
-			@close="closeDialog"
-			@saved="dialogSaved" />
+		<ShiftsTypeModal
+			v-if="dialogOpen"
+			@close="closeDialog" />
 
-		<h1>{{ t('shifts', 'Shiftstype') }}</h1>
-		<v-list>
-			<v-list-item-group>
-				<v-list-item
-					v-for="(item, i) in shiftsTypes"
-					:key="item.id">
-					<v-list-item-title v-text="item.name"></v-list-item-title>
-					<v-list-item-action>
-						<v-dialog
-							v-model="removeShiftsTypeDialogs[item.id]"
-							width="500">
-							<template v-slot:activator="{ on, attrs }">
-								<v-btn
-									color="red lighten-1"
-									dark
-									v-bind="attrs"
-									v-on="on">
-									{{ t('shifts', 'Delete') }}
-								</v-btn>
-							</template>
-							<v-card>
-								<v-card-text>
-									{{ t('shifts', 'Are you sure that u want to delete the Shiftstype and all its Shifts') }}
-								</v-card-text>
-								<v-card-actions>
-									<v-spacer></v-spacer>
-									<v-btn
-										color="red lighten-1"
-										dark
-										@click="deleteShiftsType(item)">
-										{{ t('shifts', 'Delete') }}
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-dialog>
-						<v-btn
-							color="light-blue"
-							@click="openEditDialog(item)">
-							{{ t('shifts', 'Edit') }}
-						</v-btn>
-					</v-list-item-action>
-				</v-list-item>
-			</v-list-item-group>
-		</v-list>
+
+		<div class="content">
+			<div class="header">
+				{{ t('shifts', 'Shiftstype') }}
+			</div>
+
+			<!-- Calendar -->
+			<div class="body">
+				<div
+					v-for="item in shiftsTypes"
+					:key="item.id"
+					class="shiftTypeItem"
+				>
+					<div class="header">
+						<h3>{{item.name}}</h3>
+					</div>
+					<div class="actions">
+						<div class="buttons-bar">
+							<div class="right">
+								<NcButton
+									color="light-blue"
+									@click="openEditDialog(item)">
+									{{ t('shifts', 'Edit') }}
+								</NcButton>
+								<NcButton
+									@click="deleteShiftsType(item)"
+									:disabled="item.deleted === '1'"
+									type="error">
+									<template #icon>
+										<Delete :size="20" />
+									</template>
+								</NcButton>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!--eslint-enable-->
 	</div>
 </template>
 
 <script>
+import store from '../store'
 import { mapGetters } from 'vuex'
+import { NcButton } from '@nextcloud/vue'
+import Delete from 'vue-material-design-icons/Delete'
 import ShiftsTypeModal from '../components/Modal/ShiftsTypeModal'
 
 export default {
 	name: 'ShiftsTypes',
 	components: {
+		Delete,
+		NcButton,
 		ShiftsTypeModal,
 	},
 	data() {
@@ -87,23 +93,56 @@ export default {
 	},
 	methods: {
 		openDialog() {
+			store.dispatch('createNewShiftsType')
 			this.dialogOpen = true
-			this.$store.dispatch('createNewShiftsType')
 		},
 		openEditDialog(shiftsType) {
+			store.dispatch('editExistingShiftsType', shiftsType)
 			this.dialogOpen = true
-			this.$store.dispatch('editExistingShiftsType', shiftsType)
 		},
 		deleteShiftsType(shiftsType) {
 			this.removeShiftsTypeDialogs[shiftsType.id] = false
-			this.$store.dispatch('deleteShiftsType', shiftsType)
+			store.dispatch('deleteShiftsType', shiftsType).finally(() => {
+				store.dispatch('updateShiftsTypes')
+				store.dispatch('updateShifts')
+			})
 		},
 		closeDialog() {
-			this.dialogOpen = false
-		},
-		dialogSaved() {
 			this.dialogOpen = false
 		},
 	},
 }
 </script>
+
+<style lang="scss" scoped>
+.content {
+	.body {
+		height: 100%;
+		max-width: 100%;
+	}
+}
+
+.shiftTypeItem {
+	display: flex;
+	flex-direction: row;
+
+	padding: 12px;
+
+	.header {
+		flex-grow: 1;
+		flex-basis: 0;
+		max-width: 100%;
+		justify-content: flex-start;
+	}
+
+	.actions {
+		flex: 0 0 auto;
+		justify-content: flex-end;
+		margin-right: 14px;
+	}
+}
+
+.shiftTypeItem:hover {
+	background: lightgrey;
+}
+</style>
