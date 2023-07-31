@@ -15,6 +15,7 @@ use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use Throwable;
 
 class ShiftMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
