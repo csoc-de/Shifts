@@ -35,7 +35,7 @@
 				to="/archive" />
 		</template>
 		<template #footer>
-			<span style="margin-left: 10px">Version: 1.9.0-dev</span>
+			<span style="margin-left: 10px">Version: 1.9.1</span>
 		</template>
 	</AppNavigationVue>
 </template>
