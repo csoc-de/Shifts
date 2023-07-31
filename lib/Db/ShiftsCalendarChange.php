@@ -36,8 +36,8 @@ class ShiftsCalendarChange extends Entity implements JsonSerializable {
 		return $this->shiftTypeId;
 	}
 
-	public function setIsDone(bool $isDone) {
-		$this->setter('isDone', $isDone ? '1' : '0');
+	public function setIsDone(bool $isDone): void {
+		$this->setter('isDone', array($isDone ? '1' : '0'));
 	}
 
 	public function getAction(): string {

@@ -122,7 +122,7 @@ appstore:
 	$(project_dir)/  $(sign_dir)/$(app_name)
 	@if [ -f $(cert_dir)/$(app_name).key ]; then \
 		echo "Signing app files…"; \
-        docker exec master_nextcloud_1 adduser --disabled-password --gecos "" builder; \
+        docker exec master_nextcloud_1 adduser --uid 1001 --disabled-password --gecos "" builder; \
 		docker exec -u builder master_nextcloud_1 php /var/www/html/occ integrity:sign-app \
 			--privateKey=/$(app_name).key\
 			--certificate=/$(app_name).crt\

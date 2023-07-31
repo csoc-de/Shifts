@@ -98,20 +98,25 @@ class ShiftsCalendarChangeService {
 		}
 	}
 
-	public function update(int $id, int $shiftId, int $shiftTypeId, string $shiftDate, string $oldUserId, string $newUserId, string $action, string $dateChanged, string $adminId, bool $isDone){
-		try{
+	public function update(int $id, int $shiftId, int $shiftTypeId, string $shiftDate, string $oldUserId, string $newUserId, string $action, string $dateChanged, string $adminId, bool $isDone) {
+		try {
 			$shiftsCalendarChange = $this->mapper->find($id);
-			$shiftsCalendarChange->setShiftId($shiftId);
-			$shiftsCalendarChange->setShiftTypeId($shiftTypeId);
-			$shiftsCalendarChange->setShiftDate($shiftDate);
-			$shiftsCalendarChange->setOldUserId($oldUserId);
-			$shiftsCalendarChange->setNewUserId($newUserId);
-			$shiftsCalendarChange->setAction($action);
-			$shiftsCalendarChange->setDateChanged($dateChanged);
-			$shiftsCalendarChange->setAdminId($adminId);
-			$shiftsCalendarChange->setIsDone($isDone);
-			return $this->mapper->update($shiftsCalendarChange);
-		} catch(Exception $e){
+
+			if($oldUserId == $newUserId) {
+				return $this->mapper->delete($shiftsCalendarChange);
+			} else {
+				$shiftsCalendarChange->setShiftId($shiftId);
+				$shiftsCalendarChange->setShiftTypeId($shiftTypeId);
+				$shiftsCalendarChange->setShiftDate($shiftDate);
+				$shiftsCalendarChange->setOldUserId($oldUserId);
+				$shiftsCalendarChange->setNewUserId($newUserId);
+				$shiftsCalendarChange->setAction($action);
+				$shiftsCalendarChange->setDateChanged($dateChanged);
+				$shiftsCalendarChange->setAdminId($adminId);
+				$shiftsCalendarChange->setIsDone($isDone);
+				return $this->mapper->update($shiftsCalendarChange);
+			}
+		} catch(Exception $e) {
 			$this->handleException($e);
 		}
 		return null;
