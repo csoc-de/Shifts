@@ -1,17 +1,17 @@
 # This file is licensed under the Affero General Public License version 3 or
 # later. See the COPYING file.
-app_name=$(notdir $(CURDIR))
+app_name=shifts
 build_tools_directory=$(CURDIR)/build/tools
 composer=$(shell which composer 2> /dev/null)
 
-project_dir=$(CURDIR)/../$(app_name)
+project_dir=$(CURDIR)/../$(notdir $(CURDIR))
 build_dir=$(CURDIR)/build/artifacts
 appstore_dir=$(build_dir)/appstore
 source_dir=$(build_dir)/source
 sign_dir=$(build_dir)/sign
 package_name=$(app_name)
-cert_dir=$(HOME)/Projekte/ShiftsApp/openssl
-version = 1.9.0
+cert_dir=$(HOME)/.nextcloud/
+version = 1.9.2
 
 all: dev-setup lint build-js-production test
 
@@ -122,8 +122,8 @@ appstore:
 	$(project_dir)/  $(sign_dir)/$(app_name)
 	@if [ -f $(cert_dir)/$(app_name).key ]; then \
 		echo "Signing app files…"; \
-        docker exec master_nextcloud_1 adduser --uid 1001 --disabled-password --gecos "" builder; \
-		docker exec -u builder master_nextcloud_1 php /var/www/html/occ integrity:sign-app \
+        docker exec master-nextcloud-1 adduser --uid 1001 --disabled-password --gecos "" builder; \
+		docker exec -u builder master-nextcloud-1 php /var/www/html/occ integrity:sign-app \
 			--privateKey=/$(app_name).key\
 			--certificate=/$(app_name).crt\
 			--path=/var/www/html/apps-extra/$(app_name); \
