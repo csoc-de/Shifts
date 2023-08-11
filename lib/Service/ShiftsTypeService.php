@@ -73,7 +73,13 @@ class ShiftsTypeService {
 		$ts = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStartTimeStamp());
 		if(!$ts) {
 			$this->logger->info("ShiftsTypeService::validateDate() -> Start-DateTime format is NOT ok", ['timestamp' => $shiftsType->getStartTimeStamp(), 'timezone' => $this->settings->getShiftsTimezone()]);
-			$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStartTimeStamp());
+			$timestamp = new DateTime();
+			$timestamp->setDate(1970, 1, 1);
+			$timestamp->setTime(0, 0);
+			if($shiftsType->getStartTimeStamp() != "") {
+				$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStartTimeStamp());
+			}
+
 			$timezone = new DateTimeZone($this->settings->getShiftsTimezone());
 			$timestamp = $timestamp->sub(DateInterval::createFromDateString($timezone->getOffset($timestamp) . " seconds"));
 			$shiftsType->setStartTimeStamp($timestamp->format(DateTimeInterface::RFC3339_EXTENDED));
@@ -84,7 +90,13 @@ class ShiftsTypeService {
 		$ts = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStopTimeStamp());
 		if(!$ts) {
 			$this->logger->info("ShiftsTypeService::validateDate() -> Stop-DateTime format is NOT ok", ['timestamp' => $shiftsType->getStopTimeStamp()]);
-			$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStopTimeStamp());
+			$timestamp = new DateTime();
+			$timestamp->setDate(1970, 1, 1);
+			$timestamp->setTime(1, 0);
+			if($shiftsType->getStopTimeStamp() != "") {
+				$timestamp = DateTime::createFromFormat("H:i", $shiftsType->getStopTimeStamp());
+			}
+
 			$timezone = new DateTimeZone($this->settings->getShiftsTimezone());
 			$timestamp = $timestamp->sub(DateInterval::createFromDateString($timezone->getOffset($timestamp) . " seconds"));
 			$shiftsType->setStopTimeStamp($timestamp->format(DateTimeInterface::RFC3339_EXTENDED));
@@ -132,6 +144,17 @@ class ShiftsTypeService {
 	}
 
 	public function create(string $name, string $desc, string $startTimeStamp, string $stopTimeStamp, string $color, int $moRule, int $tuRule, int $weRule, int $thRule, int $frRule, int $saRule, int $soRule, int $skillGroupId, bool $isWeekly) {
+		if($startTimeStamp == "") {
+			$date = new DateTime();
+			$startTimeStamp = $date->format(DateTimeInterface::RFC3339_EXTENDED);
+		}
+
+		if($stopTimeStamp == "") {
+			$date = new DateTime();
+			$date = $date->add(new DateInterval("PT1H"));
+			$stopTimeStamp = $date->format(DateTimeInterface::RFC3339_EXTENDED);
+		}
+
 		$shiftsType = new ShiftsType();
 		$shiftsType->setName($name);
 		$shiftsType->setDesc($desc);
