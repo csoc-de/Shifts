@@ -148,24 +148,30 @@ class ShiftsCalendarService {
 	}
 
 	private function generateCalendarEvent(Shift $shift, ShiftsType $shiftsType, IUser $analyst): VCalendar {
-		$date_start = DateTime::createFromFormat("Y-m-d", $shift->getDate());
+		$tz = new DateTimeZone('UTC');
+		$local_tz = new DateTimeZone($this->settings->getShiftsTimezone());
+
+		$date_start = DateTime::createFromFormat("Y-m-d", $shift->getDate(), $tz);
 		if(!$date_start) {
 			throw new RuntimeException("Failed to convert start date of shift '" . $shift->getId() . "': " . $shift->getDate());
 		}
-		$date_end = DateTime::createFromFormat("Y-m-d", $shift->getDate());
+		$date_end = DateTime::createFromFormat("Y-m-d", $shift->getDate(), $tz);
 		if(!$date_end) {
 			throw new RuntimeException("Failed to convert end date of shift '" . $shift->getId() . "': " . $shift->getDate());
 		}
 
 		if(!$shiftsType->isWeekly()) {
-			$shiftsType_start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStartTimestamp());
+			$shiftsType_start = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStartTimestamp(), $tz);
 			if(!$shiftsType_start) {
 				throw new RuntimeException("Failed to convert start date of shift type '" . $shiftsType->getId() . "': " . $shiftsType->getStartTimestamp());
 			}
-			$shiftsType_stop = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStopTimestamp());
+			$shiftsType_stop = DateTime::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $shiftsType->getStopTimestamp(), $tz);
 			if(!$shiftsType_stop) {
 				throw new RuntimeException("Failed to convert stop date of shift type '" . $shiftsType->getId() . "': " . $shiftsType->getStopTimestamp());
 			}
+
+			$shiftsType_start = $shiftsType_start->setTimezone($local_tz);
+			$shiftsType_stop = $shiftsType_stop->setTimezone($local_tz);
 
 			$date_start = $date_start->setTime((int) $shiftsType_start->format("H"), (int) $shiftsType_start->format("i"),0);
 			$date_end = $date_end->setTime((int) $shiftsType_stop->format("H"), (int) $shiftsType_stop->format("i"),0);
@@ -181,9 +187,6 @@ class ShiftsCalendarService {
 			$date_end = $date_end->setISODate($year, $week, 8)->setTime(0,0,0);
 			$date_start = $date_start->setISODate($year, $week, 1)->setTime(0,0,0);
 		}
-
-		$date_start = $date_start->setTimezone(new DateTimeZone($this->settings->getShiftsTimezone()));
-		$date_end = $date_end->setTimezone(new DateTimeZone($this->settings->getShiftsTimezone()));
 
 		$this->logger->debug("ShiftsCalendarService::generateCalendarEvent()", [
 			'shift_date' => $shift->getDate(),
