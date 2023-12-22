@@ -68,7 +68,7 @@ class ShiftsTypeMapper extends QBMapper {
 	public function findAllSkillGroupIds(): array {
 		/* @var $qb IQueryBuilder */
 		$qb = $this->db->getQueryBuilder();
-		$qb->select('id', 'skill_group_id')
+		$qb->select('skill_group_id')
 			->from('shifts_type')
 			->groupBy('skill_group_id');
 		return $this->findEntities($qb);
