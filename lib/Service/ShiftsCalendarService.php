@@ -7,6 +7,7 @@
 
 namespace OCA\Shifts\Service;
 
+use DateInterval;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -176,10 +177,7 @@ class ShiftsCalendarService {
 			$date_start = $date_start->setTime((int) $shiftsType_start->format("H"), (int) $shiftsType_start->format("i"),0);
 			$date_end = $date_end->setTime((int) $shiftsType_stop->format("H"), (int) $shiftsType_stop->format("i"),0);
 			if((int)$date_start->format('H') > (int)$date_end->format('H')) {
-				$year = (int) $date_start->format("Y");
-				$month = (int) $date_start->format("m");
-				$day = (int) $date_start->format("d");
-				$date_start = $date_start->setDate($year, $month, $day-1);
+				$date_end = $date_end->add(DateInterval::createFromDateString('1 day'));
 			}
 		} else {
 			$year = (int) $date_start->format("Y");
