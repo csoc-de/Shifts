@@ -60,3 +60,8 @@ sudo -u www-data make build-js
 ```
 
 Anschließende Aktivierung der App "Shifts"in den Nextcloud Apps-Einstellungen
+
+
+## Allgemeine Hinweise
+- Die App/Nextcloud sind case-sensitiv. Die Gruppe 'Analyst' ist nicht das Selbe wie 'analyst'. Bitte prüfe, ob die Gruppenname **exakt** die Selben sind.
+- Wenn eine Nextcloud-Gruppe umbenannt wird, kann es sein, dass sich die ID im Hintergrund nicht ändert ([#65](https://github.com/csoc-de/Shifts/issues/65))
