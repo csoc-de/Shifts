@@ -61,5 +61,5 @@ sudo -u www-data make build-js
 Then activate the app "Shifts" in the Nextcloud Apps settings.
 
 ## General hints
-- The app/nextcloud groups are case sensitiv. It will not recognise 'Analyst' as analysts. Please double check if the names you enter are the **exact** same.
+- The app/nextcloud groups are case sensitiv. It will not recognise 'Analyst' as 'analyst'. Please double check if the names you enter are the **exact** same.
 - If you rename a group in nextcloud the corresponting ID migh not change as well (see [#65](https://github.com/csoc-de/Shifts/issues/65))
