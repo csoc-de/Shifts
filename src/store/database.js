@@ -339,7 +339,7 @@ const actions = {
 			const daily = []
 			for (const i in shiftTypeResponse.data) {
 				const shift = shiftTypeResponse.data[i]
-				shift.isWeekly = (shift.isWeekly === '1' || shift.isWeekly === 1)
+				shift.isWeekly = (shift.isWeekly === '1' || shift.isWeekly === 1 || shift.isWeekly === 'true' || shift.isWeekly === true)
 				if (typeof shift.deleted === 'string') {
 					shift.deleted = parseInt(shift.deleted)
 				}
@@ -369,7 +369,7 @@ const actions = {
 				}
 
 				shiftTypeResponse.data[i].rules = [shift.moRule, shift.tuRule, shift.weRule, shift.thRule, shift.frRule, shift.saRule, shift.soRule]
-				if (!shiftTypeResponse.data[i].isWeekly) {
+				if (!shift.isWeekly) {
 					daily.push(shiftTypeResponse.data[i])
 				}
 			}
