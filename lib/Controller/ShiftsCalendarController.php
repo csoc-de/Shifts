@@ -175,8 +175,10 @@ class ShiftsCalendarController extends Controller {
 
 				$this->changeService->updateDone($change->getId(), true);
 			} catch(NotFoundException $e) {
+				$this->logger->debug("ShiftsCalendarController::synchronize()", ['exception' => $e]);
 				array_push($errors, $e->getMessage());
 			} catch (Exception $e) {
+				$this->logger->error("ShiftsCalendarController::synchronize()", ['exception' => $e]);
 				return $this->handleException($e);
 			}
 		}

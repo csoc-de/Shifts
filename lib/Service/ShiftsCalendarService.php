@@ -205,6 +205,11 @@ class ShiftsCalendarService {
 		$event->VEVENT->add("DESCRIPTION", $shiftsType->getDescription());
 		$event->VEVENT->add("STATUS", "CONFIRMED");
 
+		if(str_contains($analyst->getEMailAddress(), "@csoc.de") && ($shiftsType->getName() === "BlueTeam Früh" || $shiftsType->getName() === "BlueTeam Spät" || $shiftsType->getName() === "BlueTeam Nacht")) {
+			$event->VEVENT->add("CATEGORIES", "Leitstelle");
+			$this->logger->debug("ShiftsCalendarService::generateCalendarEvent(): Added label 'Leitstelle' to user", ['user' => $analyst->getDisplayName(),'email' => $analyst->getEMailAddress()]);
+		}
+
 		if($shiftsType->isWeekly()) {
 			$event->VEVENT->add("DTSTART;VALUE=DATE", $date_start->format("Ymd"));
 			$event->VEVENT->add("DTEND;VALUE=DATE", $date_end->format("Ymd"));
@@ -435,7 +440,13 @@ class ShiftsCalendarService {
 	 */
 	public function delete(int $shiftId): void {
 		// Get shift object from service
-		$shift = $this->getShift($shiftId);
+		$shift = null;
+		try {
+			$shift = $this->getShift($shiftId);
+		} catch (NotFoundException $e) {
+			$this->logger->error("ShiftsCalendarService::delete(): Could not find shift by id", ["id" => $shiftId, "exception" => $e->getMessage()]);
+			return;
+		}
 
 		// Get shift type object from service
 		$shiftsType = $this->getShiftsType($shift->getShiftTypeId());
