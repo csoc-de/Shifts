@@ -532,6 +532,7 @@ export default {
 .content {
 	.calendar {
 		max-width: 100%;
+		overflow: scroll;
 
 		table {
 			line-height: 1.5;
