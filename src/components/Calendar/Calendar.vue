@@ -47,6 +47,7 @@
 
 							<td
 								v-for="(day, i) in timespanHeaders"
+								analyst="open"
 								:key="i"
 								:class="isCurrentDay(day) ? 'today' : ''">
 								<div
@@ -75,6 +76,10 @@
 										:draggable="isAdmin"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, openshift, day)"
+										@touchstart="handleTouchStart($event, openshift, )"
+										@touchmove="handleTouchMove($event, openshift, )"
+										@touchcancel="handleTouchStopped($event, openshift, day, )"
+										@touchend="handleTouchStopped($event, openshift, day,)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -107,6 +112,7 @@
 							<td
 								v-for="(header, j) in timespanHeaders"
 								:key="j"
+								:analyst="row.uid"
 								:class="isCurrentDay(header) ? 'today' : ''">
 								<div v-if="header.isWeekly"
 									class="drop-zone container"
@@ -152,6 +158,10 @@
 										:style="cellBackground(shift.shiftsType)"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, shift, header)"
+										@touchstart="handleTouchStart($event, shift, )"
+										@touchmove="handleTouchMove($event, shift, )"
+										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
+										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -190,6 +200,7 @@ import CalendarTopBar from './CalendarTopBar'
 import Delete from 'vue-material-design-icons/Delete'
 import store from '../../store'
 import { showError } from '@nextcloud/dialogs'
+
 export default {
 	name: 'Calendar',
 	components: {
@@ -216,6 +227,14 @@ export default {
 			today: dayjs(),
 
 			hoveringRow: undefined,
+
+			// Mobile attributes
+			touchStartDragShiftId: -1,
+			touchEndDragShiftId: -1,
+			touchShiftId: -1,
+			currentAnalystId: -1,
+			updatedAnalystId: -1,
+			touchMovingElement: undefined,
 		}
 	},
 	methods: {
@@ -257,6 +276,7 @@ export default {
 			} else {
 				this.$store.dispatch('deleteShift', shift)
 			}
+			this.removeIndicatorAndResetMovingInfo();
 		},
 
 		onDragHoverRow(event, row) {
@@ -266,6 +286,12 @@ export default {
 			this.hoveringRow = undefined
 		},
 		startDailyDrag(event, shift, day) {
+			this.log('startDailyDrag')
+
+			if(!event.dataTransfer) {
+				event.dataTransfer = new DataTransfer();
+			}
+
 			event.dataTransfer.dropEffect = 'move'
 			event.dataTransfer.effectAllowed = 'move'
 
@@ -463,7 +489,83 @@ export default {
 					label: this.analysts[i].name
 				})
 			}
-		}
+		},
+
+		handleTouchStart(event, startShiftData, ) {
+			// TODO weekly Zeug
+			if(this.touchStartDragShiftId != startShiftData.id) {
+				this.touchStartDragShiftId = startShiftData.id;
+			}
+		},
+
+		handleTouchMove(event, moveShiftData) {
+			// TODO move directly under touch
+			if(this.touchEndDragShiftId === moveShiftData.id) {
+				this.log("handleTouchMove drag here");
+				this.updatedAnalystId = this.findAnalystUid(event.touches[0]);
+			} else {
+				this.touchStartDragShiftId = -1;
+				this.touchEndDragShiftId = -1;
+			}
+		},
+
+		handleTouchStopped(event, stoppedShiftData, day, currentAnalystUid) {
+			if(this.touchEndDragShiftId === -1 && this.touchStartDragShiftId === stoppedShiftData.id) {
+					this.touchEndDragShiftId = stoppedShiftData.id;
+					this.currentAnalystId = currentAnalystUid;
+					if (!this.updatedAnalystId || this.updatedAnalystId === -1) {
+						this.updatedAnalystId = currentAnalystUid;
+					}
+					const indicator = event.target.cloneNode(true);
+					indicator.classList.add("halfOpacity", "positionAbsolute", "touchIndicator");
+					this.touchMovingElement = indicator;
+					event.target.parentNode.insertBefore(
+						indicator,
+						event.target
+					);
+			} else if(this.touchEndDragShiftId !== -1 && this.touchEndDragShiftId === this.touchStartDragShiftId){
+				if(this.currentAnalystId != this.updatedAnalystId) {
+					const mockEvent = {};
+					this.startDailyDrag(mockEvent, stoppedShiftData, day);
+					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId)
+					if(analyst) {
+						this.onDailyDrop(mockEvent, day, analyst)
+						this.removeIndicatorAndResetMovingInfo();
+					}
+				} else {
+					// user did move it to the same spot, so remove indicator and reset moving info
+					this.removeIndicatorAndResetMovingInfo();
+				}
+			}
+		},
+
+		log(...data) {
+			console.log(...data)
+		},
+
+		findAnalystUid(element) {
+			let tdElement = document.elementFromPoint(element.clientX, element.clientY);
+				let tries = 0;
+				
+				while (tdElement.tagName != "TD" && tries < 5) {
+					tdElement = tdElement.parentNode;
+					tries++;
+				}
+				if(tries === 5) {
+					throw new Error("Didn't find analyst. Giving Up.")
+				}
+				return tdElement.getAttribute("analyst");
+		},
+
+		removeIndicatorAndResetMovingInfo() {
+			this.currentAnalystId = -1;
+			this.updatedAnalystId = -1;
+			this.touchEndDragShiftId = -1;
+			this.touchShiftId = -1;
+			this.touchStartDragShiftId = -1;
+			this.touchMovingElement = undefined;
+			[...document.getElementsByClassName("touchIndicator")].map(n => n && n.remove());
+		},
 	},
 	computed: {
 		...mapGetters({
@@ -596,6 +698,15 @@ export default {
 
 .today {
 	background-color: var(--color-text-maxcontrast);
+}
+
+.positionAbsolute {
+	position: absolute;
+}
+
+.halfOpacity {
+	opacity: 0.5;
+	color: red;
 }
 
 </style>
