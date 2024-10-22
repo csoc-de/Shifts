@@ -59,6 +59,10 @@
 										:draggable="isAdmin"
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, openshift, day)"
+										@touchstart="handleTouchStart(openshift)"
+										@touchmove="handleTouchMove($event, openshift, )"
+										@touchcancel="handleTouchStopped($event, openshift, day)"
+										@touchend="handleTouchStopped($event, openshift, day)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -76,7 +80,7 @@
 										:draggable="isAdmin"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, openshift, day)"
-										@touchstart="handleTouchStart($event, openshift, )"
+										@touchstart="handleTouchStart(openshift)"
 										@touchmove="handleTouchMove($event, openshift, )"
 										@touchcancel="handleTouchStopped($event, openshift, day, )"
 										@touchend="handleTouchStopped($event, openshift, day,)"
@@ -126,6 +130,10 @@
 										:style="cellBackground(shift.shiftsType)"
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, shift, header)"
+										@touchstart="handleTouchStart(shift)"
+										@touchmove="handleTouchMove($event, shift, )"
+										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
+										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -158,7 +166,7 @@
 										:style="cellBackground(shift.shiftsType)"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, shift, header)"
-										@touchstart="handleTouchStart($event, shift, )"
+										@touchstart="handleTouchStart(shift)"
 										@touchmove="handleTouchMove($event, shift, )"
 										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
 										@touchend="handleTouchStopped($event, shift, header, row.uid)"
@@ -286,8 +294,6 @@ export default {
 			this.hoveringRow = undefined
 		},
 		startDailyDrag(event, shift, day) {
-			this.log('startDailyDrag')
-
 			if(!event.dataTransfer) {
 				event.dataTransfer = new DataTransfer();
 			}
@@ -374,6 +380,10 @@ export default {
 		},
 
 		startWeeklyDrag(event, shift, week) {
+			if(!event.dataTransfer) {
+				event.dataTransfer = new DataTransfer();
+			}
+
 			event.dataTransfer.dropEffect = 'move'
 			event.dataTransfer.effectAllowed = 'move'
 
@@ -491,8 +501,7 @@ export default {
 			}
 		},
 
-		handleTouchStart(event, startShiftData, ) {
-			// TODO weekly Zeug
+		handleTouchStart(startShiftData) {
 			if(this.touchStartDragShiftId != startShiftData.id) {
 				this.touchStartDragShiftId = startShiftData.id;
 			}
@@ -509,27 +518,36 @@ export default {
 			}
 		},
 
-		handleTouchStopped(event, stoppedShiftData, day, currentAnalystUid) {
+		handleTouchStopped(event, stoppedShiftData, date, currentAnalystUid) {
 			if(this.touchEndDragShiftId === -1 && this.touchStartDragShiftId === stoppedShiftData.id) {
-					this.touchEndDragShiftId = stoppedShiftData.id;
-					this.currentAnalystId = currentAnalystUid;
-					if (!this.updatedAnalystId || this.updatedAnalystId === -1) {
-						this.updatedAnalystId = currentAnalystUid;
-					}
-					const indicator = event.target.cloneNode(true);
-					indicator.classList.add("halfOpacity", "positionAbsolute", "touchIndicator");
-					this.touchMovingElement = indicator;
-					event.target.parentNode.insertBefore(
-						indicator,
-						event.target
-					);
+				this.touchEndDragShiftId = stoppedShiftData.id;
+				this.currentAnalystId = currentAnalystUid;
+				if (!this.updatedAnalystId || this.updatedAnalystId === -1) {
+					this.updatedAnalystId = currentAnalystUid;
+				}
+				const indicator = event.target.cloneNode(true);
+				indicator.classList.add("halfOpacity", "positionAbsolute", "touchIndicator");
+				this.touchMovingElement = indicator;
+				event.target.parentNode.insertBefore(
+					indicator,
+					event.target
+				);
 			} else if(this.touchEndDragShiftId !== -1 && this.touchEndDragShiftId === this.touchStartDragShiftId){
 				if(this.currentAnalystId != this.updatedAnalystId) {
 					const mockEvent = {};
-					this.startDailyDrag(mockEvent, stoppedShiftData, day);
+					const isWeekly = stoppedShiftData.isWeekly || date.isWeekly;
+					if(isWeekly) {
+						this.startWeeklyDrag(mockEvent, stoppedShiftData, date);
+					} else {
+						this.startDailyDrag(mockEvent, stoppedShiftData, date);
+					}
 					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId)
-					if(analyst) {
-						this.onDailyDrop(mockEvent, day, analyst)
+					if(analyst) { 
+						if(isWeekly) {
+							this.onWeeklyDrop(mockEvent, date, analyst);
+						} else {
+							this.onDailyDrop(mockEvent, date, analyst);
+						}
 						this.removeIndicatorAndResetMovingInfo();
 					}
 				} else {
