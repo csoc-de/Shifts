@@ -243,6 +243,10 @@ export default {
 			currentAnalystId: -1,
 			updatedAnalystId: -1,
 			touchMovingElement: undefined,
+			indicatorStartPosition: {
+				left: 0,
+				top: 0,
+			}
 		}
 	},
 	methods: {
@@ -508,9 +512,9 @@ export default {
 		},
 
 		handleTouchMove(event, moveShiftData) {
-			// TODO move directly under touch
 			if(this.touchEndDragShiftId === moveShiftData.id) {
-				this.log("handleTouchMove drag here");
+				this.touchMovingElement.style.left = (event.touches[0].clientX - 50) + 'px';
+				this.touchMovingElement.style.top = (event.touches[0].clientY - 50) + 'px';
 				this.updatedAnalystId = this.findAnalystUid(event.touches[0]);
 			} else {
 				this.touchStartDragShiftId = -1;
@@ -519,60 +523,110 @@ export default {
 		},
 
 		handleTouchStopped(event, stoppedShiftData, date, currentAnalystUid) {
+			if(this.isDeletionTouched(event.target)) {
+				// Delete clicked, so do nothing
+				return;
+			}
+
 			if(this.touchEndDragShiftId === -1 && this.touchStartDragShiftId === stoppedShiftData.id) {
 				this.touchEndDragShiftId = stoppedShiftData.id;
 				this.currentAnalystId = currentAnalystUid;
 				if (!this.updatedAnalystId || this.updatedAnalystId === -1) {
 					this.updatedAnalystId = currentAnalystUid;
 				}
-				const indicator = event.target.cloneNode(true);
-				indicator.classList.add("halfOpacity", "positionAbsolute", "touchIndicator");
+				const shiftContainer = this.findShiftContainerElement(event.target);
+				const deleteButtons = shiftContainer.getElementsByTagName("BUTTON");
+				if(deleteButtons.length > 0) {
+					deleteButtons[0].classList.add("displayNone");
+				}
+				const indicator = shiftContainer.cloneNode(true);
+				indicator.classList.add("ableToMoveIndicator");
+				const shiftContainerBoundingRect = shiftContainer.getBoundingClientRect();
+				this.indicatorStartPosition.left = shiftContainerBoundingRect.x
+				this.indicatorStartPosition.top = shiftContainerBoundingRect.y - shiftContainerBoundingRect.height
 				this.touchMovingElement = indicator;
-				event.target.parentNode.insertBefore(
+				shiftContainer.parentNode.insertBefore(
 					indicator,
-					event.target
+					shiftContainer
 				);
+				this.setIndicatorToStartPosition();
 			} else if(this.touchEndDragShiftId !== -1 && this.touchEndDragShiftId === this.touchStartDragShiftId){
 				if(this.currentAnalystId != this.updatedAnalystId) {
 					const mockEvent = {};
 					const isWeekly = stoppedShiftData.isWeekly || date.isWeekly;
-					if(isWeekly) {
-						this.startWeeklyDrag(mockEvent, stoppedShiftData, date);
-					} else {
-						this.startDailyDrag(mockEvent, stoppedShiftData, date);
-					}
 					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId)
 					if(analyst) { 
 						if(isWeekly) {
+							this.startWeeklyDrag(mockEvent, stoppedShiftData, date);
 							this.onWeeklyDrop(mockEvent, date, analyst);
 						} else {
+							this.startDailyDrag(mockEvent, stoppedShiftData, date);
 							this.onDailyDrop(mockEvent, date, analyst);
 						}
 						this.removeIndicatorAndResetMovingInfo();
+					} else {
+						this.updatedAnalystId = this.currentAnalystId;
+						this.setIndicatorToStartPosition();
 					}
 				} else {
-					// user did move it to the same spot, so remove indicator and reset moving info
+					// user did move it to the same spot or and invalid , so remove indicator and reset moving info
 					this.removeIndicatorAndResetMovingInfo();
 				}
 			}
 		},
 
-		log(...data) {
-			console.log(...data)
+		findAnalystUid(touchElement) {
+			let tdElement = document.elementFromPoint(touchElement.clientX, touchElement.clientY);
+			let tries = 0;
+			
+			while (tdElement != null && tdElement.tagName != "TD" && tries < 5) {
+				tdElement = tdElement.parentNode;
+				tries++;
+			}
+			if(tries === 5 || tdElement === null) {
+				// No analyst found so reset
+				this.setIndicatorToStartPosition();
+				return undefined;
+			}
+			return tdElement.getAttribute("analyst");
 		},
 
-		findAnalystUid(element) {
-			let tdElement = document.elementFromPoint(element.clientX, element.clientY);
-				let tries = 0;
-				
-				while (tdElement.tagName != "TD" && tries < 5) {
-					tdElement = tdElement.parentNode;
+		findShiftContainerElement(element) {
+			let currentElement = element;
+			let tries = 0;
+			
+			while (!currentElement.classList.contains('shiftContainer') && tries < 5) {
+				currentElement = currentElement.parentNode;
+				tries++;
+			}
+			if(!currentElement.classList.contains('shiftContainer')) {
+				currentElement = element;
+				tries = 0;
+				while (!currentElement.classList.contains('shiftContainer') && tries < 5) {
+					currentElement = currentElement.firstChild;
 					tries++;
 				}
-				if(tries === 5) {
-					throw new Error("Didn't find analyst. Giving Up.")
+				if(!currentElement.classList.contains('shiftContainer')) {
+					throw new Error("Didn't find ShiftContainerElement. Giving Up.")
 				}
-				return tdElement.getAttribute("analyst");
+			}
+			return currentElement;
+		},
+
+		isDeletionTouched(touchElement) {
+			let buttonElement = touchElement;
+			let tries = 0;
+			while (buttonElement.tagName != "BUTTON" && tries < 8) {
+				buttonElement = buttonElement.parentNode;
+				tries++;
+			}
+			return tries !== 8
+		},
+
+		setIndicatorToStartPosition() {
+			const indicator = document.getElementsByClassName("ableToMoveIndicator")[0]
+			indicator.style.left = this.indicatorStartPosition.left + 'px';
+			indicator.style.top = this.indicatorStartPosition.top + 'px';
 		},
 
 		removeIndicatorAndResetMovingInfo() {
@@ -582,7 +636,8 @@ export default {
 			this.touchShiftId = -1;
 			this.touchStartDragShiftId = -1;
 			this.touchMovingElement = undefined;
-			[...document.getElementsByClassName("touchIndicator")].map(n => n && n.remove());
+			[...document.getElementsByClassName("displayNone")].map(n => n && n.classList.remove("displayNone"));
+			[...document.getElementsByClassName("ableToMoveIndicator")].map(n => n && n.remove());
 		},
 	},
 	computed: {
@@ -718,13 +773,15 @@ export default {
 	background-color: var(--color-text-maxcontrast);
 }
 
-.positionAbsolute {
+.ableToMoveIndicator {
 	position: absolute;
-}
-
-.halfOpacity {
 	opacity: 0.5;
 	color: red;
+	pointer-events: none;
+}
+
+.displayNone {
+	display: none;
 }
 
 </style>
