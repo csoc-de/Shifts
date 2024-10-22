@@ -60,7 +60,7 @@
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, openshift, day)"
 										@touchstart="handleTouchStart(openshift)"
-										@touchmove="handleTouchMove($event, openshift, )"
+										@touchmove="handleTouchMove($event, openshift)"
 										@touchcancel="handleTouchStopped($event, openshift, day)"
 										@touchend="handleTouchStopped($event, openshift, day)"
 										class="row shiftContainer pad">
@@ -81,9 +81,9 @@
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, openshift, day)"
 										@touchstart="handleTouchStart(openshift)"
-										@touchmove="handleTouchMove($event, openshift, )"
-										@touchcancel="handleTouchStopped($event, openshift, day, )"
-										@touchend="handleTouchStopped($event, openshift, day,)"
+										@touchmove="handleTouchMove($event, openshift)"
+										@touchcancel="handleTouchStopped($event, openshift, day)"
+										@touchend="handleTouchStopped($event, openshift, day)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -131,7 +131,7 @@
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, shift, header)"
 										@touchstart="handleTouchStart(shift)"
-										@touchmove="handleTouchMove($event, shift, )"
+										@touchmove="handleTouchMove($event, shift)"
 										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
 										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
@@ -167,7 +167,7 @@
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, shift, header)"
 										@touchstart="handleTouchStart(shift)"
-										@touchmove="handleTouchMove($event, shift, )"
+										@touchmove="handleTouchMove($event, shift)"
 										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
 										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
@@ -542,8 +542,8 @@ export default {
 				const indicator = shiftContainer.cloneNode(true);
 				indicator.classList.add("ableToMoveIndicator");
 				const shiftContainerBoundingRect = shiftContainer.getBoundingClientRect();
-				this.indicatorStartPosition.left = shiftContainerBoundingRect.x
-				this.indicatorStartPosition.top = shiftContainerBoundingRect.y - shiftContainerBoundingRect.height
+				this.indicatorStartPosition.left = shiftContainerBoundingRect.x;
+				this.indicatorStartPosition.top = shiftContainerBoundingRect.y - shiftContainerBoundingRect.height;
 				this.touchMovingElement = indicator;
 				shiftContainer.parentNode.insertBefore(
 					indicator,
@@ -554,7 +554,7 @@ export default {
 				if(this.currentAnalystId != this.updatedAnalystId) {
 					const mockEvent = {};
 					const isWeekly = stoppedShiftData.isWeekly || date.isWeekly;
-					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId)
+					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId);
 					if(analyst) { 
 						if(isWeekly) {
 							this.startWeeklyDrag(mockEvent, stoppedShiftData, date);
@@ -607,7 +607,7 @@ export default {
 					tries++;
 				}
 				if(!currentElement.classList.contains('shiftContainer')) {
-					throw new Error("Didn't find ShiftContainerElement. Giving Up.")
+					throw new Error("Didn't find ShiftContainerElement. Giving Up.");
 				}
 			}
 			return currentElement;
@@ -620,11 +620,11 @@ export default {
 				buttonElement = buttonElement.parentNode;
 				tries++;
 			}
-			return tries !== 8
+			return tries !== 8;
 		},
 
 		setIndicatorToStartPosition() {
-			const indicator = document.getElementsByClassName("ableToMoveIndicator")[0]
+			const indicator = document.getElementsByClassName("ableToMoveIndicator")[0];
 			indicator.style.left = this.indicatorStartPosition.left + 'px';
 			indicator.style.top = this.indicatorStartPosition.top + 'px';
 		},
