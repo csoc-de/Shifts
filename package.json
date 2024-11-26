@@ -1,7 +1,7 @@
 {
 	"name": "shifts",
 	"description": "Shifts Organisation",
-	"version": "1.9.9",
+	"version": "1.9.10",
 	"author": "CSOC <dev@csoc.de>",
 	"license": "agpl",
 	"private": true,

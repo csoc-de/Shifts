@@ -186,14 +186,15 @@ class ShiftsCalendarService {
 			$date_start = $date_start->setISODate($year, $week, 1)->setTime(0,0,0);
 		}
 
-		$this->logger->debug("ShiftsCalendarService::generateCalendarEvent()", [
+		/*$this->logger->debug("ShiftsCalendarService::generateCalendarEvent()", [
 			'shift_date' => $shift->getDate(),
 			'shiftsType_start' => $shiftsType->getStartTimeStamp(),
 			'shiftsType_stop' => $shiftsType->getStopTimeStamp(),
 			'timezone' => $this->settings->getShiftsTimezone(),
 			'date_start' => $date_start,
 			'date_end' => $date_end,
-		]);
+			'name' => $shiftsType->getName(),
+		]);*/
 
 		$event = new VCalendar([
 			'CALSCALE' => 'GREGORIAN',
@@ -208,6 +209,10 @@ class ShiftsCalendarService {
 		if(str_contains($analyst->getEMailAddress(), "@csoc.de") && ($shiftsType->getName() === "BlueTeam Früh" || $shiftsType->getName() === "BlueTeam Spät" || $shiftsType->getName() === "BlueTeam Nacht")) {
 			$event->VEVENT->add("CATEGORIES", "Leitstelle");
 			$this->logger->debug("ShiftsCalendarService::generateCalendarEvent(): Added label 'Leitstelle' to user", ['user' => $analyst->getDisplayName(),'email' => $analyst->getEMailAddress()]);
+		}
+
+		if($shiftsType->getName() === "Frühschicht" || $shiftsType->getName() === "Spätschicht") {
+			$event->VEVENT->add("CATEGORIES", "Leitstelle");
 		}
 
 		if($shiftsType->isWeekly()) {
