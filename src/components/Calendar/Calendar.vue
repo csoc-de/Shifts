@@ -47,6 +47,7 @@
 
 							<td
 								v-for="(day, i) in timespanHeaders"
+								analyst="open"
 								:key="i"
 								:class="isCurrentDay(day) ? 'today' : ''">
 								<div
@@ -58,6 +59,10 @@
 										:draggable="isAdmin"
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, openshift, day)"
+										@touchstart="handleTouchStart(openshift)"
+										@touchmove="handleTouchMove($event, openshift)"
+										@touchcancel="handleTouchStopped($event, openshift, day)"
+										@touchend="handleTouchStopped($event, openshift, day)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -75,6 +80,10 @@
 										:draggable="isAdmin"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, openshift, day)"
+										@touchstart="handleTouchStart(openshift)"
+										@touchmove="handleTouchMove($event, openshift)"
+										@touchcancel="handleTouchStopped($event, openshift, day)"
+										@touchend="handleTouchStopped($event, openshift, day)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -107,6 +116,7 @@
 							<td
 								v-for="(header, j) in timespanHeaders"
 								:key="j"
+								:analyst="row.uid"
 								:class="isCurrentDay(header) ? 'today' : ''">
 								<div v-if="header.isWeekly"
 									class="drop-zone container"
@@ -120,6 +130,10 @@
 										:style="cellBackground(shift.shiftsType)"
 										@dragend="cancelDrag"
 										@dragstart="startWeeklyDrag($event, shift, header)"
+										@touchstart="handleTouchStart(shift)"
+										@touchmove="handleTouchMove($event, shift)"
+										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
+										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -152,6 +166,10 @@
 										:style="cellBackground(shift.shiftsType)"
 										@dragend="cancelDrag"
 										@dragstart="startDailyDrag($event, shift, header)"
+										@touchstart="handleTouchStart(shift)"
+										@touchmove="handleTouchMove($event, shift)"
+										@touchcancel="handleTouchStopped($event, shift, header, row.uid)"
+										@touchend="handleTouchStopped($event, shift, header, row.uid)"
 										class="row shiftContainer pad">
 										<div
 											class="col"
@@ -190,6 +208,7 @@ import CalendarTopBar from './CalendarTopBar'
 import Delete from 'vue-material-design-icons/Delete'
 import store from '../../store'
 import { showError } from '@nextcloud/dialogs'
+
 export default {
 	name: 'Calendar',
 	components: {
@@ -216,6 +235,18 @@ export default {
 			today: dayjs(),
 
 			hoveringRow: undefined,
+
+			// Mobile attributes
+			touchStartDragShiftId: -1,
+			touchEndDragShiftId: -1,
+			touchShiftId: -1,
+			currentAnalystId: -1,
+			updatedAnalystId: -1,
+			touchMovingElement: undefined,
+			indicatorStartPosition: {
+				left: 0,
+				top: 0,
+			}
 		}
 	},
 	methods: {
@@ -257,6 +288,7 @@ export default {
 			} else {
 				this.$store.dispatch('deleteShift', shift)
 			}
+			this.removeIndicatorAndResetMovingInfo();
 		},
 
 		onDragHoverRow(event, row) {
@@ -266,6 +298,10 @@ export default {
 			this.hoveringRow = undefined
 		},
 		startDailyDrag(event, shift, day) {
+			if(!event.dataTransfer) {
+				event.dataTransfer = new DataTransfer();
+			}
+
 			event.dataTransfer.dropEffect = 'move'
 			event.dataTransfer.effectAllowed = 'move'
 
@@ -348,6 +384,10 @@ export default {
 		},
 
 		startWeeklyDrag(event, shift, week) {
+			if(!event.dataTransfer) {
+				event.dataTransfer = new DataTransfer();
+			}
+
 			event.dataTransfer.dropEffect = 'move'
 			event.dataTransfer.effectAllowed = 'move'
 
@@ -463,7 +503,142 @@ export default {
 					label: this.analysts[i].name
 				})
 			}
-		}
+		},
+
+		handleTouchStart(startShiftData) {
+			if(this.touchStartDragShiftId != startShiftData.id) {
+				this.touchStartDragShiftId = startShiftData.id;
+			}
+		},
+
+		handleTouchMove(event, moveShiftData) {
+			if(this.touchEndDragShiftId === moveShiftData.id) {
+				this.touchMovingElement.style.left = (event.touches[0].clientX - 50) + 'px';
+				this.touchMovingElement.style.top = (event.touches[0].clientY - 50) + 'px';
+				this.updatedAnalystId = this.findAnalystUid(event.touches[0]);
+			} else {
+				this.touchStartDragShiftId = -1;
+				this.touchEndDragShiftId = -1;
+			}
+		},
+
+		handleTouchStopped(event, stoppedShiftData, date, currentAnalystUid) {
+			if(this.isDeletionTouched(event.target)) {
+				// Delete clicked, so do nothing
+				return;
+			}
+
+			if(this.touchEndDragShiftId === -1 && this.touchStartDragShiftId === stoppedShiftData.id) {
+				this.touchEndDragShiftId = stoppedShiftData.id;
+				this.currentAnalystId = currentAnalystUid;
+				if (!this.updatedAnalystId || this.updatedAnalystId === -1) {
+					this.updatedAnalystId = currentAnalystUid;
+				}
+				const shiftContainer = this.findShiftContainerElement(event.target);
+				const deleteButtons = shiftContainer.getElementsByTagName("BUTTON");
+				if(deleteButtons.length > 0) {
+					deleteButtons[0].classList.add("displayNone");
+				}
+				const indicator = shiftContainer.cloneNode(true);
+				indicator.classList.add("ableToMoveIndicator");
+				const shiftContainerBoundingRect = shiftContainer.getBoundingClientRect();
+				this.indicatorStartPosition.left = shiftContainerBoundingRect.x;
+				this.indicatorStartPosition.top = shiftContainerBoundingRect.y - shiftContainerBoundingRect.height;
+				this.touchMovingElement = indicator;
+				shiftContainer.parentNode.insertBefore(
+					indicator,
+					shiftContainer
+				);
+				this.setIndicatorToStartPosition();
+			} else if(this.touchEndDragShiftId !== -1 && this.touchEndDragShiftId === this.touchStartDragShiftId){
+				if(this.currentAnalystId != this.updatedAnalystId) {
+					const mockEvent = {};
+					const isWeekly = stoppedShiftData.isWeekly || date.isWeekly;
+					let analyst = this.shiftRows.find(analyst => analyst.uid === this.updatedAnalystId);
+					if(analyst) { 
+						if(isWeekly) {
+							this.startWeeklyDrag(mockEvent, stoppedShiftData, date);
+							this.onWeeklyDrop(mockEvent, date, analyst);
+						} else {
+							this.startDailyDrag(mockEvent, stoppedShiftData, date);
+							this.onDailyDrop(mockEvent, date, analyst);
+						}
+						this.removeIndicatorAndResetMovingInfo();
+					} else {
+						this.updatedAnalystId = this.currentAnalystId;
+						this.setIndicatorToStartPosition();
+					}
+				} else {
+					// user did move it to the same spot or and invalid , so remove indicator and reset moving info
+					this.removeIndicatorAndResetMovingInfo();
+				}
+			}
+		},
+
+		findAnalystUid(touchElement) {
+			let tdElement = document.elementFromPoint(touchElement.clientX, touchElement.clientY);
+			let tries = 0;
+			
+			while (tdElement != null && tdElement.tagName != "TD" && tries < 5) {
+				tdElement = tdElement.parentNode;
+				tries++;
+			}
+			if(tries === 5 || tdElement === null) {
+				// No analyst found so reset
+				this.setIndicatorToStartPosition();
+				return undefined;
+			}
+			return tdElement.getAttribute("analyst");
+		},
+
+		findShiftContainerElement(element) {
+			let currentElement = element;
+			let tries = 0;
+			
+			while (!currentElement.classList.contains('shiftContainer') && tries < 5) {
+				currentElement = currentElement.parentNode;
+				tries++;
+			}
+			if(!currentElement.classList.contains('shiftContainer')) {
+				currentElement = element;
+				tries = 0;
+				while (!currentElement.classList.contains('shiftContainer') && tries < 5) {
+					currentElement = currentElement.firstChild;
+					tries++;
+				}
+				if(!currentElement.classList.contains('shiftContainer')) {
+					throw new Error("Didn't find ShiftContainerElement. Giving Up.");
+				}
+			}
+			return currentElement;
+		},
+
+		isDeletionTouched(touchElement) {
+			let buttonElement = touchElement;
+			let tries = 0;
+			while (buttonElement.tagName != "BUTTON" && tries < 8) {
+				buttonElement = buttonElement.parentNode;
+				tries++;
+			}
+			return tries !== 8;
+		},
+
+		setIndicatorToStartPosition() {
+			const indicator = document.getElementsByClassName("ableToMoveIndicator")[0];
+			indicator.style.left = this.indicatorStartPosition.left + 'px';
+			indicator.style.top = this.indicatorStartPosition.top + 'px';
+		},
+
+		removeIndicatorAndResetMovingInfo() {
+			this.currentAnalystId = -1;
+			this.updatedAnalystId = -1;
+			this.touchEndDragShiftId = -1;
+			this.touchShiftId = -1;
+			this.touchStartDragShiftId = -1;
+			this.touchMovingElement = undefined;
+			[...document.getElementsByClassName("displayNone")].map(n => n && n.classList.remove("displayNone"));
+			[...document.getElementsByClassName("ableToMoveIndicator")].map(n => n && n.remove());
+		},
 	},
 	computed: {
 		...mapGetters({
@@ -532,6 +707,7 @@ export default {
 .content {
 	.calendar {
 		max-width: 100%;
+		overflow: scroll;
 
 		table {
 			line-height: 1.5;
@@ -595,6 +771,17 @@ export default {
 
 .today {
 	background-color: var(--color-text-maxcontrast);
+}
+
+.ableToMoveIndicator {
+	position: absolute;
+	opacity: 0.5;
+	color: red;
+	pointer-events: none;
+}
+
+.displayNone {
+	display: none;
 }
 
 </style>
