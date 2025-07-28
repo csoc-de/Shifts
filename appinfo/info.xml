@@ -10,7 +10,9 @@
     <id>shifts</id>
     <name>Shiftplan</name>
     <summary>App for organising Shifts</summary>
-    <description><![CDATA[* **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
+    <description><![CDATA[This app is deprecated. Click [here](https://github.com/csoc-de/Shifts/issues/87) for more info. There is an [alternative](https://github.com/csoc-de/shiftsnext) available.
+
+* **Interactions with the Nextcloud Calender app!** Easy integration into the existing Calender of Nextcloud.
 * **Manage and organize your Shifts System!** Customize your Shifts Model with different Shifttypes
 * **Separation of Users by different Nextcloud user Groups!** Divide your Workforce with different Skill-Levels
 
