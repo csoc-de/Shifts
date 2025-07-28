@@ -1,5 +1,11 @@
 # Nextcloud Shifts
 
+## DEPRECATION NOTE
+
+Click [here](https://github.com/csoc-de/Shifts/issues/87) for more info.
+
+---
+
 A shiftsplaner app for [Nextcloud](https://nextcloud.com).
 
 
